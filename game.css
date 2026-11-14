@@ -27,8 +27,7 @@ button {
 
 nav a,
 .controls button,
-.controls #start,
-#play,
+.play-primary,
 .music button {
   color: #48263d;
   border: 1px solid #b881a2;
@@ -40,8 +39,7 @@ nav a {
 }
 
 nav a:nth-child(2),
-.controls #start,
-#play {
+.play-primary {
   background: #ffd0e4;
 }
 
@@ -124,8 +122,10 @@ nav a[aria-current] {
 @media (min-width: 1050px), (orientation: landscape) and (min-width: 700px){
   main{max-width:1320px;display:grid;grid-template-columns:minmax(230px, 310px) minmax(0,1fr);column-gap:20px;align-items:start}
   main > *{grid-column:1}
-  main > canvas,main > .cat-grid{grid-column:2;grid-row:1 / span 8;margin-top:0}
-  main > nav{grid-column:1 / -1}
+  main > canvas,main > .cat-grid{grid-column:2;grid-row:1 / span 5;margin:0}
+  main > .play-primary{grid-column:2;grid-row:6}
+  main > .controls{grid-column:2;grid-row:7}
+  main > nav{grid-column:1 / -1;grid-row:9}
   canvas{height:clamp(220px,65dvh,570px)}
   .cat-grid{width:100%;grid-template-columns:repeat(8,minmax(0,1fr));justify-self:center}
 }
@@ -173,3 +173,21 @@ nav[aria-label="Choose a game"] a {
   line-height: 1;
   transform: translate(-50%, -50%);
 }
+
+.play-primary {
+  width: 100%;
+  min-height: 66px;
+  margin: 10px 0;
+  border: 2px solid #99537b;
+  border-radius: 20px;
+  background: #ffd0e4;
+  color: #48263d;
+  font-size: clamp(1.55rem, 4vw, 2rem);
+  box-shadow: 0 4px 0 #df9bbd;
+}
+.play-primary::before {
+  content: "▶";
+  font-size: .65em;
+  margin-inline-end: .5em;
+}
+.play-primary:disabled::before { content: none; }

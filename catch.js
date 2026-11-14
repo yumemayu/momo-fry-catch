@@ -256,6 +256,7 @@ startButton.addEventListener('click', () => {
   timeOutput.value = duration;
   nextSpawn = 0;
   startTime = previous = performance.now();
+  startButton.textContent = 'Playing…';
   startButton.disabled = true;
   level = levels[selectedLevel];
   difficultyButtons.forEach(button => { button.disabled = true; });

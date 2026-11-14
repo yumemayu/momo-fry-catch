@@ -78,6 +78,7 @@ play.addEventListener('click', () => {
   score.value = found = 0;
   time.value = '30s left';
   deadline = performance.now() + 30000;
+  play.textContent = 'Playing…';
   play.disabled = true;
   practice.disabled = true;
   cats.dataset.practice = "false";
