@@ -124,3 +124,16 @@ nav a[aria-current] {
   canvas{height:clamp(200px,65dvh,440px)}
   .cat-grid{width:min(100%,65dvh);justify-self:center}
 }
+
+.hello-rainbow {
+  display: block;
+  width: min(100%, 400px);
+  height: auto;
+  margin: 0 0 10px;
+}
+
+@media (orientation: landscape) and (min-width: 700px) {
+  .hello-rainbow {
+    width: min(100%, 210px);
+  }
+}
