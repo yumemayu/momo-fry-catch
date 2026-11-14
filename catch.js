@@ -155,7 +155,13 @@ function draw() {
     const latest = catches.at(-1);
     const age = latest ? performance.now() - latest.at : Infinity;
     const hop = !reducedMotion.matches && age < 260 ? Math.sin(Math.PI * age / 260) * 14 : 0;
-    ctx.drawImage(squirrel, player - squirrelSize / 2, 334 - squirrelSize - hop, squirrelSize, squirrelSize);
+    // The canvas fills a responsive rectangle, so its two axes may scale differently.
+    const scaleX = pixelWidth / width;
+    const scaleY = pixelHeight / height;
+    const size = squirrelSize * Math.min(scaleX, scaleY);
+    const spriteWidth = size / scaleX;
+    const spriteHeight = size / scaleY;
+    ctx.drawImage(squirrel, player - spriteWidth / 2, 334 - spriteHeight - hop, spriteWidth, spriteHeight);
   }
   const now = performance.now();
   catches = catches.filter(catchEffect => now - catchEffect.at < 600);
