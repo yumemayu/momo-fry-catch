@@ -8,7 +8,8 @@ const result = document.querySelector('#result');
 const width = 400;
 const height = 360;
 const duration = 30;
-const difficulty = document.querySelector('#difficulty');
+const difficultyButtons = document.querySelectorAll('[data-level]');
+let selectedLevel = 'easy';
 const levels = {
   'super-easy': { speed: 85, acceleration: 1, interval: .95 },
   easy: { speed: 123, acceleration: 2.6, interval: .75 },
@@ -17,6 +18,12 @@ const levels = {
   impossible: { speed: 330, acceleration: 5, interval: .36 },
 };
 let level = levels.easy;
+difficultyButtons.forEach(button => button.addEventListener('click', () => {
+  selectedLevel = button.dataset.level;
+  difficultyButtons.forEach(choice => {
+    choice.setAttribute('aria-pressed', String(choice.dataset.level === selectedLevel));
+  });
+}));
 const squirrelSize = 140;
 const musicButton = document.querySelector('#music');
 const volume = document.querySelector('#volume');
@@ -199,7 +206,7 @@ function step(now) {
     music.pause();
     catches = [];
     startButton.disabled = false;
-    difficulty.disabled = false;
+    difficultyButtons.forEach(button => { button.disabled = false; });
     startButton.textContent = 'Play again';
     result.textContent = bunMode ? 'Final score: ' + score : 'You caught ' + score + (score === 1 ? ' fry!' : ' fries!');
     draw();
@@ -234,8 +241,8 @@ startButton.addEventListener('click', () => {
   nextSpawn = 0;
   startTime = previous = performance.now();
   startButton.disabled = true;
-  level = levels[difficulty.value];
-  difficulty.disabled = true;
+  level = levels[selectedLevel];
+  difficultyButtons.forEach(button => { button.disabled = true; });
   music.currentTime = 0;
   playMusic();
   result.textContent = bunMode ? 'Catch the smiling buns! Dodge the plain ones.' : 'Here come the fries!';

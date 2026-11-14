@@ -7,14 +7,14 @@
 <main>
 <h1>Moｍo’s Fry Catch</h1>
 <p>Move the squirrel and catch the falling fries!</p>
-<label class="difficulty" for="difficulty">Difficulty
-<select id="difficulty">
-<option value="super-easy">Super Easy</option>
-<option value="easy" selected>Easy</option>
-<option value="medium">Medium</option>
-<option value="hard">Hard</option>
-<option value="impossible">Impossible</option>
-</select></label>
+<fieldset class="difficulty"><legend>Pick a level</legend>
+<div class="level-buttons">
+<button type="button" data-level="super-easy" aria-pressed="false"><span class="level-icon" aria-hidden="true">🌱</span><span>Super Easy</span></button>
+<button type="button" data-level="easy" aria-pressed="true"><span class="level-icon" aria-hidden="true">🌼</span><span>Easy</span></button>
+<button type="button" data-level="medium" aria-pressed="false"><span class="level-icon" aria-hidden="true">🦋</span><span>Medium</span></button>
+<button type="button" data-level="hard" aria-pressed="false"><span class="level-icon" aria-hidden="true">⭐</span><span>Hard</span></button>
+<button type="button" data-level="impossible" aria-pressed="false"><span class="level-icon" aria-hidden="true">🚀</span><span>Impossible</span></button>
+</div></fieldset>
 <div class="stats"><span>🍟 <output id="score">0</output> fries</span><span><output id="time">30</output>s left</span></div>
 <canvas id="field" aria-label="Fry Catch play area">Fry Catch play area</canvas>
 <div class="controls">
