@@ -125,15 +125,30 @@ nav a[aria-current] {
   .cat-grid{width:min(100%,65dvh);justify-self:center}
 }
 
+nav[aria-label="Choose a game"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(91px, 1fr));
+}
+nav[aria-label="Choose a game"] a {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-height: 84px;
+  padding: 8px 5px;
+  text-align: center;
+  line-height: 1.16;
+}
+.game-art {
+  font-size: 1.65rem;
+}
 .hello-rainbow {
   display: block;
-  width: min(100%, 400px);
+  width: min(60%, 240px);
   height: auto;
-  margin: 0 0 10px;
+  margin-bottom: 4px;
 }
-
 @media (orientation: landscape) and (min-width: 700px) {
   .hello-rainbow {
-    width: min(100%, 210px);
+    width: min(66%, 160px);
   }
 }
