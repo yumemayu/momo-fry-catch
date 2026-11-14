@@ -116,13 +116,18 @@ nav a[aria-current] {
 .cat-grid button.found svg{animation:cat-spark .32s ease-out}
 @keyframes cat-spark{50%{transform:scale(.88);filter:brightness(1.25)}}
 @media(prefers-reduced-motion:reduce){.cat-grid button.found svg{animation:none}}
-@media(orientation:landscape) and (min-width:700px){
-  main{max-width:920px;display:grid;grid-template-columns:minmax(205px,1fr) minmax(320px,1.7fr);column-gap:20px;align-items:start}
+@media (min-width: 680px) {
+  main { max-width: 940px; padding: 24px; }
+  canvas { height: clamp(290px, 48vh, 510px); }
+  .cat-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+@media (min-width: 1050px), (orientation: landscape) and (min-width: 700px){
+  main{max-width:1320px;display:grid;grid-template-columns:minmax(230px, 310px) minmax(0,1fr);column-gap:20px;align-items:start}
   main > *{grid-column:1}
   main > canvas,main > .cat-grid{grid-column:2;grid-row:1 / span 8;margin-top:0}
   main > nav{grid-column:1 / -1}
-  canvas{height:clamp(200px,65dvh,440px)}
-  .cat-grid{width:min(100%,65dvh);justify-self:center}
+  canvas{height:clamp(220px,65dvh,570px)}
+  .cat-grid{width:100%;grid-template-columns:repeat(8,minmax(0,1fr));justify-self:center}
 }
 
 nav[aria-label="Choose a game"] {
@@ -156,4 +161,15 @@ nav[aria-label="Choose a game"] a {
   flex: 0 0 auto;
   width: clamp(64px, 17%, 106px);
   height: auto;
+}
+
+.tap-sparkle {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  color: #e99b17;
+  text-shadow: 0 0 3px white, 0 0 4px white;
+  font-size: 26px;
+  line-height: 1;
+  transform: translate(-50%, -50%);
 }
