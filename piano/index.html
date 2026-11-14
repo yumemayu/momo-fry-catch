@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOMO Piano</title>
+  <link rel="stylesheet" href="piano.css">
+  <script src="piano.js" defer></script>
+</head>
+<body>
+<main id="momo-piano-levels">
+  <div class="languages" role="group" aria-label="Language">
+    <button type="button" class="cursor-interaction" data-lang="ja" aria-pressed="true">日本語</button>
+    <button type="button" class="cursor-interaction" data-lang="en" aria-pressed="false">English</button>
+  </div>
+  <aside class="piano-sidebar">
+    <div class="momo-art">
+      <h1 class="patch">MOM<span>O</span><br>PIANO</h1>
+      <div class="hero">
+        <span class="gem one" aria-hidden="true">✦</span>
+        <span class="gem two" aria-hidden="true">♪</span>
+        <span class="gem three" aria-hidden="true">★</span>
+        <span class="gem four" aria-hidden="true">♥</span>
+        <img class="avatar" src="momo-avatar.webp" width="350" height="350" alt="MOMO">
+      </div>
+    </div>
+      <div class="choices" role="group" aria-label="モードを えらぶ">
+        <button type="button" class="choice free cursor-interaction" data-action="free" aria-pressed="true"><span aria-hidden="true">♫</span> <span data-copy="free">じゆうピアノ</span></button>
+        <button type="button" class="choice guided cursor-interaction" data-action="songs" aria-pressed="false"><span aria-hidden="true">☆</span> <span data-copy="guided">おてほんピアノ</span></button>
+      </div>
+    <div class="level-buttons" role="group" aria-label="レベルを えらぶ" hidden></div>
+  </aside>
+  <section class="phone play select-song" data-screen="songs" hidden aria-labelledby="momo-song-heading">
+    <h2 id="momo-song-heading" data-copy="selectSong">きょくを えらぶ</h2>
+    <div class="song-list"></div>
+  </section>
+  <section class="phone play" data-screen="playing" aria-labelledby="momo-current-song">
+      <header><button type="button" class="back cursor-interaction" data-action="back" data-copy="back" hidden>‹ もどる</button><span class="mode"></span></header>
+      <div class="song">
+        <div class="sparkles" aria-hidden="true"><span>✧</span>★<span>✦</span></div>
+        <h2 id="momo-current-song"></h2>
+        <div class="track" role="progressbar" aria-label="曲の進み具合" aria-valuemin="0" aria-valuemax="42" aria-valuenow="0"><div></div></div>
+        <p class="hint" aria-live="polite">ひかる「ド」を おしてね</p>
+      </div>
+      <div class="falling-roll" aria-hidden="true" hidden></div>
+      <div class="piano" role="group" aria-label="ピアノの鍵盤">
+        <div class="piano-row" role="group" aria-label="低い音">
+          <span class="row-label" data-copy="lower">低い音</span>
+          <div class="key-row lower-keys"></div>
+        </div>
+        <div class="piano-row" role="group" aria-label="高い音">
+          <span class="row-label" data-copy="higher">高い音</span>
+          <div class="key-row upper-keys"></div>
+        </div>
+      </div>
+      <div class="celebration" hidden>
+        <span aria-hidden="true">✦ ★ ✦</span>
+        <strong data-copy="cheer">クリアおめでとう！</strong>
+      </div>
+      <div class="play-footer">
+        <span class="count"></span>
+        <button class="reset cursor-interaction" data-copy="reset" type="button">はじめから</button>
+      </div>
+  </section>
+  <nav class="game-picker" aria-label="Choose a game">
+    <a href="../"><img src="../assets/game-fries.png" alt="" width="40" height="40">Fry Catch</a>
+    <a href="../smiley-bun-catch/"><img src="../assets/game-bun.png" alt="" width="40" height="40">Smiley Bun Catch</a>
+    <a href="../glasses-cat/"><img src="../assets/game-cat.png" alt="" width="40" height="40">Find the Glasses Cat</a>
+    <a href="./" aria-current="page"><span aria-hidden="true">♪</span>MOMO Piano</a>
+  </nav>
+</main>
+</body>
+</html>

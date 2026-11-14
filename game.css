@@ -428,3 +428,22 @@ body[data-game="buns"] {
 @media (max-width: 680px) {
   main > .score-board { order: 10; }
 }
+
+.piano-nav-icon {
+  display: grid;
+  place-items: center;
+  color: #8748a7;
+  font: 700 28px/1 system-ui, sans-serif;
+}
+
+/* Catch games use a 400 × 360 drawing area. Preserve that shape on desktop. */
+@media (min-width: 1050px), (orientation: landscape) and (min-width: 700px) {
+  body:is([data-game="fries"], [data-game="buns"]) main > .play-stack {
+    width: min(100%, calc(var(--game-field-height) * 10 / 9));
+    justify-self: center;
+  }
+  body:is([data-game="fries"], [data-game="buns"]) .game-field {
+    height: auto;
+    aspect-ratio: 10 / 9;
+  }
+}
