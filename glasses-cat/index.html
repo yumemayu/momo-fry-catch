@@ -9,9 +9,11 @@
 <p>Tap only the cats wearing glasses before time runs out!</p>
 <div class="cat-example" id="cat-example"><span>Look for these glasses!</span></div>
 <div class="stats"><span><output id="score">0</output> found</span><span><output id="time">30s left</output></span></div>
+<div class="play-stack">
 <div class="cat-grid" id="cats" aria-label="Cats"></div>
-<button class="play-primary" id="play" type="button">Play</button>
+<div class="play-row"><button class="play-primary" id="play" type="button">Play</button><button class="stop-button" id="stop" type="button" hidden>■ Stop</button></div>
 <button id="practice" type="button">Practice</button>
+</div>
 <p id="result" role="status"></p>
 <nav aria-label="Choose a game">
 <a href="../"><img class="game-art" src="../assets/game-fries.png" alt="" width="40" height="40"><span>Fly Catch</span></a>

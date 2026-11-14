@@ -121,9 +121,7 @@ nav a[aria-current] {
 @media (min-width: 1050px), (orientation: landscape) and (min-width: 700px){
   main{max-width:1320px;display:grid;grid-template-columns:minmax(230px, 310px) minmax(0,1fr);column-gap:20px;align-items:start}
   main > *{grid-column:1}
-  main > canvas,main > .cat-grid{grid-column:2;grid-row:1 / span 5;margin:0}
-  main > .play-primary{grid-column:2;grid-row:6}
-  main > .controls{grid-column:2;grid-row:7}
+  main > .play-stack{grid-column:2;grid-row:1 / span 8;margin:0}
   main > nav{grid-column:1 / -1;grid-row:9}
   canvas{height:clamp(220px,65dvh,570px)}
   .cat-grid{width:100%;grid-template-columns:repeat(8,minmax(0,1fr));justify-self:center}
@@ -232,9 +230,7 @@ nav[aria-label="Choose a game"] a {
   main > .game-heading { order: 1; }
   main > .difficulty { order: 2; }
   main > .stats { order: 3; }
-  main > canvas, main > .cat-grid { order: 4; }
-  main > .play-primary { order: 5; }
-  main > .controls, main > #practice { order: 6; }
+  main > .play-stack { order: 4; }
   main > .play-guide, main > .bun-rules, main > .cat-example { order: 7; }
   main > p:not(#result) { order: 8; }
   main > #result { order: 9; }
@@ -249,6 +245,26 @@ nav[aria-label="Choose a game"] a {
 }
 
 .stat-icon { width: 22px; height: 22px; object-fit: contain; vertical-align: -5px; }
+.play-stack { display: flex; flex-direction: column; margin-top: 10px; }
+.play-stack > canvas { margin: 0; }
+.play-stack > .cat-grid { margin: 0; }
+.play-row { display: flex; gap: 8px; }
+.play-row .play-primary { flex: 1; width: auto; }
+.stop-button {
+  min-height: 66px;
+  margin: 10px 0;
+  padding: 0 20px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #ff8fa3;
+  color: #fff;
+  font-family: "Fredoka", var(--game-handwriting);
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 0 0 4px #ffb3c1, 0 5px 0 4px #e2718a;
+  cursor: pointer;
+}
+.stop-button[hidden] { display: none; }
 #left, #right {
   font-size: 0;
   background-repeat: no-repeat;

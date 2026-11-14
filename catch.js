@@ -2,6 +2,7 @@ const bunMode = document.body.dataset.game === 'buns';
 const field = document.querySelector('#field');
 const ctx = field.getContext('2d');
 const startButton = document.querySelector('#start');
+const stopButton = document.querySelector('#stop');
 const scoreOutput = document.querySelector('#score');
 const timeOutput = document.querySelector('#time');
 const result = document.querySelector('#result');
@@ -222,14 +223,7 @@ function step(now) {
   previous = now;
   timeOutput.value = Math.max(0, Math.ceil(duration - elapsed));
   if (elapsed >= duration) {
-    startTime = null;
-    music.pause();
-    catches = [];
-    startButton.disabled = false;
-    difficultyButtons.forEach(button => { button.disabled = false; });
-    startButton.textContent = 'Play again';
-    result.textContent = bunMode ? 'Final score: ' + score : 'You caught ' + score + (score === 1 ? ' fry!' : ' fries!');
-    draw();
+    finishGame();
     return;
   }
   const direction = Number(keys.has('ArrowRight')) - Number(keys.has('ArrowLeft'));
@@ -262,6 +256,22 @@ function step(now) {
   requestAnimationFrame(step);
 }
 
+function finishGame() {
+  startTime = null;
+  practicing = false;
+  music.pause();
+  catches = [];
+  startButton.disabled = false;
+  stopButton.hidden = true;
+  difficultyButtons.forEach(button => { button.disabled = false; });
+  startButton.textContent = 'Play again';
+  result.textContent = bunMode ? 'Final score: ' + score : 'You caught ' + score + (score === 1 ? ' fry!' : ' fries!');
+  draw();
+}
+stopButton.addEventListener('click', () => {
+  if (startTime !== null) finishGame();
+});
+
 startButton.addEventListener('click', () => {
   practicing = !bunMode && !practiced;
   player = width / 2;
@@ -273,6 +283,7 @@ startButton.addEventListener('click', () => {
   startTime = previous = performance.now();
   startButton.textContent = 'Playing…';
   startButton.disabled = true;
+  stopButton.hidden = false;
   level = levels[selectedLevel];
   difficultyButtons.forEach(button => { button.disabled = true; });
   music.currentTime = 0;
