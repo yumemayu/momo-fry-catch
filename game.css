@@ -204,3 +204,7 @@ nav[aria-label="Choose a game"] a {
 .play-guide img,.bun-rules img{object-fit:contain}
 .bun-rules{flex-wrap:wrap}
 .bun-rules span:last-child{background:#f1e3fc}
+
+.feedback { margin-top: 24px; text-align: center; }
+.feedback a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 6px 16px; color: inherit; text-underline-offset: 3px; }
+.feedback a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 6px; }
