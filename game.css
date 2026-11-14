@@ -155,11 +155,15 @@ nav[aria-label="Choose a game"] a {
 }
 .hello-rainbow {
   display: block;
-  width: min(100%, 200px);
+  width: 84px;
   height: auto;
+  flex: none;
 }
 .game-heading {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
 }
 .game-heading h1 {
   font-family: "Arial Rounded MT Bold", var(--game-handwriting);
@@ -208,7 +212,7 @@ nav[aria-label="Choose a game"] a {
 /* Mobile: keep the play area near the top; move guides/rules below it and compact level choices. */
 @media (max-width: 679px) {
   .site-banner { padding-top: 4px; }
-  .hello-rainbow { width: min(52vw, 150px); }
+  .hello-rainbow { width: 72px; }
   main { display: flex; flex-direction: column; padding: 12px; }
   main > .game-heading { order: 1; }
   main > .difficulty { order: 2; }
