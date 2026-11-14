@@ -85,7 +85,7 @@ function tick() {
 }
 
 play.addEventListener('click', () => {
-  if (!gameScores.start()) return;
+  gameScores.start();
   stopped = false;
   score.value = found = 0;
   time.value = '30s left';

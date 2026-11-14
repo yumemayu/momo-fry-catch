@@ -7,31 +7,34 @@
 <body data-game="cats">
 <main>
 <header class="game-heading"><img class="hello-rainbow" src="../assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592"><h1>Find the Glasses Cat</h1></header>
-<p>Tap only the cats wearing glasses before time runs out!</p>
-<div class="cat-example" id="cat-example"><span>Look for these glasses!</span></div>
-<div class="stats"><span><output id="score">0</output> found</span><span><output id="time">30s left</output></span></div>
+<div class="cat-example" id="cat-example"><strong>Tap the cats wearing glasses!</strong></div>
+<div class="stats"><span><img class="stat-icon" src="../assets/game-cat.png" alt=""> <output id="score">0</output> found</span><span><output id="time">30s left</output></span></div>
 <div class="play-stack">
-<div class="player-setup"><label for="nickname">Your nickname?</label><input id="nickname" maxlength="20" required placeholder="e.g. Mochi" autocomplete="off" aria-describedby="player-hint"><small id="player-hint">Use a nickname. Scores stay in this browser.</small></div>
 <div class="play-stage">
-<div class="cat-grid" id="cats" aria-label="Cats"></div>
+<div class="cat-grid game-field" id="cats" aria-label="Cats"></div>
 <div class="game-card" id="ready-card">
 <img src="../assets/game-cat.png" alt="" width="72" height="72">
 <strong>Ready to play?</strong>
+<div class="player-setup"><label for="nickname">Your nickname?</label><input id="nickname" maxlength="20" placeholder="e.g. Mochi" autocomplete="off" aria-describedby="player-hint"><small id="player-hint">A nickname is optional. Add one to save your score on this device.</small></div>
 </div>
 </div>
 <div class="game-card" id="score-card" role="status" aria-atomic="true" hidden>
 <span>Final score</span><strong id="final-score"></strong><p></p>
 </div>
+<button class="change-player" id="change-player" type="button" hidden>Change nickname</button>
 <div class="play-row"><button class="play-primary" id="play" type="button">Play</button><button class="stop-button" id="stop" type="button" hidden>■ Stop</button></div>
 <button id="practice" type="button">Practice</button>
 </div>
 <p id="result" role="status"></p>
-<section class="score-board" aria-labelledby="leaderboard-title">
-<h2 id="leaderboard-title"><img src="../assets/game-cat.png" alt="" width="38" height="38">Leaderboard</h2>
-<label for="score-period">Period</label>
-<select id="score-period"><option value="weekly">This week</option><option value="all">All time</option></select>
+<section class="score-board" aria-labelledby="board-title">
+<div class="score-board-heading">
+<h2 id="board-title"><img src="../assets/game-cat.png" alt="" width="38" height="38">Leaderboard</h2>
+<div class="score-period" aria-label="Ranking period" role="group">
+<button type="button" data-period="weekly" aria-pressed="true">This week</button>
+<button type="button" data-period="all" aria-pressed="false">All time</button>
+</div>
+</div>
 <p class="personal-best" id="personal-best"></p>
-<p id="scores-empty">Finish a round to add your score.</p>
 <ol id="score-list"></ol>
 </section>
 <nav aria-label="Choose a game">

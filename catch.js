@@ -276,7 +276,7 @@ stopButton.addEventListener('click', () => {
 });
 
 startButton.addEventListener('click', () => {
-  if (!gameScores.start(selectedLevel)) return;
+  gameScores.start(selectedLevel);
   practicing = !bunMode && !practiced;
   player = width / 2;
   fries = [];

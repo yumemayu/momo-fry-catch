@@ -4,8 +4,11 @@ const gameScores = (() => {
   const scoreCard = document.querySelector('#score-card');
   const scoreList = document.querySelector('#score-list');
   const best = document.querySelector('#personal-best');
-  const levelFilter = document.querySelector('#score-level');
-  const periodFilter = document.querySelector('#score-period');
+  const changePlayer = document.querySelector('#change-player');
+  const levelLabel = document.querySelector('#score-level');
+  const periodButtons = document.querySelectorAll('[data-period]');
+  let level = 'standard';
+  let period = 'weekly';
   const nameKey = 'momo:nickname';
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
@@ -31,18 +34,17 @@ const gameScores = (() => {
   }
 
   function render() {
-    const level = levelFilter?.value || 'standard';
-    const board = periodFilter.value === 'weekly' ? level + ':' + weekKey() : level;
+    if (levelLabel) levelLabel.textContent = Array.from(document.querySelectorAll('[data-level]')).find(button => button.dataset.level === level)?.lastElementChild.textContent || '';
+    const board = period === 'weekly' ? level + ':' + weekKey() : level;
     const rows = read(board);
     const nickname = nameInput.value.trim().toLowerCase();
     const record = rows.find(row => row.name.toLowerCase() === nickname);
     const rank = record ? 1 + rows.filter(row => row.score > record.score).length : null;
     best.textContent = record
       ? 'Your best: ' + record.score + ' points · Rank #' + rank
-      : 'Your best will appear here!';
+      : rows.length ? 'Your best: —' : 'No scores yet';
 
     scoreList.replaceChildren();
-    document.querySelector('#scores-empty').hidden = rows.length > 0;
     let place = 0;
     rows.slice(0, 10).forEach((row, index) => {
       if (row.score !== rows[index - 1]?.score) place = index + 1;
@@ -61,8 +63,17 @@ const gameScores = (() => {
   }
 
   nameInput.addEventListener('input', render);
-  levelFilter?.addEventListener('change', render);
-  periodFilter.addEventListener('change', render);
+  periodButtons.forEach(button => button.addEventListener('click', () => {
+    period = button.dataset.period;
+    periodButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+    render();
+  }));
+  changePlayer.addEventListener('click', () => {
+    readyCard.hidden = false;
+    nameInput.focus();
+  });
+  const initialLevel = document.querySelector('[data-level][aria-pressed="true"]');
+  if (initialLevel) level = initialLevel.dataset.level;
   window.addEventListener('storage', render);
   document.addEventListener('visibilitychange', render);
   let displayedWeek = weekKey();
@@ -77,28 +88,26 @@ const gameScores = (() => {
   return {
     start(level = 'standard') {
       const name = nameInput.value.trim();
-      if (!name) {
-        nameInput.value = '';
-        nameInput.reportValidity();
-        nameInput.focus();
-        return false;
-      }
       player = { name, level };
-      try { localStorage.setItem(nameKey, name); } catch {}
+      try {
+        if (name) localStorage.setItem(nameKey, name);
+        else localStorage.removeItem(nameKey);
+      } catch {}
       nameInput.readOnly = true;
+      changePlayer.hidden = true;
       readyCard.hidden = scoreCard.hidden = true;
-      return true;
     },
     clear() { readyCard.hidden = scoreCard.hidden = true; },
-    showLevel(level) {
-      levelFilter.value = level;
+    showLevel(selectedLevel) {
+      level = selectedLevel;
       render();
     },
     finish(score, completed) {
       nameInput.readOnly = false;
+      changePlayer.hidden = false;
       document.querySelector('#final-score').textContent = String(score);
       let caption = completed ? 'Great game!' : 'Round stopped';
-      if (completed) {
+      if (completed && player.name) {
         const { name, level } = player;
         for (const board of [level, level + ':' + weekKey()]) {
           const rows = read(board);
@@ -119,7 +128,6 @@ const gameScores = (() => {
             else if (caption === 'Great game!') caption = 'New weekly best for this visit!';
           }
         }
-        if (levelFilter) levelFilter.value = level;
         render();
       }
       scoreCard.querySelector('p').textContent = caption;
