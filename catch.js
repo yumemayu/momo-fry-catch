@@ -165,7 +165,8 @@ function draw() {
     ctx.save();
     ctx.globalAlpha = 1 - progress;
     ctx.textAlign = 'center';
-    ctx.font = 'bold 25px sans-serif';
+    const handwriting = getComputedStyle(document.documentElement).getPropertyValue('--game-handwriting');
+    ctx.font = 'bold 25px ' + handwriting.trim();
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#fff';
     ctx.fillStyle = '#a7195b';

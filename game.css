@@ -2,3 +2,28 @@
 .music{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}.music label{display:flex;align-items:center;gap:8px}.music input{width:100px;accent-color:#a7195b}
 .difficulty{display:flex;align-items:center;gap:10px;font-weight:bold;margin:12px 0}.difficulty select{font:inherit;color:inherit;background:#fff;border:2px solid #d593ba;border-radius:12px;padding:8px;min-height:44px}
 nav{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}nav a{display:inline-flex;align-items:center;min-height:44px;padding:6px 10px;border-radius:10px;background:#fff;color:#77366e;font-weight:bold;text-decoration:none}nav a[aria-current]{background:#77366e;color:#fff}nav a:focus-visible{outline:3px solid #4d266b;outline-offset:2px}.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.cat-grid button{padding:4px;background:white;color:#48263d;aspect-ratio:1;min-width:0}.cat-grid svg{width:100%;height:100%;display:block}.cat-grid button.found{background:#d8f6df}.cat-grid button.miss{background:#ffd0df}
+
+/* Rounded handwriting for game names and controls. */
+:root {
+  --game-handwriting: "Chalkboard SE", "Segoe Print", "Comic Sans MS", Quicksand, Nunito, sans-serif;
+}
+
+h1,
+nav a,
+button,
+.difficulty select {
+  font-family: var(--game-handwriting);
+}
+
+h1 {
+  font-size: clamp(26px, 6vw, 38px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .02em;
+}
+
+nav a,
+button,
+.difficulty select {
+  letter-spacing: .015em;
+}
