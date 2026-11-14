@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moｍo’s Smiley Bun Catch</title>
+<link rel="stylesheet" href="../game.css">
+<body data-game="buns">
+<main>
+<nav aria-label="Choose a game">
+<a href="../">Fry Catch</a>
+<a aria-current="page" href="../smiley-bun-catch/">Smiley Bun Catch</a>
+<a href="../glasses-cat/">Find the Glasses Cat</a>
+</nav>
+<h1>Moｍo’s Smiley Bun Catch</h1>
+<p>Catch the smiling buns. Dodge the plain buns!</p>
+<label class="difficulty" for="difficulty">Difficulty
+<select id="difficulty">
+<option value="super-easy">Super Easy</option>
+<option value="easy" selected>Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+<option value="impossible">Impossible</option>
+</select></label>
+<div class="stats"><span>🥟 <output id="score">0</output> points</span><span><output id="time">30</output>s left</span></div>
+<canvas id="field" aria-label="Smiley Bun Catch play area">Smiley Bun Catch play area</canvas>
+<div class="controls">
+<button id="left" aria-label="Move left">◀</button><button id="start">Play</button><button id="right" aria-label="Move right">▶</button>
+</div>
+<p id="result" role="status">Drag on the game or use the arrow buttons.</p>
+<div class="music"><button id="music" type="button" aria-pressed="true">Music on</button><label>Volume <input id="volume" type="range" min="0" max="100" value="25"></label></div>
+</main>
+<script src="../catch.js"></script>
+</body>
+</html>
