@@ -54,6 +54,12 @@ const gameScores = (() => {
       badge.textContent = '#' + place;
       const name = document.createElement('span');
       name.textContent = row === record ? row.name + ' (you)' : row.name;
+      if (typeof row.stageName === 'string' && row.stageName) {
+        const stage = document.createElement('small');
+        stage.className = 'score-stage';
+        stage.textContent = ' · ' + row.stageName;
+        name.append(stage);
+      }
       const points = document.createElement('strong');
       points.textContent = String(row.score);
       item.classList.toggle('your-score', row === record);
@@ -102,7 +108,7 @@ const gameScores = (() => {
       level = selectedLevel;
       render();
     },
-    finish(score, completed) {
+    finish(score, completed, growth) {
       nameInput.readOnly = false;
       changePlayer.hidden = false;
       document.querySelector('#final-score').textContent = String(score);
@@ -112,9 +118,15 @@ const gameScores = (() => {
         for (const board of [level, level + ':' + weekKey()]) {
           const rows = read(board);
           const previous = rows.find(row => row.name.toLowerCase() === name.toLowerCase());
-          if (previous && score <= previous.score) continue;
+          if (previous && (score < previous.score ||
+            (score === previous.score && (growth?.stage ?? 0) <= (previous.stage ?? 0)))) continue;
           const updated = rows.filter(row => row !== previous);
-          updated.push({ name, score });
+          const entry = { name, score };
+          if (growth?.stage && growth.stageName) {
+            entry.stage = growth.stage;
+            entry.stageName = growth.stageName;
+          }
+          updated.push(entry);
           updated.sort((a, b) => b.score - a.score);
           const isAllTime = board === level;
           try {
