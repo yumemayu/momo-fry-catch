@@ -194,6 +194,7 @@ function draw() {
     const progress = Math.max(0, (now - effect.at) / 600);
     const spread = reducedMotion.matches ? 0 : 35 * progress;
     ctx.save();
+    ctx.setTransform(axisY, 0, 0, axisY, 0, 0);
     ctx.globalAlpha = 1 - progress;
     ctx.textAlign = 'center';
     const handwriting = getComputedStyle(document.documentElement).getPropertyValue('--game-handwriting');
@@ -201,13 +202,13 @@ function draw() {
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#fff';
     ctx.fillStyle = '#a7195b';
-    ctx.strokeText(effect.label, effect.x, 199 - spread);
-    ctx.fillText(effect.label, effect.x, 199 - spread);
+    ctx.strokeText(effect.label, effect.x * axisX / axisY, 199 - spread);
+    ctx.fillText(effect.label, effect.x * axisX / axisY, 199 - spread);
     if (effect.label === "+1" && !reducedMotion.matches) {
       ctx.fillStyle = '#d98711';
       ctx.font = '19px sans-serif';
-      ctx.fillText('✦', effect.x - 19 - spread / 2, 208 - spread);
-      ctx.fillText('✧', effect.x + 20 + spread / 2, 203 - spread / 2);
+      ctx.fillText('✦', (effect.x - 19 - spread / 2) * axisX / axisY, 208 - spread);
+      ctx.fillText('✧', (effect.x + 20 + spread / 2) * axisX / axisY, 203 - spread / 2);
     }
     ctx.restore();
   }
