@@ -148,21 +148,27 @@ nav[aria-label="Choose a game"] a {
   width: 40px;
   height: 40px;
 }
-.game-heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.game-heading h1 {
-  margin: 0;
+.site-banner {
+  display: grid;
+  place-items: center;
+  padding: 8px 16px 0;
 }
 .hello-rainbow {
   display: block;
-  flex: 0 0 auto;
-  width: clamp(64px, 17%, 106px);
+  width: min(100%, 200px);
   height: auto;
 }
-
+.game-heading {
+  text-align: center;
+}
+.game-heading h1 {
+  font-family: "Arial Rounded MT Bold", var(--game-handwriting);
+  margin: 0 0 8px;
+  font-size: clamp(32px, 5vw, 54px);
+  line-height: 1.08;
+  color: #693257;
+  text-shadow: 0 3px #f5c8dc;
+}
 .tap-sparkle {
   position: fixed;
   z-index: 5;
@@ -191,3 +197,10 @@ nav[aria-label="Choose a game"] a {
   margin-inline-end: .5em;
 }
 .play-primary:disabled::before { content: none; }
+
+.play-guide,.bun-rules span{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.play-guide{margin:6px 0;color:#693257;font-family:var(--game-handwriting)}
+.play-guide > span{font-size:1.4rem}
+.play-guide img,.bun-rules img{object-fit:contain}
+.bun-rules{flex-wrap:wrap}
+.bun-rules span:last-child{background:#f1e3fc}

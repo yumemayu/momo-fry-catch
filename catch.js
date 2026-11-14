@@ -67,8 +67,8 @@ function drawBun(bun) {
   ctx.translate(bun.x, bun.y);
   ctx.rotate(bun.tilt * .5);
   const dough = ctx.createLinearGradient(0, -18, 0, 15);
-  dough.addColorStop(0, '#fff9e8');
-  dough.addColorStop(1, '#f0ca9e');
+  dough.addColorStop(0, bun.smiles ? '#fff9e8' : '#f9c7ed');
+  dough.addColorStop(1, bun.smiles ? '#f0ca9e' : '#be79b4');
   ctx.fillStyle = dough;
   ctx.strokeStyle = '#a66951';
   ctx.lineWidth = 1.5;
@@ -100,6 +100,18 @@ function drawBun(bun) {
     ctx.fillStyle = '#ed9fa9';
     ctx.fillRect(-14, 5, 5, 2);
     ctx.fillRect(9, 5, 5, 2);
+  } else {
+    ctx.fillStyle = '#85457f';
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(side * 10, -12);
+      ctx.lineTo(side * 17, -25);
+      ctx.quadraticCurveTo(side * 22, -20, side * 20, -7);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#502c42';
+    ctx.fillRect(-9, 1, 5, 3);
+    ctx.fillRect(4, 1, 5, 3);
   }
   ctx.restore();
 }
@@ -262,7 +274,7 @@ startButton.addEventListener('click', () => {
   difficultyButtons.forEach(button => { button.disabled = true; });
   music.currentTime = 0;
   playMusic();
-  result.textContent = bunMode ? 'Catch the smiling buns! Dodge the plain ones.' : practicing ? 'Catch this fry to start!' : 'Here come the fries!';
+  result.textContent = bunMode ? 'Catch the smiling buns! Dodge the Devil Buns!' : practicing ? 'Catch this fry to start!' : 'Here come the fries!';
   requestAnimationFrame(step);
 });
 
