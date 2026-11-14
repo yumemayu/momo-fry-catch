@@ -109,3 +109,18 @@ nav a[aria-current] {
   font-size: 1.5rem;
   line-height: 1.2;
 }
+
+.bun-rules,.cat-example{display:flex;align-items:center;gap:8px;margin:8px 0}
+.bun-rules span,.cat-example{background:#fff9ee;border-radius:12px;padding:5px 9px}
+.cat-example svg{width:52px;height:52px}
+.cat-grid button.found svg{animation:cat-spark .32s ease-out}
+@keyframes cat-spark{50%{transform:scale(.88);filter:brightness(1.25)}}
+@media(prefers-reduced-motion:reduce){.cat-grid button.found svg{animation:none}}
+@media(orientation:landscape) and (min-width:700px){
+  main{max-width:920px;display:grid;grid-template-columns:minmax(205px,1fr) minmax(320px,1.7fr);column-gap:20px;align-items:start}
+  main > *{grid-column:1}
+  main > canvas,main > .cat-grid{grid-column:2;grid-row:1 / span 8;margin-top:0}
+  main > nav{grid-column:1 / -1}
+  canvas{height:clamp(200px,65dvh,440px)}
+  .cat-grid{width:min(100%,65dvh);justify-self:center}
+}

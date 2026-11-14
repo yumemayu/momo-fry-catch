@@ -161,14 +161,16 @@ function draw() {
   if (squirrel.complete && squirrel.naturalWidth) {
     const latest = catches.at(-1);
     const age = latest ? performance.now() - latest.at : Infinity;
-    const hop = !reducedMotion.matches && age < 260 ? Math.sin(Math.PI * age / 260) * 14 : 0;
+    const shake = !reducedMotion.matches && latest?.label === '−1' && age < 260
+      ? Math.sin(age / 12) * 5 * (1 - age / 260) : 0;
+    const hop = !reducedMotion.matches && latest?.label !== '−1' && age < 260 ? Math.sin(Math.PI * age / 260) * 14 : 0;
     // The canvas fills a responsive rectangle, so its two axes may scale differently.
     const scaleX = pixelWidth / width;
     const scaleY = pixelHeight / height;
     const size = squirrelSize * Math.min(scaleX, scaleY);
     const spriteWidth = size / scaleX;
     const spriteHeight = size / scaleY;
-    ctx.drawImage(squirrel, player - spriteWidth / 2, 334 - spriteHeight - hop, spriteWidth, spriteHeight);
+    ctx.drawImage(squirrel, player + shake - spriteWidth / 2, 334 - spriteHeight - hop, spriteWidth, spriteHeight);
   }
   const now = performance.now();
   catches = catches.filter(catchEffect => now - catchEffect.at < 600);
@@ -195,9 +197,12 @@ function draw() {
   }
 }
 
+let practicing = false;
+let practiced = false;
+
 function step(now) {
   if (startTime === null) return;
-  const elapsed = (now - startTime) / 1000;
+  const elapsed = practicing ? 0 : (now - startTime) / 1000;
   const dt = Math.min(.05, (now - previous) / 1000);
   previous = now;
   timeOutput.value = Math.max(0, Math.ceil(duration - elapsed));
@@ -214,13 +219,23 @@ function step(now) {
   }
   const direction = Number(keys.has('ArrowRight')) - Number(keys.has('ArrowLeft'));
   move(player + (held || direction) * 270 * dt);
-  if (elapsed >= nextSpawn) {
+  if (practicing && fries.length === 0) {
+    fries.push({ x: width / 2, y: 80, tilt: .15, stretch: 1, smiles: true });
+  } else if (!practicing && elapsed >= nextSpawn) {
     fries.push({ x: 22 + Math.random() * (width - 44), y: -14, tilt: Math.random() - .5, stretch: .8 + Math.random() * .4, smiles: !bunMode || Math.random() < .67 });
     nextSpawn = elapsed + Math.max(level.interval * .55, level.interval - elapsed / 90);
   }
   fries = fries.filter(fry => {
-    fry.y += (level.speed + elapsed * level.acceleration) * dt;
+    fry.y += (practicing ? 95 : level.speed + elapsed * level.acceleration) * dt;
     if (fry.y >= 278 && fry.y <= 329 && Math.abs(player - fry.x) < squirrelSize * .39) {
+      if (practicing) {
+        practicing = false;
+        practiced = true;
+        startTime = now;
+        result.textContent = 'You got it! Go!';
+        catches.push({ x: player, at: now, label: '✓' });
+        return false;
+      }
       score += fry.smiles ? 1 : -1;
       scoreOutput.value = score;
       catches.push({ x: player, at: now, label: fry.smiles ? '+1' : '−1' });
@@ -233,6 +248,7 @@ function step(now) {
 }
 
 startButton.addEventListener('click', () => {
+  practicing = !bunMode && !practiced;
   player = width / 2;
   fries = [];
   catches = [];
@@ -245,7 +261,7 @@ startButton.addEventListener('click', () => {
   difficultyButtons.forEach(button => { button.disabled = true; });
   music.currentTime = 0;
   playMusic();
-  result.textContent = bunMode ? 'Catch the smiling buns! Dodge the plain ones.' : 'Here come the fries!';
+  result.textContent = bunMode ? 'Catch the smiling buns! Dodge the plain ones.' : practicing ? 'Catch this fry to start!' : 'Here come the fries!';
   requestAnimationFrame(step);
 });
 
