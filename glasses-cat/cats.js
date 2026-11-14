@@ -7,11 +7,15 @@ const colors = ['#f6b57f', '#d2b0eb', '#f5b6c9', '#d5eac6', '#d8c0a7'];
 let found = 0;
 let remaining = 0;
 let deadline;
+let stopped = false;
 
 const practice = document.querySelector('#practice');
 const stop = document.querySelector('#stop');
 stop.addEventListener('click', () => {
-  if (deadline !== Infinity && play.disabled) deadline = performance.now();
+  if (deadline !== Infinity && play.disabled) {
+    stopped = performance.now() < deadline;
+    deadline = performance.now();
+  }
 });
 document.querySelector('#cat-example').insertAdjacentHTML('afterbegin', catArt(true));
 
@@ -76,10 +80,13 @@ function tick() {
   play.disabled = false;
   practice.disabled = false;
   play.textContent = 'Play again';
+  gameScores.finish(found, !stopped);
   result.textContent = 'You found ' + found + (found === 1 ? ' cat!' : ' cats!');
 }
 
 play.addEventListener('click', () => {
+  if (!gameScores.start()) return;
+  stopped = false;
   score.value = found = 0;
   time.value = '30s left';
   deadline = performance.now() + 30000;
@@ -94,6 +101,7 @@ play.addEventListener('click', () => {
 });
 
 practice.addEventListener('click', () => {
+  gameScores.clear();
   score.value = found = 0;
   time.value = 'No timer';
   deadline = Infinity;

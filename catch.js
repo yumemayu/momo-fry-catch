@@ -21,6 +21,7 @@ const levels = {
 let level = levels.easy;
 difficultyButtons.forEach(button => button.addEventListener('click', () => {
   selectedLevel = button.dataset.level;
+  gameScores.showLevel(selectedLevel);
   difficultyButtons.forEach(choice => {
     choice.setAttribute('aria-pressed', String(choice.dataset.level === selectedLevel));
   });
@@ -130,9 +131,9 @@ function draw() {
   ctx.setTransform(pixelWidth / width, 0, 0, pixelHeight / height, 0, 0);
   axisX = pixelWidth / width;
   axisY = pixelHeight / height;
-  ctx.fillStyle = '#ffe5ef';
+  ctx.fillStyle = bunMode ? '#fff1db' : '#ffe5ef';
   ctx.fillRect(0, 0, width, height);
-  ctx.fillStyle = '#fff6fa';
+  ctx.fillStyle = bunMode ? '#f6c989' : '#fff6fa';
   for (let y = 18; y < height; y += 32) {
     for (let x = 16; x < width; x += 32) {
       ctx.beginPath();
@@ -140,7 +141,7 @@ function draw() {
       ctx.fill();
     }
   }
-  ctx.fillStyle = '#efd0fb';
+  ctx.fillStyle = bunMode ? '#f7d9b4' : '#efd0fb';
   ctx.fillRect(0, 326, width, 34);
   for (const fry of fries) {
     if (bunMode) {
@@ -224,7 +225,7 @@ function step(now) {
   previous = now;
   timeOutput.value = Math.max(0, Math.ceil(duration - elapsed));
   if (elapsed >= duration) {
-    finishGame();
+    finishGame(true);
     return;
   }
   const direction = Number(keys.has('ArrowRight')) - Number(keys.has('ArrowLeft'));
@@ -257,7 +258,7 @@ function step(now) {
   requestAnimationFrame(step);
 }
 
-function finishGame() {
+function finishGame(completed = false) {
   startTime = null;
   practicing = false;
   music.pause();
@@ -266,6 +267,7 @@ function finishGame() {
   stopButton.hidden = true;
   difficultyButtons.forEach(button => { button.disabled = false; });
   startButton.textContent = 'Play again';
+  gameScores.finish(score, completed);
   result.textContent = bunMode ? 'Final score: ' + score : 'You caught ' + score + (score === 1 ? ' fry!' : ' fries!');
   draw();
 }
@@ -274,6 +276,7 @@ stopButton.addEventListener('click', () => {
 });
 
 startButton.addEventListener('click', () => {
+  if (!gameScores.start(selectedLevel)) return;
   practicing = !bunMode && !practiced;
   player = width / 2;
   fries = [];

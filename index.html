@@ -2,10 +2,11 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fly Catch by Momo.squirrels</title>
+<title>Fry Catch by Momo.squirrels</title>
 <link rel="stylesheet" href="game.css">
+<body data-game="fries">
 <main>
-<header class="game-heading"><img class="hello-rainbow" src="assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592"><h1>Fly Catch</h1></header>
+<header class="game-heading"><img class="hello-rainbow" src="assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592"><h1>Fry Catch</h1></header>
 <div class="play-guide" aria-label="Move the squirrel left and right to catch fries">
   <span aria-hidden="true">←</span><img src="assets/fry-squirrel.png" alt="" width="50" height="50"><span aria-hidden="true">→</span><strong>Slide to catch!</strong>
 </div>
@@ -19,21 +20,50 @@
 </div></fieldset>
 <div class="stats"><span><img class="stat-icon" src="assets/game-fries.png" alt=""> <output id="score">0</output> fries</span><span><output id="time">30</output>s left</span></div>
 <div class="play-stack">
-<canvas id="field" aria-label="Fly Catch play area">Fly Catch play area</canvas>
+<div class="player-setup"><label for="nickname">Your nickname?</label><input id="nickname" maxlength="20" required placeholder="e.g. Mochi" autocomplete="off" aria-describedby="player-hint"><small id="player-hint">Use a nickname. Scores stay in this browser.</small></div>
+<div class="play-stage">
+<canvas id="field" aria-label="Fry Catch play area">Fry Catch play area</canvas>
+<div class="game-card" id="ready-card">
+<img src="assets/game-fries.png" alt="" width="72" height="72">
+<strong>Ready to play?</strong>
+</div>
+</div>
+<div class="game-card" id="score-card" role="status" aria-atomic="true" hidden>
+<span>Final score</span><strong id="final-score"></strong><p></p>
+</div>
 <div class="play-row"><button class="play-primary" id="start" type="button">Play</button><button class="stop-button" id="stop" type="button" hidden>■ Stop</button></div>
-<div class="controls">
-<button id="left" aria-label="Move left">◀</button><button id="right" aria-label="Move right">▶</button>
+<div class="controls move-pad" role="group" aria-label="Move left and right">
+<button id="left" aria-label="Move left">←</button><button id="right" aria-label="Move right">→</button>
 </div>
 </div>
 <p id="result" role="status">Drag on the game or use the arrow buttons.</p>
 <div class="music"><button id="music" type="button" aria-pressed="true">Music on</button><label>Volume <input id="volume" type="range" min="0" max="100" value="25"></label></div>
+<section class="score-board" aria-labelledby="leaderboard-title">
+<h2 id="leaderboard-title"><img src="assets/game-fries.png" alt="" width="38" height="38">Leaderboard</h2>
+<label for="score-level">Level</label>
+<select id="score-level">
+<option value="super-easy">Super Easy</option>
+<option value="easy" selected>Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+<option value="impossible">Impossible</option>
+</select>
+<label for="score-period">Period</label>
+<select id="score-period"><option value="weekly">This week</option><option value="all">All time</option></select>
+<p class="personal-best" id="personal-best"></p>
+<p id="scores-empty">Finish a round to add your score.</p>
+<ol id="score-list"></ol>
+</section>
 <nav aria-label="Choose a game">
-<a aria-current="page" href="./"><img class="game-art" src="assets/game-fries.png" alt="" width="40" height="40"><span>Fly Catch</span></a>
+<a aria-current="page" href="./"><img class="game-art" src="assets/game-fries.png" alt="" width="40" height="40"><span>Fry Catch</span></a>
 <a href="./smiley-bun-catch/"><img class="game-art" src="assets/game-bun.png" alt="" width="40" height="40"><span>Smiley Bun Catch</span></a>
 <a href="./glasses-cat/"><img class="game-art" src="assets/game-cat.png" alt="" width="40" height="40"><span>Find the Glasses Cat</span></a>
 </nav>
-<footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer">Send feedback</a></footer>
 </main>
+<footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer">Send feedback</a>
+<small>Copyright Momo.squirrels</small>
+</footer>
+<script src="scores.js"></script>
 <script src="catch.js"></script>
 <script src="tap.js"></script>
 </html>

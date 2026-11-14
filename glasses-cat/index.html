@@ -4,24 +4,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Find the Glasses Cat by Momo.squirrels</title>
 <link rel="stylesheet" href="../game.css">
+<body data-game="cats">
 <main>
 <header class="game-heading"><img class="hello-rainbow" src="../assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592"><h1>Find the Glasses Cat</h1></header>
 <p>Tap only the cats wearing glasses before time runs out!</p>
 <div class="cat-example" id="cat-example"><span>Look for these glasses!</span></div>
 <div class="stats"><span><output id="score">0</output> found</span><span><output id="time">30s left</output></span></div>
 <div class="play-stack">
+<div class="player-setup"><label for="nickname">Your nickname?</label><input id="nickname" maxlength="20" required placeholder="e.g. Mochi" autocomplete="off" aria-describedby="player-hint"><small id="player-hint">Use a nickname. Scores stay in this browser.</small></div>
+<div class="play-stage">
 <div class="cat-grid" id="cats" aria-label="Cats"></div>
+<div class="game-card" id="ready-card">
+<img src="../assets/game-cat.png" alt="" width="72" height="72">
+<strong>Ready to play?</strong>
+</div>
+</div>
+<div class="game-card" id="score-card" role="status" aria-atomic="true" hidden>
+<span>Final score</span><strong id="final-score"></strong><p></p>
+</div>
 <div class="play-row"><button class="play-primary" id="play" type="button">Play</button><button class="stop-button" id="stop" type="button" hidden>■ Stop</button></div>
 <button id="practice" type="button">Practice</button>
 </div>
 <p id="result" role="status"></p>
+<section class="score-board" aria-labelledby="leaderboard-title">
+<h2 id="leaderboard-title"><img src="../assets/game-cat.png" alt="" width="38" height="38">Leaderboard</h2>
+<label for="score-period">Period</label>
+<select id="score-period"><option value="weekly">This week</option><option value="all">All time</option></select>
+<p class="personal-best" id="personal-best"></p>
+<p id="scores-empty">Finish a round to add your score.</p>
+<ol id="score-list"></ol>
+</section>
 <nav aria-label="Choose a game">
-<a href="../"><img class="game-art" src="../assets/game-fries.png" alt="" width="40" height="40"><span>Fly Catch</span></a>
+<a href="../"><img class="game-art" src="../assets/game-fries.png" alt="" width="40" height="40"><span>Fry Catch</span></a>
 <a href="../smiley-bun-catch/"><img class="game-art" src="../assets/game-bun.png" alt="" width="40" height="40"><span>Smiley Bun Catch</span></a>
 <a aria-current="page" href="../glasses-cat/"><img class="game-art" src="../assets/game-cat.png" alt="" width="40" height="40"><span>Find the Glasses Cat</span></a>
 </nav>
-<footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer">Send feedback</a></footer>
 </main>
+<footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer">Send feedback</a>
+<small>Copyright Momo.squirrels</small>
+</footer>
+<script src="../scores.js"></script>
 <script src="cats.js"></script>
 <script src="../tap.js"></script>
 </html>
