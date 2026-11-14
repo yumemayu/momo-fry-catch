@@ -139,16 +139,21 @@ nav[aria-label="Choose a game"] a {
   line-height: 1.16;
 }
 .game-art {
-  font-size: 1.65rem;
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+.game-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.game-heading h1 {
+  margin: 0;
 }
 .hello-rainbow {
   display: block;
-  width: min(60%, 240px);
+  flex: 0 0 auto;
+  width: clamp(64px, 17%, 106px);
   height: auto;
-  margin-bottom: 4px;
-}
-@media (orientation: landscape) and (min-width: 700px) {
-  .hello-rainbow {
-    width: min(66%, 160px);
-  }
 }
