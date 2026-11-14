@@ -27,3 +27,40 @@ button,
 .difficulty select {
   letter-spacing: .015em;
 }
+
+nav a,
+.controls button,
+.controls #start,
+#play,
+.music button,
+.difficulty select {
+  color: #48263d;
+  border: 1px solid #b881a2;
+  box-shadow: 0 2px 0 #e7bad1;
+}
+
+nav a {
+  background: #eee2ff;
+}
+
+nav a:nth-child(2),
+.controls #start,
+#play {
+  background: #ffd0e4;
+}
+
+nav a:nth-child(3),
+.controls button {
+  background: #dcf2e5;
+}
+
+nav a[aria-current] {
+  color: #48263d;
+  border-color: #805176;
+  box-shadow: inset 0 0 0 1px #805176, 0 2px 0 #e7bad1;
+}
+
+.music button,
+.difficulty select {
+  background: #fff1ca;
+}
