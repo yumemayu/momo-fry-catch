@@ -204,3 +204,27 @@ nav[aria-label="Choose a game"] a {
 .play-guide img,.bun-rules img{object-fit:contain}
 .bun-rules{flex-wrap:wrap}
 .bun-rules span:last-child{background:#f1e3fc}
+
+/* Mobile: keep the play area near the top; move guides/rules below it and compact level choices. */
+@media (max-width: 679px) {
+  .site-banner { padding-top: 4px; }
+  .hello-rainbow { width: min(52vw, 150px); }
+  main { display: flex; flex-direction: column; padding: 12px; }
+  main > .game-heading { order: 1; }
+  main > .difficulty { order: 2; }
+  main > .stats { order: 3; }
+  main > canvas, main > .cat-grid { order: 4; }
+  main > .play-primary { order: 5; }
+  main > .controls, main > #practice { order: 6; }
+  main > .play-guide, main > .bun-rules, main > .cat-example { order: 7; }
+  main > p:not(#result) { order: 8; }
+  main > #result { order: 9; }
+  main > .music { order: 10; }
+  main > nav { order: 11; }
+  .difficulty { margin: 6px 0 8px; }
+  .difficulty legend { margin-bottom: 4px; font-size: .9rem; }
+  .level-buttons { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+  .level-buttons button { min-height: 48px; padding: 4px 1px; border-radius: 12px; font-size: .64rem; line-height: 1.1; letter-spacing: 0; }
+  .level-icon { font-size: 1.05rem; line-height: 1.1; }
+  .play-guide, .bun-rules, .cat-example { margin-top: 10px; }
+}
