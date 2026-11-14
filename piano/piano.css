@@ -97,18 +97,20 @@ body { margin:0; background:#fff0f7; font-family:Nunito,"Hiragino Maru Gothic Pr
   margin-inline:5px;
   border-radius:16px 16px 0 0;
   background:
-    repeating-linear-gradient(90deg,transparent 0 calc(100% / 7 - 1px),#ffffff1c calc(100% / 7 - 1px) calc(100% / 7)),
+    repeating-linear-gradient(90deg,transparent 0 calc(100% / var(--lane-count) - 1px),#ffffff1c calc(100% / var(--lane-count) - 1px) calc(100% / var(--lane-count))),
     linear-gradient(#2b1d47,#1b1133);
   border-bottom:3px solid #ffb6e6;
 }
 #momo-piano-levels .falling-note {
   position:absolute;
   top:0;
-  left:calc((var(--lane) + .5) * 100% / 7);
+  left:var(--note-position);
   translate:-50% 0;
   display:grid;
   place-items:center;
-  width:min(74%,calc(100% / 7 - 9px),40px);
+  width:min(calc(100% / var(--lane-count) - 3px),40px);
+  font-size:clamp(9px,1.45vw,14px);
+  white-space:nowrap;
   border:1px solid #fff8ee;
   border-radius:10px;
   color:#4d3458;
@@ -117,8 +119,25 @@ body { margin:0; background:#fff0f7; font-family:Nunito,"Hiragino Maru Gothic Pr
   font-weight:800;
 }
 #momo-piano-levels .falling-note.arrived { box-shadow:0 0 20px 3px #ffd788; }
-#momo-piano-levels .with-roll { padding-top:0; }
-#momo-piano-levels .with-roll .lower-keys { gap:0; }
+#momo-piano-levels .with-roll {
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(var(--lane-count),minmax(0,1fr));
+  gap:0;
+  padding-top:0;
+  margin-inline:5px;
+  padding-inline:0;
+}
+#momo-piano-levels .with-roll .piano-row,
+#momo-piano-levels .with-roll .key-row { display:contents; }
+#momo-piano-levels .with-roll .key.sharp { left:var(--roll-position); width:min(34px,calc(64% / var(--lane-count))); }
+#momo-piano-levels .deflected-note {
+  position:absolute;
+  bottom:4px;
+  color:#e8cafa;
+  font-size:24px;
+  pointer-events:none;
+}
 #momo-piano-levels .with-roll .key:not(.sharp) { border:1px solid #dfcce6; border-radius:0 0 7px 7px; }
 #momo-piano-levels .celebration {
   display:grid;
@@ -133,7 +152,8 @@ body { margin:0; background:#fff0f7; font-family:Nunito,"Hiragino Maru Gothic Pr
 }
 #momo-piano-levels .celebration span { color:#ba7124; font-size:20px; }
 @media (min-width:760px) {
-  #momo-piano-levels .falling-roll { margin-inline:40px; }
+  #momo-piano-levels .falling-roll,
+  #momo-piano-levels .with-roll { margin-inline:40px; }
 }
 #momo-piano-levels .correct-star {
   position:absolute;

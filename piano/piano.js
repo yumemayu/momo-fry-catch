@@ -7,7 +7,7 @@
       ja: {
         start:'スタート画面', play:'演奏画面', free:'じゆうピアノ', guided:'おてほんピアノ',
         back:'‹ もどる', selectSong:'きょくを えらぶ', chooseLevel:'レベルを えらぶ', chooseMode:'モードを えらぶ', freeHint:'すきな けんばんを おしてね', lower:'低い音', higher:'高い音', reset:'はじめから', progress:'曲の進み具合',
-        piano:'ピアノの鍵盤', done:'さいごまで ひけたよ！', cheer:'クリアおめでとう！', falling:'光が 鍵盤にくるよ',
+        piano:'ピアノの鍵盤', done:'さいごまで ひけたよ！', cheer:'クリアおめでとう！', challengeDone:'最後までチャレンジできたね！', result: (hits,total) => `${total}音中 ${hits}音 せいかい`, falling:'光が 鍵盤にくるよ',
         notes:['ド','レ','ミ','ファ','ソ','ラ','シ'],
         keyName: (note, octave, _number) => octave === 0 ? note : octave === 1 ? `高い${note}` : `いちばん高い${note}`,
         hint: note => `ひかる「${note}」を おしてね`
@@ -15,7 +15,7 @@
       en: {
         start:'Start screen', play:'Play screen', free:'Free Play', guided:'Follow the Notes',
         back:'‹ Back', selectSong:'Choose a song', chooseLevel:'Choose a level', chooseMode:'Choose a mode', freeHint:'Tap any key to play', lower:'Lower octave', higher:'Upper octave', reset:'Start Over', progress:'Song progress',
-        piano:'Piano keyboard', done:'You played the whole song!', cheer:'Great playing!', falling:'Watch the light fall',
+        piano:'Piano keyboard', done:'You played the whole song!', cheer:'Great playing!', challengeDone:'You made it to the end!', result: (hits,total) => `${hits} of ${total} notes hit`, falling:'Watch the light fall',
         notes:['C','D','E','F','G','A','B'],
         keyName: (note, _octave, number) => `${note}${number}`,
         hint: note => `Tap the glowing ${note} key`
@@ -101,33 +101,36 @@
     }
     const colors = ['#f27fa9','#ffa976','#ebc356','#8fc77b','#77c8ed','#9c9aee','#c599e9'];
     const twinkle = [0,0,4,4,5,5,4,3,3,2,2,1,1,0,4,4,3,3,2,2,1,4,4,3,3,2,2,1,0,0,4,4,5,5,4,3,3,2,2,1,1,0];
+    const twinkleBeats = twinkle.map((_, index) => (index + 1) % 7 === 0 ? 2 : 1);
     const levels = [
       {ja:'ふつう', en:'Normal'},
       {ja:'チャレンジ', en:'Challenge'}
     ];
     const songs = [
-      {level:0, singleOctave:true, ja:'きらきら星', en:'Twinkle, Twinkle, Little Star', icon:'★', notes:twinkle},
+      {level:0, singleOctave:true, ja:'きらきら星', en:'Twinkle, Twinkle, Little Star', icon:'★', notes:twinkle, beats:twinkleBeats},
       {level:0, singleOctave:true, ja:'メリーさんの羊', en:'Mary Had a Little Lamb', icon:'♥',
         notes:[2,1,0,1,2,2,2,1,1,1,2,4,4,2,1,0,1,2,2,2,2,1,1,2,1,0],
         beats:[1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,4]},
       {level:0, singleOctave:true, ja:'ロンドン橋', en:'London Bridge', icon:'♫',
-        notes:[4,5,4,3,2,3,4,1,2,3,2,3,4,4,5,4,3,2,3,4,1,4,2,0]},
+        notes:[4,5,4,3,2,3,4,1,2,3,2,3,4,4,5,4,3,2,3,4,1,4,2,0],
+        beats:[1,.5,.5,1,1,1,2,1,1,2,1,1,2,1,.5,.5,1,1,1,2,1,1,1,3]},
       {level:0, ja:'星のかいだん', en:'Stairway of Stars', icon:'✦',
         notes:toKeys([0,4,7,12,7,4,0,2,5,9,14,9,5,2,4,7,12,16,12,7,4,5,9,12,17,19,21,24,21,19,17,16,14,12,7,4,0])},
       {level:1, ja:'きらきら星 ♯', en:'Twinkle, Twinkle (Sharps)', icon:'♯',
-        notes:toKeys(twinkle.map(note => [4,6,8,9,11,13][note]))},
+        notes:toKeys(twinkle.map(note => [4,6,8,9,11,13][note])), beats:twinkleBeats},
       {level:1, ja:'きらきら星 ♭', en:'Twinkle, Twinkle (Flats)', icon:'♭', flats:true,
-        notes:toKeys(twinkle.map(note => [3,5,7,8,10,12][note]))},
-      {level:1, ja:'エリーゼのために（冒頭）', en:'Für Elise (Opening)', icon:'✧',
+        notes:toKeys(twinkle.map(note => [3,5,7,8,10,12][note])), beats:twinkleBeats},
+      {level:1, defaultBeat:.68, ja:'エリーゼのために（冒頭）', en:'Für Elise (Opening)', icon:'✧',
         notes:toKeys([16,15,16,15,16,11,14,12,9,0,4,9,11,4,8,11,12,
           4,16,15,16,15,16,11,14,12,9,0,4,9,11,4,12,11,9])},
-      {level:1, ja:'トルコ行進曲（モーツァルト・冒頭）', en:'Turkish March (Mozart, Opening)', icon:'☾',
+      {level:1, defaultBeat:.63, ja:'トルコ行進曲（モーツァルト・冒頭）', en:'Turkish March (Mozart, Opening)', icon:'☾',
         notes:toKeys([11,9,8,9,12,14,12,11,12,16,17,16,15,16,11,9,8,9,11,9,8,9,
           12,9,12,11,9,7,9,11,9,7,9,11,9,7,6,4])}
     ];
     let activeLevel = 0;
     let step = 0;
     const roll = root.querySelector('.falling-roll');
+    const playScreen = roll.parentElement;
     const avatar = root.querySelector('.avatar');
     const celebration = root.querySelector('.celebration');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -137,6 +140,9 @@
     let cursor = 0;
     let frame = null;
     let ready = false;
+    let hits = 0;
+    let challenge = false;
+    let laneCount = 7;
     let feedback = [];
 
     function stopRoll() {
@@ -149,17 +155,23 @@
       feedback.forEach(animation => animation.cancel());
       feedback = [];
       step = 0;
+      hits = 0;
+      challenge = selectedSong?.level === 1;
+      laneCount = selectedSong?.singleOctave ? 7 : whiteKeyCount;
+      playScreen.style.setProperty('--lane-count', laneCount);
       ready = false;
       cursor = 0;
       chart = [];
       roll.replaceChildren();
-      if (!selectedSong?.beats) return;
+      if (!selectedSong) return;
       let onset = approachMs;
       chart = selectedSong.notes.map((index, i) => {
         const block = document.createElement('span');
-        const duration = selectedSong.beats[i] * beatMs;
+        const duration = (selectedSong.beats?.[i] ?? selectedSong.defaultBeat ?? 1) * beatMs;
         block.className = 'falling-note';
-        block.style.setProperty('--lane', index);
+        const black = blackKeys[index - whiteKeyCount];
+        const lane = black ? black.row * 7 + black.gap : index + .5;
+        block.style.setProperty('--note-position', `${100 * lane / laneCount}%`);
         block.style.setProperty('--note-fill', ['#ffc6df','#aedcff','#ffd788','#c5f1ce','#ddcaff'][index] ?? '#ffd788');
         block.textContent = noteLabel(index).visible;
         block.hidden = true;
@@ -175,22 +187,32 @@
       chart.forEach(({onset, duration, block}, i) => {
         const bottom = height - (onset - cursor) / approachMs * height;
         const size = Math.max(26, duration / approachMs * height * 0.74);
-        block.hidden = i < step || bottom <= 0;
+        block.hidden = i < step || bottom <= 0 || (reduceMotion.matches && challenge && (i !== step || !ready));
+        const restingBottom = reduceMotion.matches && challenge ? height : Math.min(bottom, height);
         block.style.height = `${size}px`;
-        block.style.transform = `translateY(${bottom - size}px)`;
+        block.style.transform = `translateY(${restingBottom - size}px)`;
         block.classList.toggle('arrived', i === step && ready);
       });
     }
 
+    function deflectNote(note) {
+      if (reduceMotion.matches || typeof note.block.animate !== 'function') return;
+      const spark = document.createElement('span');
+      spark.className = 'deflected-note';
+      spark.textContent = '✧';
+      spark.style.left = note.block.style.getPropertyValue('--note-position');
+      roll.append(spark);
+      const animation = spark.animate([
+        {opacity:.85, transform:'translate(-50%, 0) scale(.9)'},
+        {opacity:0, transform:`translate(${step % 2 ? 16 : -38}px, -26px) rotate(25deg) scale(.65)`}
+      ], {duration:290, easing:'ease-out'});
+      animation.onfinish = () => spark.remove();
+    }
+
     function advanceRoll() {
-      stopRoll();
-      const target = chart[step]?.onset;
-      if (target === undefined) {
-        positionNotes();
-        return;
-      }
-      if (reduceMotion.matches) {
-        cursor = target;
+      if (frame !== null || !chart[step]) return;
+      if (reduceMotion.matches && !challenge) {
+        cursor = chart[step].onset;
         ready = true;
         positionNotes();
         update();
@@ -198,16 +220,26 @@
       }
       let previous = null;
       const tick = time => {
-        if (previous !== null) cursor = Math.min(target, cursor + time - previous);
+        frame = null;
+        if (previous !== null) cursor += Math.min(65, time - previous);
         previous = time;
-        ready = cursor >= target;
-        positionNotes();
-        if (ready) {
-          frame = null;
-          update();
+        const previousStep = step;
+        const wasReady = ready;
+        if (challenge) {
+          // A late note expires before the next note can enter its early window.
+          while (chart[step] && cursor > chart[step].onset + Math.min(260, chart[step].duration * .56)) {
+            deflectNote(chart[step]);
+            step += 1;
+          }
+          ready = Boolean(chart[step] && cursor >= chart[step].onset - 90);
         } else {
-          frame = requestAnimationFrame(tick);
+          const target = chart[step].onset;
+          ready = cursor >= target;
+          if (ready) cursor = target;
         }
+        positionNotes();
+        if (previousStep !== step || wasReady !== ready) update();
+        if (chart[step] && (challenge || !ready)) frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
     }
@@ -266,10 +298,13 @@
       key.addEventListener('click', () => {
         playNote(index);
         if (selectedSong?.notes[step] !== index || (chart.length && !ready)) return;
+        hits += 1;
         step += 1;
         ready = false;
+        if (step === chart.length) stopRoll();
+        positionNotes();
         update();
-        if (chart.length) advanceRoll();
+        advanceRoll();
         celebrateNote(key, step === selectedSong.notes.length);
       });
       rows[blackKey?.row ?? (index < 7 ? 0 : 1)].append(key);
@@ -283,15 +318,23 @@
       const highlighted = falling && !ready ? undefined : next;
       roll.hidden = !falling;
       piano.classList.toggle('with-roll', falling);
-      roll.parentElement.classList.toggle('rolling', falling);
-      celebration.hidden = !notes || next !== undefined;
+      playScreen.classList.toggle('rolling', falling);
+      const finished = Boolean(notes && next === undefined);
+      celebration.hidden = !finished;
+      celebration.querySelector('strong').textContent = challenge && hits !== notes?.length ? copy.challengeDone : copy.cheer;
+      const result = celebration.querySelector('.challenge-result');
+      result.hidden = !challenge;
+      result.textContent = challenge ? copy.result(hits, notes.length) : '';
       root.querySelector('.mode').textContent = notes ? copy.guided : copy.free;
       root.querySelector('#momo-current-song').textContent = selectedSong ? selectedSong[language] : copy.free;
       root.querySelector('.reset').hidden = !notes;
       rows[1].parentElement.hidden = Boolean(selectedSong?.singleOctave);
-      const challenge = selectedSong?.level === 1;
       keys.forEach((key, index) => {
         if (index >= whiteKeyCount) key.hidden = !challenge && !(falling && blackKeys[index - whiteKeyCount].row === 0);
+        if (index >= whiteKeyCount && falling) {
+          const black = blackKeys[index - whiteKeyCount];
+          key.style.setProperty('--roll-position', `${100 * (black.row * 7 + black.gap) / laneCount}%`);
+        }
         key.classList.toggle('next', index === highlighted);
         key.querySelector('small').hidden = index !== highlighted;
       });
@@ -301,7 +344,9 @@
       track.setAttribute('aria-valuenow', step);
       track.firstElementChild.style.width = `${notes ? step / notes.length * 100 : 0}%`;
       root.querySelector('.count').textContent = notes ? `${step} / ${notes.length}` : '';
-      root.querySelector('.hint').textContent = !notes ? copy.freeHint : next === undefined ? copy.done : highlighted === undefined ? copy.falling : copy.hint(noteLabel(next).visible);
+      const hint = root.querySelector('.hint');
+      const message = !notes ? copy.freeHint : finished ? copy.done : highlighted === undefined ? copy.falling : copy.hint(noteLabel(next).visible);
+      if (hint.textContent !== message) hint.textContent = message;
     }
     root.querySelector('.reset').addEventListener('click', () => {
       resetPerformance();
