@@ -9,6 +9,10 @@ let remaining = 0;
 let deadline;
 
 const practice = document.querySelector('#practice');
+const stop = document.querySelector('#stop');
+stop.addEventListener('click', () => {
+  if (deadline !== Infinity && play.disabled) deadline = performance.now();
+});
 document.querySelector('#cat-example').insertAdjacentHTML('afterbegin', catArt(true));
 
 function catArt(target) {
@@ -68,6 +72,7 @@ function tick() {
     return;
   }
   for (const cat of cats.children) cat.disabled = true;
+  stop.hidden = true;
   play.disabled = false;
   practice.disabled = false;
   play.textContent = 'Play again';
@@ -80,6 +85,7 @@ play.addEventListener('click', () => {
   deadline = performance.now() + 30000;
   play.textContent = 'Playing…';
   play.disabled = true;
+  stop.hidden = false;
   practice.disabled = true;
   cats.dataset.practice = "false";
   result.textContent = 'Find the glasses!';
