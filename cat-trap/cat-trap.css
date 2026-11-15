@@ -28,12 +28,12 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
 .ready-cat { width: 52px; height: 52px; object-fit: contain; }
 .trap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 
-/* The board: a pale mint block plate holding 9x9 chunky square tiles
-   (toy-block style, per the user-approved mock, 2026-11-15). */
+/* The board: a pale mint plate holding 11x11 hexagon tiles, like the
+   original Trap the Cat game the user's daughter plays (2026-11-15). */
 .trap-field {
   position: relative;
   height: auto;
-  aspect-ratio: 9.5 / 9;
+  aspect-ratio: 11.5 / 11;
   padding: 0;
   border: 3px solid #fff;
   border-radius: 28px;
@@ -44,14 +44,15 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
 }
 .tile {
   position: absolute;
-  width: 10.4%;
-  aspect-ratio: 1;
+  width: 8.7%;
+  aspect-ratio: 0.866;
   min-height: 0;
   padding: 0;
-  border: 3px solid #4a2c1a;
-  border-radius: 24%;
-  background: radial-gradient(circle at 35% 30%, #ddf3c9, #b7e099 75%);
-  box-shadow: 0 2px 0 rgba(74, 44, 26, .3);
+  border: none;
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  background: linear-gradient(180deg, #ddf3c9, #b7e099);
+  box-shadow: none;
   cursor: pointer;
 }
 /* One soft stud in the middle of each block tile. */
@@ -70,7 +71,7 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
 }
 .tile:disabled { opacity: 1; cursor: default; }
 .tile:not(:disabled):hover, .tile:not(:disabled):focus-visible {
-  background: radial-gradient(circle at 35% 30%, #ecfadc, #cdf0ae 75%);
+  background: linear-gradient(180deg, #ecfadc, #cdf0ae);
 }
 .tile svg {
   position: absolute;
@@ -79,30 +80,29 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
   height: 100%;
   pointer-events: none;
 }
-.tile.blocked { background: radial-gradient(circle at 35% 30%, #ddf3c9, #b7e099 75%); }
-.tile.blocked svg { inset: 6%; width: 88%; height: 88%; }
-.tile.has-cat { z-index: 2; }
-/* The cat is the approved mock's own art, as a transparent sprite. */
-.tile .cat-art {
+.tile.blocked { background: linear-gradient(180deg, #ddf3c9, #b7e099); }
+.tile.blocked svg { inset: 18%; width: 64%; height: 64%; }
+/* The cat is a field-level layer (not a tile child), so it can glide
+   from tile to tile and never blocks taps on the tiles underneath. */
+.cat-art {
   position: absolute;
-  left: 50%;
-  bottom: -4%;
-  width: 175%;
+  z-index: 3;
+  width: 15.5%;
   height: auto;
   transform: translateX(-50%);
   pointer-events: none;
+  transition: left .3s ease, bottom .3s ease;
 }
-.tile.hop .cat-art { animation: cat-hop .3s ease-out; }
-@keyframes cat-hop {
-  40% { transform: translateX(-50%) translateY(-16%) scale(1.05); }
+.trap-field.no-anim .cat-art { transition: none; }
+.cat-art.hopping { animation: cat-glide-hop .3s ease; }
+@keyframes cat-glide-hop {
+  40% { transform: translateX(-50%) translateY(-14%) scale(1.04); }
 }
 
 /* Speech bubble above the cat. */
 .cat-bubble {
   position: absolute;
   z-index: 5;
-  left: 118%;
-  bottom: 208%;
   transform: translateX(-50%);
   width: max-content;
   max-width: 190px;
@@ -159,7 +159,8 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
   to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4) rotate(120deg); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tile.hop .cat-art { animation: none; }
+  .cat-art { transition: none; }
+  .cat-art.hopping { animation: none; }
   .cat-bubble { animation: none; }
   .burst-star { display: none; }
 }
