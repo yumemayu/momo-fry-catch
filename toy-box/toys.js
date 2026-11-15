@@ -37,20 +37,20 @@ function play(index, pitch = 0) {
       for (let frame = 0; frame < data.length; frame++) {
         const t = frame / rate;
         if (cute) {
-          const phase = 2 * Math.PI * 523.251 * t;
+          const phase = 2 * Math.PI * 554.365 * t;
           const envelope = (1 - Math.exp(-t * 245)) * Math.exp(-t * 25);
           const body = Math.sin(phase);
           const overtone = Math.sin(2 * phase) * Math.exp(-t * 50);
-          data[frame] = envelope * (body * .76 + overtone * .14);
+          data[frame] = envelope * (body * .75 + overtone * .16);
           continue;
         }
         const rise = 1 - Math.exp(-t * 730);
         const strike = rise * Math.exp(-t * 100);
         const releaseTime = Math.max(0, t - .043);
         const release = .19 * (1 - Math.exp(-releaseTime * 520)) * Math.exp(-releaseTime * 170);
-        const body = Math.sin(2 * Math.PI * 245 * t);
-        const shell = Math.sin(2 * Math.PI * 470 * t);
-        const returnTone = Math.sin(2 * Math.PI * 305 * releaseTime);
+        const body = Math.sin(2 * Math.PI * 275 * t);
+        const shell = Math.sin(2 * Math.PI * 510 * t);
+        const returnTone = Math.sin(2 * Math.PI * 335 * releaseTime);
         data[frame] = strike * (body * .68 + shell * .23) + release * returnTone;
       }
       keySamples.set(sound, sample);
