@@ -12,6 +12,10 @@ const gameScores = (() => {
   const nameKey = 'momo:nickname';
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
+  const ONLINE_URL = 'https://script.google.com/macros/s/AKfycbwIZWAIOqgmjctFItur6QacLZqf2zL6paAyLxFeCoV1cAnD2O3yV70ZiKiprBi1xTdIVQ/exec';
+  let source = 'local';
+  const onlineCache = new Map();
+  let onlineState = 'idle';
   let player;
   let formatStage = (_, fallback) => fallback;
   let nicknameState = '';
@@ -68,17 +72,7 @@ const gameScores = (() => {
     return [];
   }
 
-  function render() {
-    if (levelLabel) levelLabel.textContent = Array.from(document.querySelectorAll('[data-level]')).find(button => button.dataset.level === level)?.lastElementChild.textContent || '';
-    const board = period === 'weekly' ? level + ':' + weekKey() : level;
-    const rows = read(board);
-    const nickname = nameInput.value.trim().toLowerCase();
-    const record = rows.find(row => row.name.toLowerCase() === nickname);
-    const rank = record ? 1 + rows.filter(row => row.score > record.score).length : null;
-    best.textContent = record
-      ? momoLanguage.pick(`Your best: ${record.score} points · Rank #${rank}`, `ベスト：${record.score}点 · ${rank}位`)
-      : rows.length ? momoLanguage.pick('Your best: —', 'ベスト：—') : momoLanguage.pick('No scores yet', 'まだスコアがありません');
-
+  function drawRows(rows, record) {
     scoreList.replaceChildren();
     let place = 0;
     rows.slice(0, 10).forEach((row, index) => {
@@ -103,6 +97,61 @@ const gameScores = (() => {
     });
   }
 
+  function bestLine(rows, record) {
+    const rank = record ? 1 + rows.filter(row => row.score > record.score).length : null;
+    return record
+      ? momoLanguage.pick(`Your best: ${record.score} points · Rank #${rank}`, `ベスト：${record.score}点 · ${rank}位`)
+      : rows.length ? momoLanguage.pick('Your best: —', 'ベスト：—') : momoLanguage.pick('No scores yet', 'まだスコアがありません');
+  }
+
+  function render() {
+    if (levelLabel) levelLabel.textContent = Array.from(document.querySelectorAll('[data-level]')).find(button => button.dataset.level === level)?.lastElementChild.textContent || '';
+    if (source === 'online') { renderOnline(); return; }
+    const board = period === 'weekly' ? level + ':' + weekKey() : level;
+    const rows = read(board);
+    const nickname = nameInput.value.trim().toLowerCase();
+    const record = rows.find(row => row.name.toLowerCase() === nickname);
+    best.textContent = bestLine(rows, record);
+    drawRows(rows, record);
+  }
+
+  function onlineKey() { return level + '|' + period; }
+
+  function renderOnline() {
+    const rows = onlineCache.get(onlineKey()) || [];
+    const nickname = nameInput.value.trim().toLowerCase();
+    const record = rows.find(row => row.name.toLowerCase() === nickname);
+    best.textContent = onlineState === 'loading'
+      ? momoLanguage.pick('Loading…', '読み込み中…')
+      : onlineState === 'error'
+        ? momoLanguage.pick('Could not load the online board.', 'オンラインランキングを読み込めませんでした')
+        : bestLine(rows, record);
+    drawRows(onlineState === 'idle' ? rows : [], record);
+  }
+
+  async function fetchOnline() {
+    if (!ONLINE_URL || source !== 'online') return;
+    const key = onlineKey();
+    if (onlineCache.has(key)) { render(); return; }
+    onlineState = 'loading';
+    render();
+    try {
+      const query = '?game=' + encodeURIComponent(document.body.dataset.game)
+        + '&level=' + encodeURIComponent(level)
+        + '&period=' + (period === 'weekly' ? 'week' : 'all');
+      const response = await fetch(ONLINE_URL + query);
+      const data = await response.json();
+      onlineCache.set(key, Array.isArray(data.rows) ? data.rows : []);
+      onlineState = 'idle';
+    } catch { onlineState = 'error'; }
+    render();
+  }
+
+  function refreshBoard() {
+    if (source === 'online') fetchOnline();
+    else render();
+  }
+
   nameInput.addEventListener('input', () => {
     nicknameState = '';
     renderNickname();
@@ -117,8 +166,35 @@ const gameScores = (() => {
   periodButtons.forEach(button => button.addEventListener('click', () => {
     period = button.dataset.period;
     periodButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
-    render();
+    refreshBoard();
   }));
+  const sourceButtons = {};
+  if (ONLINE_URL) {
+    const sourceGroup = document.createElement('div');
+    sourceGroup.className = 'score-period score-source';
+    sourceGroup.setAttribute('role', 'group');
+    sourceGroup.setAttribute('aria-label', 'Ranking source');
+    for (const key of ['local', 'online']) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.source = key;
+      button.setAttribute('aria-pressed', String(key === 'local'));
+      button.addEventListener('click', () => {
+        source = key;
+        renderSourceButtons();
+        refreshBoard();
+      });
+      sourceButtons[key] = button;
+      sourceGroup.append(button);
+    }
+    document.querySelector('.score-period')?.after(sourceGroup);
+  }
+  function renderSourceButtons() {
+    if (sourceButtons.local) sourceButtons.local.textContent = momoLanguage.pick('This device', 'この端末');
+    if (sourceButtons.online) sourceButtons.online.textContent = momoLanguage.pick('Everyone', 'みんな');
+    for (const key in sourceButtons) sourceButtons[key].setAttribute('aria-pressed', String(key === source));
+  }
+  renderSourceButtons();
   changePlayer.addEventListener('click', () => {
     readyCard.hidden = false;
     nameInput.focus();
@@ -132,10 +208,12 @@ const gameScores = (() => {
     const currentWeek = weekKey();
     if (currentWeek === displayedWeek) return;
     displayedWeek = currentWeek;
-    render();
+    onlineCache.clear();
+    refreshBoard();
   }, 1000);
   momoLanguage.subscribe(() => {
     renderNickname();
+    renderSourceButtons();
     render();
   });
 
@@ -150,7 +228,7 @@ const gameScores = (() => {
     clear() { readyCard.hidden = scoreCard.hidden = true; },
     showLevel(selectedLevel) {
       level = selectedLevel;
-      render();
+      refreshBoard();
     },
     setStageFormatter(formatter) {
       formatStage = formatter;
@@ -189,6 +267,15 @@ const gameScores = (() => {
           }
         }
         render();
+        if (ONLINE_URL) {
+          onlineCache.clear();
+          fetch(ONLINE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ game: document.body.dataset.game, level, name, score, completed: 1, stage: growth?.stage || 0, stageName: growth?.stageName || '' }),
+            keepalive: true
+          }).then(() => { if (source === 'online') fetchOnline(); }).catch(() => {});
+        }
       }
       scoreCard.querySelector('p').textContent = caption;
       scoreCard.hidden = false;
