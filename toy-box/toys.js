@@ -57,7 +57,7 @@ tabs.find(button => '#' + button.dataset.toy === location.hash)?.click();
 
 let audio;
 const keySamples = new Map();
-let sound = 'soft';
+let sound = 'creamy';
 const majorScale = [0, 2, 4, 5, 7, 9, 11];
 function cuteNoteRate(index) {
   const rowStart = index < 10 ? 0 : index < 19 ? 10 : 19;
@@ -76,8 +76,9 @@ function play(index, pitch = 0) {
     if (!keySamples.has(sound)) {
       const rate = audio.sampleRate;
       const cute = sound === 'cute';
-      const sample = audio.createBuffer(1, Math.ceil(rate * (cute ? .34 : .105)), rate);
+      const sample = audio.createBuffer(1, Math.ceil(rate * (cute ? .34 : sound === 'creamy' ? .18 : .105)), rate);
       const data = sample.getChannelData(0);
+      let smoothA = 0, smoothB = 0;
       for (let frame = 0; frame < data.length; frame++) {
         const t = frame / rate;
         if (cute) {
@@ -86,6 +87,21 @@ function play(index, pitch = 0) {
           const body = Math.sin(phase);
           const overtone = Math.sin(2 * phase) * Math.exp(-t * 50);
           data[frame] = envelope * (body * .75 + overtone * .16);
+          continue;
+        }
+        if (sound === 'creamy') {
+          // Creamy "kata-kata": a muffled strike, a deep soft body,
+          // then a smaller return click a moment later.
+          const rawA = Math.random() * 2 - 1;
+          smoothA += (rawA - smoothA) * .3;
+          const strike = smoothA * Math.exp(-t * 95) * .85;
+          const bodyTone = Math.sin(2 * Math.PI * 168 * t) * Math.exp(-t * 40) * .8
+            + Math.sin(2 * Math.PI * 322 * t) * Math.exp(-t * 75) * .22;
+          const rt = Math.max(0, t - .048);
+          const rawB = Math.random() * 2 - 1;
+          smoothB += (rawB - smoothB) * .3;
+          const release = rt > 0 ? smoothB * Math.exp(-rt * 120) * .38 : 0;
+          data[frame] = strike + bodyTone + release;
           continue;
         }
         const rise = 1 - Math.exp(-t * 730);
@@ -102,8 +118,8 @@ function play(index, pitch = 0) {
     const source = audio.createBufferSource();
     const level = audio.createGain();
     source.buffer = keySamples.get(sound);
-    source.playbackRate.value = sound === 'cute' ? cuteNoteRate(index) : .92 + (index % 7) * .037;
-    level.gain.value = sound === 'cute' ? .105 : .15;
+    source.playbackRate.value = sound === 'cute' ? cuteNoteRate(index) : sound === 'creamy' ? (.93 + (index % 7) * .022) * (.98 + Math.random() * .04) : .92 + (index % 7) * .037;
+    level.gain.value = sound === 'cute' ? .105 : sound === 'creamy' ? .17 : .15;
     source.connect(level).connect(audio.destination);
     source.start(now);
     return;
@@ -441,7 +457,7 @@ soundButtons.forEach(button => button.addEventListener('click', () => {
   sound = button.dataset.sound;
   play(3);
 }));
-renderKeys('pastel');
+renderKeys('choco');
 const spaceKey = one('.space');
 spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 26, ' '));
 document.addEventListener('keydown', event => {

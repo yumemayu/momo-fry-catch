@@ -134,12 +134,13 @@ button:disabled { opacity: .55; cursor: default; }
   --case-pattern: repeating-linear-gradient(0deg, #efafd343 0 16px, transparent 16px 32px), repeating-linear-gradient(90deg, #f49cc64d 0 16px, #fff9 16px 32px);
   --edge: #ad6a96;
   --gap: clamp(3px, 1.1vw, 9px);
-  --travel: clamp(3px, 1vw, 6px);
+  --travel: clamp(4px, 1.2vw, 7px);
+  --key-edge: #89506e;
   margin: 22px auto 26px;
   max-width: 580px;
   padding: clamp(8px, 2.6vw, 21px);
   border: 2px solid #fff8;
-  border-radius: 22px;
+  border-radius: 26px;
   background: linear-gradient(150deg, #fff7, transparent 44%), var(--case-pattern), var(--case);
   box-shadow: inset 0 0 0 2px #fff6, inset 0 -5px #a56a9026, 0 8px 0 var(--edge), 0 15px 22px #96598036;
 }
@@ -157,21 +158,21 @@ button:disabled { opacity: .55; cursor: default; }
   isolation: isolate;
   padding: 0;
   border: 1px solid #fff9;
-  border-radius: clamp(5px, 1.2vw, 10px);
-  background: linear-gradient(124deg, #fff9, transparent 53%), var(--top);
-  box-shadow: inset 0 2px 0 #fff9, inset 0 -5px #ad78944d, inset 2px 0 #fff5, 0 var(--travel) 0 #89506e, 0 calc(var(--travel) + 2px) 4px #74465a6b;
+  border-radius: clamp(9px, 2.6vw, 16px);
+  background: radial-gradient(115% 85% at 30% 16%, #fffb, transparent 55%), linear-gradient(124deg, #fff9, transparent 53%), var(--top);
+  box-shadow: inset 0 2px 0 #fff9, inset 0 -6px #00000014, inset 2px 0 #fff5, 0 var(--travel) 0 var(--key-edge), 0 calc(var(--travel) + 3px) 6px #3d243233;
   color: #714769;
   line-height: 1;
   transition: transform .095s, box-shadow .095s, filter .15s;
 }
 .keycap::before {
-  content: ""; position: absolute; z-index: -1; inset: 10% 11% 20%;
-  border-radius: 21%; background: linear-gradient(146deg, #fff8, #fff0 65%);
+  content: ""; position: absolute; z-index: -1; inset: 7% 9% 34%;
+  border-radius: 24%; background: linear-gradient(160deg, #fffb, #fff0 70%);
   box-shadow: inset 0 1px #fff9;
 }
 .keycap:is(:active,.pressed) {
-  transform: translateY(var(--travel));
-  box-shadow: inset 0 1px 3px #98668172, 0 1px 0 #89506e, 0 0 12px #fff3fa;
+  transform: translateY(var(--travel)) scale(.95);
+  box-shadow: inset 0 1px 3px #98668172, 0 1px 0 var(--key-edge), 0 0 12px #fff3fa;
   filter: brightness(1.11);
 }
 .keycap .key-spark {
@@ -230,6 +231,23 @@ button:disabled { opacity: .55; cursor: default; }
 .key-case[data-theme="cat"] .keycap { --top: #fff8ee; }
 .key-case[data-theme="cat"] .keycap:is([data-color="1"], [data-color="5"]) { --top: #f5d7bd; }
 .key-case[data-theme="cat"] .keycap:is([data-color="3"], [data-color="6"]) { --top: #d9d3df; }
+
+/* Choco Mint, like the keychain keyboards: brown case, mint keys. */
+.key-case[data-theme="choco"] { --case: #96683f; --edge: #6e4a2a; --key-edge: #6b4426; --case-pattern: radial-gradient(circle at 3px 3px, #ffffff2b 0 1.2px, transparent 1.8px) 0 0 / 13px 13px, repeating-linear-gradient(45deg, #7c4f2726 0 10px, transparent 10px 20px); }
+.key-case[data-theme="choco"] .keycap { --top: #a9743f; color: #fff6e8; }
+.key-case[data-theme="choco"] .keycap:is([data-color="1"], [data-color="4"]) { --top: #bfe6d2; color: #4c5a50; }
+.key-case[data-theme="choco"] .keycap:is([data-color="2"], [data-color="5"]) { --top: #cdeeda; color: #4c5a50; }
+.key-case[data-theme="choco"] .keycap[data-color="3"] { --top: #fff3df; color: #6b4a2f; }
+.key-case[data-theme="choco"] .keycap[data-color="6"] { --top: #ffd9e2; color: #6b4a2f; }
+.key-case[data-theme="choco"] .key-legend { color: inherit; opacity: .75; }
+.key-case[data-theme="choco"] .space { --top: #a8dfc6; color: #3f5a4a; }
+.key-case[data-theme="choco"] .bottom-row > span { color: #ffe9c9; }
+/* Puppy: yellow case, lavender keys. */
+.key-case[data-theme="puppy"] { --case: #f7cf4e; --edge: #d9a92f; --key-edge: #8a6d9e; --case-pattern: radial-gradient(circle at 3px 3px, #ffffff59 0 1.2px, transparent 1.8px) 0 0 / 13px 13px, repeating-linear-gradient(45deg, #fff5 0 8px, transparent 8px 16px); }
+.key-case[data-theme="puppy"] .keycap { --top: #d9c8f7; }
+.key-case[data-theme="puppy"] .keycap:is([data-color="1"], [data-color="5"]) { --top: #efe6ff; }
+.key-case[data-theme="puppy"] .keycap:is([data-color="3"], [data-color="6"]) { --top: #ffe9a8; }
+.key-case[data-theme="puppy"] .space { --top: #c9b2f2; }
 
 .cat-face {
   display: grid;
