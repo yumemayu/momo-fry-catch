@@ -221,6 +221,21 @@ button:disabled { opacity: .55; cursor: default; }
     radial-gradient(ellipse at 63% 23%, #c681a1 0 11%, transparent 13%),
     radial-gradient(ellipse at 83% 41%, #c681a1 0 11%, transparent 13%);
 }
+.key-art.animal {
+  background: none; display: grid; place-items: center;
+  font-size: clamp(13px, 4.6vw, 26px); line-height: 1;
+}
+.word-row { display: flex; gap: var(--gap); margin-bottom: calc(var(--gap) + 4px); }
+.word-key {
+  flex: 1 1 0; aspect-ratio: auto; min-height: clamp(30px, 7.5vw, 48px);
+  display: flex; align-items: center; justify-content: center; gap: .45em;
+  font-family: "Fredoka", var(--game-handwriting, sans-serif); font-weight: 600;
+  letter-spacing: .1em; font-size: clamp(12px, 3.4vw, 19px);
+}
+.key-case[data-theme="choco"] .word-key { --top: #bfe6d2; color: #4c5a50; }
+.key-case[data-theme="puppy"] .word-key { --top: #efe6ff; }
+.key-case[data-theme="pastel"] .word-key { --top: #ffc6db; }
+.key-case[data-theme="cat"] .word-key { --top: #f5d7bd; }
 .space .key-art { display: inline-block; vertical-align: middle; margin: 0 2px; width: clamp(12px, 3vw, 22px); }
 .space small { margin-inline: 4px; font-size: .66em; }
 .keycap .key-spark.meow { top: -43%; right: 0; color: #743e77; white-space: nowrap; }

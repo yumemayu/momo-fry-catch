@@ -367,6 +367,13 @@ const decorations = [
   'strawberry', 'bow', 'heart', 'flower', 'paw', 'strawberry', 'star',
 ];
 const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
+const animals = ['🐱', '🐶', '🐰', '🐻', '🐼', '🐨', '🐷', '🐸', '🦊', '🐹', '🐯', '🦁', '🐮', '🐔', '🐧', '🐦', '🦄', '🐙', '🐳', '🦋', '🐝', '🐢', '🐠', '🐥', '🐺', '🦉'];
+const themeWords = {
+  choco: { words: [['🐱', 'KITTEN'], ['⭐', 'HAPPY']], space: 'HAPPINESS' },
+  puppy: { words: [['🐶', 'PUPPY'], ['🍀', 'LUCKY']], space: 'VERY LUCKY' },
+  pastel: { words: [['🎀', 'HAPPY'], ['🍀', 'LUCKY']], space: 'MOMO' },
+  cat: { words: [['🐱', 'KITTEN'], ['🐾', 'MEOW']], space: 'MOMO' },
+};
 const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
@@ -412,8 +419,27 @@ function pressKeycap(key, index, letter) {
   key.append(sparkle);
   setTimeout(() => sparkle.remove(), 330);
 }
+const wordRow = one('#word-row');
+const spaceWord = one('#space-word');
 function renderKeys(theme) {
   keyCase.dataset.theme = theme;
+  const words = themeWords[theme] ?? themeWords.pastel;
+  spaceWord.textContent = words.space;
+  wordRow.replaceChildren(...words.words.map(([icon, word], i) => {
+    const key = document.createElement('button');
+    key.type = 'button';
+    key.className = 'keycap word-key';
+    key.dataset.color = String((i * 3 + 1) % 7);
+    const iconSpan = document.createElement('span');
+    iconSpan.textContent = icon;
+    iconSpan.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.textContent = word;
+    key.append(iconSpan, label);
+    key.setAttribute('aria-label', word);
+    key.addEventListener('click', () => pressKeycap(key, 20 + i, word));
+    return key;
+  }));
   keyByLetter.clear();
   grid.replaceChildren(...keyboardRows.map((letters, rowIndex) => {
     const row = document.createElement('div');
@@ -436,6 +462,9 @@ function renderKeys(theme) {
       if (theme === 'cat') {
         art.textContent = '•ᴗ•';
         art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
+      } else if (theme === 'choco' || theme === 'puppy') {
+        art.classList.add('animal');
+        art.textContent = animals[keyIndex % animals.length];
       } else {
         art.dataset.art = symbol;
       }
