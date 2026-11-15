@@ -91,27 +91,40 @@ const grid = one('#key-grid');
 const keyCase = one('.key-case');
 const paletteButtons = all('[data-palette]');
 const soundButtons = all('[data-sound]');
-const letters = 'ASDFGHJK';
-const symbols = ['🍓', '♡', '✿', '🐾', '🍒', '✦', '🎀', '☁'];
-const furs = ['#d68760', '#807182', '#b77250', '#4f4058'];
+const keyboardRows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+const decorations = {Q:'♡', E:'🍓', U:'✿', O:'🎀', A:'✦', F:'🍒', J:'🐾', L:'♡', Z:'🍓', C:'☁', N:'✿', M:'✦'};
+const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
+const keyByLetter = new Map();
+
 function renderKeys(theme) {
   keyCase.dataset.theme = theme;
-  grid.replaceChildren(...symbols.map((symbol, index) => {
-    const key = document.createElement('button');
-    key.className = 'keycap';
-    key.type = 'button';
-    key.setAttribute('aria-label', letters[index]);
-    const art = document.createElement('span');
-    art.setAttribute('aria-hidden', 'true');
-    art.textContent = symbol;
-    if (theme === 'cat') {
-      art.className = 'cat-face';
-      art.style.setProperty('--fur', furs[index % furs.length]);
-      art.textContent = '•ᴗ•';
-    }
-    key.append(art);
-    key.addEventListener('click', () => play(index));
-    return key;
+  keyByLetter.clear();
+  grid.replaceChildren(...keyboardRows.map((letters, rowIndex) => {
+    const row = document.createElement('div');
+    row.className = 'key-row';
+    [...letters].forEach((letter, index) => {
+      const key = document.createElement('button');
+      key.className = 'keycap';
+      key.type = 'button';
+      key.dataset.color = (index + rowIndex * 3) % 7;
+      const legend = document.createElement('span');
+      legend.className = 'key-legend';
+      legend.textContent = letter;
+      key.append(legend);
+      const symbol = decorations[letter];
+      if (theme === 'cat' || symbol) {
+        const art = document.createElement('span');
+        art.className = theme === 'cat' ? 'cat-face' : 'key-art';
+        art.setAttribute('aria-hidden', 'true');
+        art.textContent = theme === 'cat' ? '•ᴗ•' : symbol;
+        if (theme === 'cat') art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
+        key.append(art);
+      }
+      key.addEventListener('click', () => play(index + rowIndex * 3));
+      keyByLetter.set(letter, key);
+      row.append(key);
+    });
+    return row;
   }));
 }
 paletteButtons.forEach(button => button.addEventListener('click', () => {
@@ -130,7 +143,7 @@ spaceKey.addEventListener('click', () => play(0));
 document.addEventListener('keydown', event => {
   if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || one('#keys').hidden) return;
   if (event.code === 'Space' && event.target.closest('button, a')) return;
-  const key = event.code === 'Space' ? spaceKey : grid.children[letters.indexOf(event.key.toUpperCase())];
+  const key = event.code === 'Space' ? spaceKey : keyByLetter.get(event.key.toUpperCase());
   if (!key) return;
   event.preventDefault();
   key.classList.add('pressed');

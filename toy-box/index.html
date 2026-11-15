@@ -30,14 +30,14 @@
   </section>
   <section id="keys" class="toy" hidden>
     <h2 data-ja="MOMOのカチカチキーボード">MOMO Clicky Keys</h2>
-    <p data-ja="キーを押して、カチッ。パソコンなら A〜K でも遊べるよ。">Tap a key for a click. You can also use A–K on a computer.</p>
+    <p data-ja="キーを押して、カチッ。パソコンなら A〜Z とスペースキーでも遊べるよ。">Tap the keys for a click. On a computer, try A–Z and Space.</p>
     <div class="choices">
       <button type="button" data-palette="pastel" aria-pressed="true" data-ja="いちごミルク">Strawberry Milk</button>
       <button type="button" data-palette="cat" aria-pressed="false" data-ja="ねこキー">Cat Keys</button>
     </div>
     <div class="key-case" data-theme="pastel">
-      <div id="key-grid"></div>
-      <button class="space keycap" aria-label="Space" data-ja-label="スペースキー">MOMO <span aria-hidden="true">♡</span></button>
+      <div id="key-grid" role="group" aria-label="Keyboard" data-ja-label="キーボード"></div>
+      <div class="bottom-row"><span aria-hidden="true">✿</span><button type="button" class="space keycap" aria-label="Space" data-ja-label="スペースキー">MOMO <span aria-hidden="true">♡</span></button><span aria-hidden="true">✦</span></div>
     </div>
     <div class="choices">
       <button type="button" data-sound="click" aria-pressed="true" data-ja="カチッ">Click</button>
