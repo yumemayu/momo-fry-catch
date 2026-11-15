@@ -16,11 +16,13 @@ const momoLanguage = (() => {
   const bar = document.createElement('div');
   bar.className = 'momo-language';
   bar.setAttribute('role', 'group');
-  const buttons = [['ja','日本語'], ['en','English']].map(([code, label]) => {
+  const buttons = [['ja','あ', '日本語'], ['en','A', 'English']].map(([code, label, name]) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.lang = code;
     button.textContent = label;
+    button.setAttribute('aria-label', name);
+    button.title = name;
     button.addEventListener('click', () => setLanguage(code));
     bar.append(button);
     return {button, code};
