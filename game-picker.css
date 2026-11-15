@@ -100,3 +100,35 @@ nav.game-picker .picker-illustration {
   border-radius: 50%;
   background: #a7deef66;
 }
+
+nav.game-picker .picker-piano .picker-illustration {
+  align-content: start;
+  color: #754794;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.picker-piano .picker-illustration::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  width: 34px;
+  height: 21px;
+  box-sizing: border-box;
+  border: 1.5px solid #754794;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #fff9f2 0 7px, #a885b5 7px 8px);
+}
+
+.picker-piano .picker-illustration::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  bottom: 14px;
+  width: 5px;
+  height: 9px;
+  border-radius: 0 0 2px 2px;
+  background: #754794;
+  box-shadow: 8px 0 #754794, 16px 0 #754794;
+}
