@@ -383,17 +383,17 @@ const catFaces = [
 function faceSVG(f) {
   const whisker = f.whisker || '#c9b8a8';
   let deco = '';
-  if (f.pattern === 'stripes') deco = `<path d="M38 27v9M50 25v10M62 27v9" stroke="${f.dark}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
-  if (f.pattern === 'calico') deco = `<g clip-path="url(#hc-${f.id})"><circle cx="26" cy="29" r="15" fill="${f.patch1}"/><circle cx="79" cy="56" r="13" fill="${f.patch2}"/><circle cx="71" cy="23" r="9" fill="${f.patch1}"/></g>`;
+  if (f.pattern === 'stripes') deco = `<path d="M40 23v8M50 21v9M60 23v8" stroke="${f.dark}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+  if (f.pattern === 'calico') deco = `<circle cx="30" cy="33" r="11" fill="${f.patch1}"/><circle cx="71" cy="58" r="10" fill="${f.patch2}"/><circle cx="64" cy="29" r="7" fill="${f.patch1}"/>`;
   const muzzle = f.pattern === 'tuxedo'
-    ? `<path d="M43 34h14l-3 32h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="74" rx="27" ry="16" fill="#fff8ee"/>`
+    ? `<path d="M43 30h14l-3 32h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="73" rx="26" ry="15" fill="#fff8ee"/>`
     : f.pattern === 'bicolor'
-      ? `<path d="M44 36h12l-2 30h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="72" rx="24" ry="15" fill="#fff8ee"/>`
-      : `<ellipse cx="50" cy="72" rx="23" ry="15" fill="#fff8ee" opacity=".9"/>`;
+      ? `<path d="M44 32h12l-2 30h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="72" rx="23" ry="14" fill="#fff8ee"/>`
+      : `<ellipse cx="50" cy="72" rx="22" ry="14" fill="#fff8ee" opacity=".9"/>`;
   const eyes = f.eyes === 'amber'
-    ? `<ellipse cx="35" cy="55" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="65" cy="55" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="35" cy="55" rx="2.2" ry="4.4" fill="#26221f"/><ellipse cx="65" cy="55" rx="2.2" ry="4.4" fill="#26221f"/><circle cx="33.4" cy="52" r="1.5" fill="#fff"/><circle cx="63.4" cy="52" r="1.5" fill="#fff"/>`
-    : `<ellipse cx="35" cy="55" rx="4.6" ry="6.2" fill="#3a2e28"/><ellipse cx="65" cy="55" rx="4.6" ry="6.2" fill="#3a2e28"/><circle cx="33.6" cy="52.2" r="1.6" fill="#fff"/><circle cx="63.6" cy="52.2" r="1.6" fill="#fff"/>`;
-  return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><clipPath id="hc-${f.id}"><rect x="10" y="18" width="80" height="74" rx="30"/></clipPath></defs><path d="M17 28 L29 5 L47 21 Z" fill="${f.fur}"/><path d="M83 28 L71 5 L53 21 Z" fill="${f.fur}"/><path d="M22 24 L29 12 L40 20 Z" fill="#f6a8c1"/><path d="M78 24 L71 12 L60 20 Z" fill="#f6a8c1"/><rect x="10" y="18" width="80" height="74" rx="30" fill="${f.fur}"/>${deco}${muzzle}<ellipse cx="22" cy="67" rx="6" ry="3" fill="#ffb7c9" opacity=".75"/><ellipse cx="78" cy="67" rx="6" ry="3" fill="#ffb7c9" opacity=".75"/>${eyes}<path d="M46.5 65.5 h7 l-3.5 4 Z" fill="#f28bb4"/><path d="M50 70 q-3.5 4.5 -8 2.5 M50 70 q3.5 4.5 8 2.5" stroke="#3a2e28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M23 62 L7 57 M23 69 L7 70 M77 62 L93 57 M77 69 L93 70" stroke="${whisker}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+    ? `<ellipse cx="35" cy="54" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="65" cy="54" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="35" cy="54" rx="2.2" ry="4.4" fill="#26221f"/><ellipse cx="65" cy="54" rx="2.2" ry="4.4" fill="#26221f"/><circle cx="33.4" cy="51" r="1.5" fill="#fff"/><circle cx="63.4" cy="51" r="1.5" fill="#fff"/>`
+    : `<ellipse cx="35" cy="54" rx="4.6" ry="6.2" fill="#3a2e28"/><ellipse cx="65" cy="54" rx="4.6" ry="6.2" fill="#3a2e28"/><circle cx="33.6" cy="51.2" r="1.6" fill="#fff"/><circle cx="63.6" cy="51.2" r="1.6" fill="#fff"/>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M14 26 L27 3 L47 19 Z" fill="${f.fur}"/><path d="M86 26 L73 3 L53 19 Z" fill="${f.fur}"/><path d="M20 22 L27 10 L37 17 Z" fill="#f6a8c1"/><path d="M80 22 L73 10 L63 17 Z" fill="#f6a8c1"/><rect x="2" y="12" width="96" height="86" rx="28" fill="${f.fur}"/>${deco}${muzzle}<ellipse cx="20" cy="66" rx="5.5" ry="2.8" fill="#ffb7c9" opacity=".75"/><ellipse cx="80" cy="66" rx="5.5" ry="2.8" fill="#ffb7c9" opacity=".75"/>${eyes}<path d="M46.5 63.5 h7 l-3.5 4 Z" fill="#f28bb4"/><path d="M50 68 q-3.5 4.5 -8 2.5 M50 68 q3.5 4.5 8 2.5" stroke="#3a2e28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 60 L4 55 M20 67 L4 68 M80 60 L96 55 M80 67 L96 68" stroke="${whisker}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 }
 const keyByLetter = new Map();
 const notebook = one('#key-note');

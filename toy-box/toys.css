@@ -134,7 +134,7 @@ button:disabled { opacity: .55; cursor: default; }
   --case-pattern: repeating-linear-gradient(0deg, #efafd343 0 16px, transparent 16px 32px), repeating-linear-gradient(90deg, #f49cc64d 0 16px, #fff9 16px 32px);
   --edge: #ad6a96;
   --gap: clamp(3px, 1.1vw, 9px);
-  --travel: clamp(4px, 1.2vw, 7px);
+  --travel: clamp(5px, 1.4vw, 8px);
   --key-edge: #89506e;
   margin: 22px auto 26px;
   max-width: 580px;
@@ -229,8 +229,16 @@ button:disabled { opacity: .55; cursor: default; }
 /* Whole-key cat faces: an illustrated face fills the key top. */
 .keycap.face-key { border-radius: 32%; }
 .keycap.face-key .key-legend { display: none; }
-.face-art { position: absolute; inset: 0; display: block; }
+.face-art { position: absolute; inset: 0; display: block; border-radius: inherit; overflow: hidden; }
 .face-art svg { display: block; width: 100%; height: 100%; }
+/* The same dome light and bottom shade as the other keys, laid over
+   the printed face so it sits in the key's 3D shape. */
+.face-art::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(115% 85% at 30% 16%, #fffb, transparent 55%), linear-gradient(180deg, transparent 80%, #0000001a);
+  box-shadow: inset 0 2px 0 #fff9, inset 0 -6px 0 #00000014, inset 2px 0 #fff5;
+  pointer-events: none;
+}
 .space .key-art { display: inline-block; vertical-align: middle; margin: 0 2px; width: clamp(12px, 3vw, 22px); }
 .space small { margin-inline: 4px; font-size: .66em; }
 .keycap .key-spark.meow { top: -43%; right: 0; color: #743e77; white-space: nowrap; }
