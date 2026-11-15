@@ -252,6 +252,8 @@
     if (toCx < fromCx - .01) catImg.classList.add('face-left');
     else if (toCx > fromCx + .01) catImg.classList.remove('face-left');
     if (reducedMotion.matches) return;
+    catImg.classList.remove('walking');
+    void catImg.offsetWidth;
     catImg.classList.add('walking');
     clearInterval(frameTimer);
     let alt = false;
@@ -264,7 +266,21 @@
       catImg.classList.remove('walking');
       clearInterval(frameTimer);
       if (catFrame) catFrame.src = CAT_FRAME_A;
+      spawnDust();
     }, 340);
+  }
+
+  // A little dust puff where the cat lands.
+  function spawnDust() {
+    const puff = document.createElement('div');
+    puff.className = 'land-puff';
+    const cx = (cat.c + (cat.r % 2 ? .5 : 0) + .5) / (SIZE + .5) * 100;
+    const bottom = 90.5 - cat.r * 8.8;
+    puff.style.left = cx + '%';
+    puff.style.bottom = bottom + '%';
+    for (let i = 0; i < 5; i++) puff.append(document.createElement('span'));
+    field.append(puff);
+    setTimeout(() => puff.remove(), 520);
   }
 
   function newPuzzle() {

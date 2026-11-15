@@ -68,10 +68,42 @@
    of travel; the body bobs while it glides. */
 .cat-art img.cat-frame { display: block; width: 100%; height: auto; }
 .cat-art.face-left .cat-flip { transform: scaleX(-1); }
-.cat-art.walking .cat-frame { animation: cat-img-bob .22s ease-in-out infinite alternate; }
-@keyframes cat-img-bob {
-  from { transform: translateY(0); }
-  to { transform: translateY(-3%); }
+.cat-art.walking .cat-frame { animation: cat-hop .34s ease-in-out; }
+@keyframes cat-hop {
+  0% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-13%) rotate(-3.5deg); }
+  55% { transform: translateY(-15%) rotate(1.5deg); }
+  78% { transform: translateY(-2%) rotate(0deg); }
+  88% { transform: translateY(1.5%) scale(1.07, .88); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+/* Dust puff on landing. */
+.land-puff {
+  position: absolute;
+  z-index: 4;
+  width: 13%;
+  aspect-ratio: 1;
+  transform: translate(-50%, 55%);
+  pointer-events: none;
+}
+.land-puff span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(228, 207, 163, .95), rgba(228, 207, 163, 0) 70%);
+  animation: puff-fly .45s ease-out forwards;
+}
+.land-puff span:nth-child(1) { --dx: -170%; --dy: -20%; }
+.land-puff span:nth-child(2) { --dx: -80%; --dy: -70%; }
+.land-puff span:nth-child(3) { --dx: 30%; --dy: -85%; }
+.land-puff span:nth-child(4) { --dx: 130%; --dy: -45%; }
+.land-puff span:nth-child(5) { --dx: 190%; --dy: 0%; }
+@keyframes puff-fly {
+  from { transform: translate(-50%, -50%) scale(.4); opacity: .95; }
+  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.6); opacity: 0; }
 }
 
 
@@ -100,5 +132,6 @@
 @media (prefers-reduced-motion: reduce) {
   .cat-art { transition: none; }
   .cat-art .cat-frame { animation: none; }
+  .land-puff { display: none; }
   .burst-star { display: none; }
 }
