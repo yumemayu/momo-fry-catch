@@ -39,6 +39,9 @@ html[lang="en"] .tap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px)
   transition: width .2s linear;
 }
 .level-art { width: 34px; height: 34px; object-fit: contain; }
+/* The ready/score cards float over the tub; the spots carry z-index 1,
+   so the cards need a higher one or the water rings paint over them. */
+.tap-main .game-card { z-index: 6; }
 .tap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 
 /* The field is a wooden onsen tub filled with blue water. */
