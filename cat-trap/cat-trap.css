@@ -57,38 +57,22 @@
 .cat-art {
   position: absolute;
   z-index: 3;
-  width: 10%;
+  width: 12.5%;
   height: auto;
   transform: translateX(-50%);
   pointer-events: none;
   transition: left .3s ease, bottom .3s ease;
 }
 .trap-field.no-anim .cat-art { transition: none; }
-/* Side-profile cat (inline SVG): faces its direction of travel, legs
-   swing and body bobs while it glides, tail sways when idle. */
-.cat-art svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* Illustrated cat (two generated walk frames): faces its direction
+   of travel; the body bobs while it glides. */
+.cat-art img.cat-frame { display: block; width: 100%; height: auto; }
 .cat-art.face-left .cat-flip { transform: scaleX(-1); }
-.cat-art .leg, .cat-art .cat-tail { transform-box: view-box; }
-.cat-art .cat-tail {
-  transform-origin: 26px 74px;
-  animation: cat-tail-sway 2.6s ease-in-out infinite alternate;
-}
-@keyframes cat-tail-sway {
-  from { transform: rotate(-5deg); }
-  to { transform: rotate(7deg); }
-}
-.cat-art.walking .leg-a { animation: cat-leg-swing .17s ease-in-out infinite alternate; }
-.cat-art.walking .leg-b { animation: cat-leg-swing .17s ease-in-out infinite alternate-reverse; }
-@keyframes cat-leg-swing {
-  from { transform: rotate(17deg); }
-  to { transform: rotate(-17deg); }
-}
-.cat-art.walking .cat-bob { animation: cat-bob .17s ease-in-out infinite alternate; }
-@keyframes cat-bob {
+.cat-art.walking .cat-frame { animation: cat-img-bob .22s ease-in-out infinite alternate; }
+@keyframes cat-img-bob {
   from { transform: translateY(0); }
-  to { transform: translateY(-2.6px); }
+  to { transform: translateY(-3%); }
 }
-.cat-art.walking .cat-tail { animation-duration: .34s; }
 
 /* Speech bubble above the cat. */
 .cat-bubble {
@@ -151,7 +135,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .cat-art { transition: none; }
-  .cat-art .leg, .cat-art .cat-tail, .cat-art .cat-bob { animation: none; }
+  .cat-art .cat-frame { animation: none; }
   .cat-bubble { animation: none; }
   .burst-star { display: none; }
 }
