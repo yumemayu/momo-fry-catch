@@ -367,13 +367,18 @@ const decorations = [
   'strawberry', 'bow', 'heart', 'flower', 'paw', 'strawberry', 'star',
 ];
 const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
-const animals = ['🐱', '🐶', '🐰', '🐻', '🐼', '🐨', '🐷', '🐸', '🦊', '🐹', '🐯', '🦁', '🐮', '🐔', '🐧', '🐦', '🦄', '🐙', '🐳', '🦋', '🐝', '🐢', '🐠', '🐥', '🐺', '🦉'];
-const themeWords = {
-  choco: { words: [['🐱', 'KITTEN'], ['⭐', 'HAPPY']], space: 'HAPPINESS' },
-  puppy: { words: [['🐶', 'PUPPY'], ['🍀', 'LUCKY']], space: 'VERY LUCKY' },
-  pastel: { words: [['🎀', 'HAPPY'], ['🍀', 'LUCKY']], space: 'MOMO' },
-  cat: { words: [['🐱', 'KITTEN'], ['🐾', 'MEOW']], space: 'MOMO' },
-};
+const themeSpace = { choco: 'HAPPINESS', puppy: 'VERY LUCKY', pastel: 'MOMO', cat: 'MOMO' };
+// Whole-key animal faces: the key itself is the round face.
+const keyFaces = [
+  { type: 'cat', fur: '#f7d9b0' }, { type: 'cat', fur: '#ffd9e2' }, { type: 'cat', fur: '#e6dcff' },
+  { type: 'bear', fur: '#d9a066' }, { type: 'bear', fur: '#c68b59' },
+  { type: 'bunny', fur: '#ffe3ee' }, { type: 'bunny', fur: '#ffffff' },
+  { type: 'panda', fur: '#ffffff' }, { type: 'dog', fur: '#eec39a' },
+];
+const keySymbols = [
+  { g: '⬆', c: '#5b8dd9' }, { g: '⬇', c: '#e77cab' }, { g: '⬅', c: '#f2a93b' },
+  { g: '➡', c: '#7bc47f' }, { g: '♪', c: '#9a7bd9' },
+];
 const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
@@ -419,14 +424,14 @@ function pressKeycap(key, index, letter) {
   key.append(sparkle);
   setTimeout(() => sparkle.remove(), 330);
 }
-const wordRow = one('#word-row');
 const spaceWord = one('#space-word');
 function renderKeys(theme) {
   keyCase.dataset.theme = theme;
-  const words = themeWords[theme] ?? themeWords.pastel;
-  spaceWord.textContent = words.space;
-  // Animals hide on a random few keys, mixed in with the icon keys.
-  let animalMap = new Map();
+  spaceWord.textContent = themeSpace[theme] ?? 'MOMO';
+  // Animal faces and arrow/symbol keys hide on random keys, mixed in
+  // with the icon keys (like the keychain keyboards).
+  let faceMap = new Map();
+  let symbolMap = new Map();
   if (theme === 'choco' || theme === 'puppy') {
     const shuffle = list => {
       const arr = [...list];
@@ -437,25 +442,12 @@ function renderKeys(theme) {
       return arr;
     };
     const spots = shuffle([...Array(26).keys()]);
-    const faces = shuffle(animals);
-    const count = 7 + Math.floor(Math.random() * 3);
-    animalMap = new Map(spots.slice(0, count).map((spot, i) => [spot, faces[i]]));
+    const faces = shuffle(keyFaces);
+    const faceCount = 7 + Math.floor(Math.random() * 3);
+    faceMap = new Map(spots.slice(0, faceCount).map((spot, i) => [spot, faces[i % faces.length]]));
+    const glyphs = shuffle(keySymbols);
+    symbolMap = new Map(spots.slice(faceCount, faceCount + 5).map((spot, i) => [spot, glyphs[i % glyphs.length]]));
   }
-  wordRow.replaceChildren(...words.words.map(([icon, word], i) => {
-    const key = document.createElement('button');
-    key.type = 'button';
-    key.className = 'keycap word-key';
-    key.dataset.color = String((i * 3 + 1) % 7);
-    const iconSpan = document.createElement('span');
-    iconSpan.textContent = icon;
-    iconSpan.setAttribute('aria-hidden', 'true');
-    const label = document.createElement('span');
-    label.textContent = word;
-    key.append(iconSpan, label);
-    key.setAttribute('aria-label', word);
-    key.addEventListener('click', () => pressKeycap(key, 20 + i, word));
-    return key;
-  }));
   keyByLetter.clear();
   grid.replaceChildren(...keyboardRows.map((letters, rowIndex) => {
     const row = document.createElement('div');
@@ -478,9 +470,25 @@ function renderKeys(theme) {
       if (theme === 'cat') {
         art.textContent = '•ᴗ•';
         art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
-      } else if (animalMap.has(keyIndex)) {
-        art.classList.add('animal');
-        art.textContent = animalMap.get(keyIndex);
+      } else if (faceMap.has(keyIndex)) {
+        key.classList.add('face-key');
+        art.className = 'face-art';
+        const face = faceMap.get(keyIndex);
+        art.dataset.face = face.type;
+        art.style.setProperty('--fur', face.fur);
+        const earL = document.createElement('i');
+        earL.className = 'ear ear-l';
+        const earR = document.createElement('i');
+        earR.className = 'ear ear-r';
+        const eyes = document.createElement('span');
+        eyes.className = 'face-eyes';
+        eyes.textContent = '•ᴗ•';
+        art.append(earL, earR, eyes);
+      } else if (symbolMap.has(keyIndex)) {
+        art.classList.add('symbol');
+        const sym = symbolMap.get(keyIndex);
+        art.textContent = sym.g;
+        art.style.color = sym.c;
       } else {
         art.dataset.art = symbol;
       }
