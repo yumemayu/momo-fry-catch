@@ -46,7 +46,7 @@ const gameScores = (() => {
     nicknameFeedback.textContent = nicknameState ? momoLanguage.pick(...messages[nicknameState]) : '';
   }
 
-  function saveNickname() {
+  function saveNickname(celebrate = false) {
     const name = nameInput.value.trim();
     nameInput.value = name;
     try {
@@ -56,6 +56,15 @@ const gameScores = (() => {
     } catch { nicknameState = 'unavailable'; }
     renderNickname();
     render();
+    if (celebrate && name && nicknameState === 'saved') {
+      nicknameFeedback.textContent = momoLanguage.pick("Let's go!", 'レッツゴー！');
+      nicknameFeedback.classList.add('lets-go');
+      setTimeout(() => {
+        readyCard.hidden = true;
+        nicknameFeedback.classList.remove('lets-go');
+        renderNickname();
+      }, 950);
+    }
     return name;
   }
 
@@ -168,11 +177,11 @@ const gameScores = (() => {
     renderNickname();
     render();
   });
-  saveNicknameButton.addEventListener('click', saveNickname);
+  saveNicknameButton.addEventListener('click', () => saveNickname(true));
   nameInput.addEventListener('keydown', event => {
     if (event.key !== 'Enter' || event.isComposing || nameInput.readOnly) return;
     event.preventDefault();
-    saveNickname();
+    saveNickname(true);
   });
   periodButtons.forEach(button => button.addEventListener('click', () => {
     period = button.dataset.period;

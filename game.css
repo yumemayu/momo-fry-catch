@@ -320,6 +320,8 @@ body[data-game="buns"] {
 }
 
 .score-board {
+  margin-top: 12px;
+  scroll-margin-top: 64px;
   padding: 8px 10px;
   border: 2px solid white;
   border-radius: 18px;
@@ -462,4 +464,11 @@ body[data-game="buns"] {
   grid-column: 1 / -1;
   min-height: 1.25em;
   color: #66406e;
+}
+.player-setup .nickname-saved.lets-go {
+  font-family: "Fredoka", var(--game-handwriting);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #f272a7;
+  text-align: center;
 }

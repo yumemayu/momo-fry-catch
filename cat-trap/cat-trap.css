@@ -28,12 +28,12 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
 .ready-cat { width: 52px; height: 52px; object-fit: contain; }
 .trap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 
-/* The board: a pale mint plate holding 11x11 hexagon tiles, like the
-   original Trap the Cat game the user's daughter plays (2026-11-15). */
+/* The board: a pale mint block plate holding 9x9 chunky square tiles
+   with studs, per the user-approved mock (2026-11-15). */
 .trap-field {
   position: relative;
   height: auto;
-  aspect-ratio: 11.5 / 11;
+  aspect-ratio: 9.5 / 9;
   padding: 0;
   border: 3px solid #fff;
   border-radius: 28px;
@@ -44,20 +44,21 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
 }
 .tile {
   position: absolute;
-  width: 8.7%;
-  aspect-ratio: 0.866;
+  width: 10.4%;
+  aspect-ratio: 1;
   min-height: 0;
   padding: 0;
-  border: none;
-  border-radius: 0;
-  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-  background: linear-gradient(180deg, #ddf3c9, #b7e099);
-  box-shadow: none;
+  border: 3px solid #4a2c1a;
+  border-radius: 24%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23cff0a8' stroke='%23a5d68a' stroke-width='2'%3E%3Ccircle cx='28' cy='28' r='11'/%3E%3Ccircle cx='72' cy='28' r='11'/%3E%3Ccircle cx='28' cy='72' r='11'/%3E%3Ccircle cx='72' cy='72' r='11'/%3E%3C/g%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    radial-gradient(circle at 35% 30%, #ddf3c9, #b7e099 75%);
+  box-shadow: 0 2px 0 rgba(74, 44, 26, .3);
   cursor: pointer;
 }
 .tile:disabled { opacity: 1; cursor: default; }
 .tile:not(:disabled):hover, .tile:not(:disabled):focus-visible {
-  background: linear-gradient(180deg, #ecfadc, #cdf0ae);
+  filter: brightness(1.07);
 }
 .tile svg {
   position: absolute;
@@ -66,13 +67,13 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
   height: 100%;
   pointer-events: none;
 }
-.tile.blocked { background: linear-gradient(180deg, #5da24a, #3c7a2c); }
+.tile.blocked svg { inset: 1%; width: 98%; height: 98%; }
 /* The cat is a field-level layer (not a tile child), so it can glide
    from tile to tile and never blocks taps on the tiles underneath. */
 .cat-art {
   position: absolute;
   z-index: 3;
-  width: 13%;
+  width: 16.5%;
   height: auto;
   transform: translateX(-50%);
   pointer-events: none;
