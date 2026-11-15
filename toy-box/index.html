@@ -21,9 +21,9 @@
     <h2 data-ja="むぎゅっと肉まんライト">Squishy Bun Lights</h2>
     <p data-ja="長押しでむぎゅっ。離すとぽよんと光るよ。">Hold to squish. Let go to light up!</p>
     <div class="bun-tray">
-      <button class="bun strawberry" aria-label="Strawberry" data-ja-label="いちご" aria-pressed="false"><span aria-hidden="true">• ◡ •</span></button>
-      <button class="bun soda" aria-label="Soda" data-ja-label="ソーダ" aria-pressed="false"><span aria-hidden="true">• ◡ •</span></button>
-      <button class="bun milk" aria-label="Milk" data-ja-label="ミルク" aria-pressed="false"><span aria-hidden="true">• ◡ •</span></button>
+      <button class="bun strawberry" aria-label="Strawberry" data-ja-label="いちご" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
+      <button class="bun soda" aria-label="Soda" data-ja-label="ソーダ" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
+      <button class="bun milk" aria-label="Milk" data-ja-label="ミルク" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
     </div>
     <button id="bun-mission" class="action" data-ja="30秒の色チャレンジ">30-second Color Challenge</button>
     <p id="bun-status" class="status" role="status"></p>
@@ -48,7 +48,7 @@
   <section id="dog" class="toy" hidden>
     <h2 data-ja="犬のまねっこ">Puppy Copycat</h2>
     <p data-ja="犬が見せたポーズを、同じ順番で押そう。">Copy the puppy’s moves in the same order.</p>
-    <div class="puppy-stage"><span id="puppy" aria-hidden="true">🐶</span><span id="puppy-move" aria-hidden="true"></span></div>
+    <div class="puppy-stage"><img id="puppy" src="momo-cloud-dog.jpg" alt="MOMO’s cloud dog" data-ja-label="MOMOの雲の犬"><span id="puppy-move" aria-hidden="true"></span></div>
     <button id="dog-start" class="action" data-ja="はじめる">Start</button>
     <p id="dog-status" class="status" role="status"></p>
     <div class="choices moves">

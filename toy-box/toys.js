@@ -11,6 +11,7 @@ tabs.forEach(button => button.addEventListener('click', () => {
 }));
 
 let audio;
+const keySamples = new Map();
 let sound = 'click';
 function play(index, pitch = 0) {
   if (sound === 'mute') return;
@@ -19,12 +20,37 @@ function play(index, pitch = 0) {
   audio ??= new AudioContext();
   if (audio.state === 'suspended') audio.resume().catch(() => {});
   const now = audio.currentTime;
+  if (!pitch) {
+    if (!keySamples.has(sound)) {
+      const rate = audio.sampleRate;
+      const sample = audio.createBuffer(1, Math.ceil(rate * .075), rate);
+      const data = sample.getChannelData(0);
+      const soft = sound === 'soft';
+      for (let frame = 0; frame < data.length; frame++) {
+        const t = frame / rate;
+        const release = Math.max(0, t - .032);
+        const strike = Math.exp(-t * (soft ? 155 : 255));
+        const reset = t >= .032 ? .4 * Math.exp(-release * 420) : 0;
+        const tone = Math.sin(2 * Math.PI * (soft ? 170 : 420) * t);
+        const noise = Math.random() * 2 - 1;
+        data[frame] = (strike + reset) * (noise * (soft ? .16 : .58) + tone * .42);
+      }
+      keySamples.set(sound, sample);
+    }
+    const source = audio.createBufferSource();
+    const level = audio.createGain();
+    source.buffer = keySamples.get(sound);
+    source.playbackRate.value = .92 + (index % 7) * .037;
+    level.gain.value = .18;
+    source.connect(level).connect(audio.destination);
+    source.start(now);
+    return;
+  }
   const osc = audio.createOscillator();
   const gain = audio.createGain();
-  const soft = sound === 'soft' || pitch > 0;
-  osc.type = soft ? 'sine' : 'triangle';
-  osc.frequency.setValueAtTime(pitch || (soft ? 170 : 620) + index * 22, now);
-  osc.frequency.exponentialRampToValueAtTime(pitch ? pitch * .95 : soft ? 78 : 150, now + .055);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(pitch, now);
+  osc.frequency.exponentialRampToValueAtTime(pitch * .95, now + .055);
   gain.gain.setValueAtTime(.12, now);
   gain.gain.exponentialRampToValueAtTime(.001, now + .085);
   osc.connect(gain).connect(audio.destination);
@@ -96,6 +122,16 @@ const decorations = {Q:'♡', E:'🍓', U:'✿', O:'🎀', A:'✦', F:'🍒', J:
 const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
 const keyByLetter = new Map();
 
+function pressKeycap(key, index) {
+  play(index);
+  key.querySelector('.key-spark')?.remove();
+  const sparkle = document.createElement('span');
+  sparkle.className = 'key-spark';
+  sparkle.setAttribute('aria-hidden', 'true');
+  sparkle.textContent = '✦';
+  key.append(sparkle);
+  setTimeout(() => sparkle.remove(), 330);
+}
 function renderKeys(theme) {
   keyCase.dataset.theme = theme;
   keyByLetter.clear();
@@ -120,7 +156,7 @@ function renderKeys(theme) {
         if (theme === 'cat') art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
         key.append(art);
       }
-      key.addEventListener('click', () => play(index + rowIndex * 3));
+      key.addEventListener('click', () => pressKeycap(key, index + rowIndex * 3));
       keyByLetter.set(letter, key);
       row.append(key);
     });
@@ -139,7 +175,7 @@ soundButtons.forEach(button => button.addEventListener('click', () => {
 }));
 renderKeys('pastel');
 const spaceKey = one('.space');
-spaceKey.addEventListener('click', () => play(0));
+spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 0));
 document.addEventListener('keydown', event => {
   if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || one('#keys').hidden) return;
   if (event.code === 'Space' && event.target.closest('button, a')) return;
@@ -151,7 +187,6 @@ document.addEventListener('keydown', event => {
   setTimeout(() => key.classList.remove('pressed'), 110);
 });
 
-const puppy = one('#puppy');
 const puppyMove = one('#puppy-move');
 const dogStatus = one('#dog-status');
 const dogStart = one('#dog-start');
@@ -162,7 +197,6 @@ let guess = 0;
 let showing = false;
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 function pose(move) {
-  puppy.dataset.move = move;
   puppyMove.textContent = signs[move] || (move === 'win' ? '✧ ♡ ✧' : '');
 }
 function controlMoves(enabled) {
@@ -200,7 +234,7 @@ moves.forEach(button => button.addEventListener('click', () => {
   const move = Number(button.dataset.move);
   if (move !== sequence[guess]) return finishPuppy(false);
   pose(move);
-  play(move);
+  play(move, 460 + move * 90);
   if (++guess < sequence.length) return;
   if (sequence.length === 5) return finishPuppy(true);
   sequence.push(Math.floor(Math.random() * 3));
