@@ -9,6 +9,7 @@ const gameScores = (() => {
   const periodButtons = document.querySelectorAll('[data-period]');
   let level = 'standard';
   let period = 'weekly';
+  const nameKey = 'momo:nickname';
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
   const ONLINE_URL = 'https://script.google.com/macros/s/AKfycbwIZWAIOqgmjctFItur6QacLZqf2zL6paAyLxFeCoV1cAnD2O3yV70ZiKiprBi1xTdIVQ/exec';
@@ -17,8 +18,6 @@ const gameScores = (() => {
   let player;
   let formatStage = (_, fallback) => fallback;
   let nicknameState = '';
-  let nicknameCelebration;
-  let editingNickname = false;
   const saveNicknameButton = document.createElement('button');
   saveNicknameButton.type = 'button';
   saveNicknameButton.className = 'save-nickname';
@@ -32,19 +31,10 @@ const gameScores = (() => {
   onlineNote.hidden = true;
   scoreList.after(best, onlineNote);
 
-  function restoreNickname() {
-    if (editingNickname || nameInput.readOnly) return;
-    const saved = momoNickname.read();
-    const previous = nameInput.value;
-    nameInput.value = saved;
-    nicknameState = saved ? 'saved' : '';
-    if (!saved && !previous) return;
-    readyCard.hidden = Boolean(saved);
-    changePlayer.hidden = !saved;
-    renderNickname();
-  }
-
-  restoreNickname();
+  try {
+    nameInput.value = localStorage.getItem(nameKey) || '';
+    if (nameInput.value) nicknameState = 'saved';
+  } catch {}
 
   function renderNickname() {
     saveNicknameButton.textContent = momoLanguage.pick('Save nickname', 'ニックネームを保存');
@@ -57,23 +47,20 @@ const gameScores = (() => {
   }
 
   function saveNickname(celebrate = false) {
-    clearTimeout(nicknameCelebration);
-    nicknameFeedback.classList.remove('lets-go');
     const name = nameInput.value.trim();
     nameInput.value = name;
     try {
-      momoNickname.write(name, celebrate);
+      if (name) localStorage.setItem(nameKey, name);
+      else localStorage.removeItem(nameKey);
       nicknameState = name ? 'saved' : 'cleared';
     } catch { nicknameState = 'unavailable'; }
-    editingNickname = nicknameState === 'unavailable';
     renderNickname();
     render();
     if (celebrate && name && nicknameState === 'saved') {
       nicknameFeedback.textContent = momoLanguage.pick("Let's go!", 'レッツゴー！');
       nicknameFeedback.classList.add('lets-go');
-      nicknameCelebration = setTimeout(() => {
+      setTimeout(() => {
         readyCard.hidden = true;
-        changePlayer.hidden = false;
         nicknameFeedback.classList.remove('lets-go');
         renderNickname();
       }, 950);
@@ -186,9 +173,6 @@ const gameScores = (() => {
   }
 
   nameInput.addEventListener('input', () => {
-    clearTimeout(nicknameCelebration);
-    nicknameFeedback.classList.remove('lets-go');
-    editingNickname = true;
     nicknameState = '';
     renderNickname();
     render();
@@ -205,19 +189,12 @@ const gameScores = (() => {
     refreshBoard();
   }));
   changePlayer.addEventListener('click', () => {
-    editingNickname = true;
     readyCard.hidden = false;
     nameInput.focus();
   });
   const initialLevel = document.querySelector('[data-level][aria-pressed="true"]');
   if (initialLevel) level = initialLevel.dataset.level;
-  window.addEventListener('storage', event => {
-    if (momoNickname.matches(event.key)) restoreNickname();
-    render();
-  });
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) restoreNickname();
-  });
+  window.addEventListener('storage', render);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) refreshBoard();
   });
@@ -237,7 +214,6 @@ const gameScores = (() => {
 
   return {
     start(level = 'standard') {
-      restoreNickname();
       const name = saveNickname();
       player = { name, level };
       nameInput.readOnly = true;

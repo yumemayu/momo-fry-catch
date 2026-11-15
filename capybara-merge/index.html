@@ -17,18 +17,16 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Two capybaras meeting in a stone hot spring.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="../game.css?v=level-cards">
+<link rel="stylesheet" href="../game.css?v=tablet-board">
 <link rel="stylesheet" href="../game-picker.css">
 <link rel="stylesheet" href="../language.css">
-<link rel="stylesheet" href="merge.css?v=level-cards">
+<link rel="stylesheet" href="merge.css?v=title-banner">
 <link rel="stylesheet" href="../game-title-banner.css">
 <script defer src="../language.js"></script>
 <script defer src="../stickers.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
-<script defer src="../nickname.js?v=compact"></script>
-<script defer src="../scores.js?v=shared-nickname"></script>
+<script defer src="../scores.js?v=stickers"></script>
 <script defer src="merge.js?v=title-banner"></script>
-<link rel="stylesheet" href="../nickname.css?v=compact">
 </head>
 <body data-game="capybara">
 <main class="capy-main">
@@ -37,13 +35,10 @@
     <span class="game-title-art" aria-hidden="true"></span>
     <h1><span data-en="Capybara">カピバラ</span><br><span data-en="Onsen Merge">温泉マージ</span></h1>
   </header>
-  <fieldset class="difficulty capy-modes">
-    <legend data-en="Game mode">あそびかた</legend>
-    <div class="level-buttons">
-    <button type="button" data-level="quick" aria-pressed="true"><span class="level-icon" aria-hidden="true">⏱</span><span data-en="1-Minute Merge">1分マージ</span></button>
-    <button type="button" data-level="standard" aria-pressed="false"><span class="level-icon" aria-hidden="true">♨</span><span data-en="Relaxed Merge">ゆったりマージ</span></button>
-    </div>
-  </fieldset>
+  <div class="capy-modes" role="group" aria-label="あそびかた" data-en-label="Game mode">
+    <button type="button" data-level="quick" aria-pressed="true"><span data-en="1-Minute Merge">1分マージ</span></button>
+    <button type="button" data-level="standard" aria-pressed="false"><span data-en="Relaxed Merge">ゆったりマージ</span></button>
+  </div>
   <div class="stats capy-stats">
     <span id="quick-clock"><span class="capy-stat-label" data-en="Time">のこり</span> <output id="quick-time" aria-live="off">60</output><span data-en="sec">秒</span></span>
     <span><span class="capy-stat-label" data-en="Score">スコア</span> <output id="score">0</output></span>
