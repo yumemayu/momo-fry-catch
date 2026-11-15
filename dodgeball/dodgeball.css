@@ -33,12 +33,24 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
 .opponent { position: absolute; left: 50%; top: 46%; translate: -50% -50%; height: 27%; aspect-ratio: 1; }
 .opponent::before { content: ""; position: absolute; inset: 90% 15% 0; border-radius: 50%; background: #8b615537; }
 .opponent img { width: 100%; height: 100%; object-fit: contain; position: relative; }
-.hit img { animation: surprised .44s ease-out; }
-@keyframes surprised {
-  15% { transform: translate(-3%, 5%) rotate(-7deg) scale(1.09, .89); }
-  32% { transform: translate(4%, -9%) rotate(8deg); }
-  53% { transform: translateX(-3%) rotate(-5deg); }
-  72% { transform: translateX(2%) rotate(3deg); }
+/* The impact pose changes with the face, from a squash to a hop or wobble. */
+.hit[data-face="squint"] img { animation: squish .44s ease-out; }
+.hit[data-face="surprised"] img { animation: hop .44s ease-out; }
+.hit[data-face="dizzy"] img { animation: wobble .55s ease-out; }
+@keyframes squish {
+  18% { transform: translateY(8%) scale(1.16, .76); }
+  48% { transform: translateY(-4%) scale(.94, 1.08); }
+}
+@keyframes hop {
+  12% { transform: translateY(4%) scale(1.08, .9); }
+  38% { transform: translateY(-21%) rotate(-6deg) scale(.96, 1.05); }
+  76% { transform: translateY(3%) scale(1.08, .94); }
+}
+@keyframes wobble {
+  18% { transform: translateX(-5%) rotate(-12deg); }
+  39% { transform: translateX(6%) rotate(10deg); }
+  62% { transform: translateX(-3%) rotate(-6deg); }
+  82% { transform: translateX(2%) rotate(3deg); }
 }
 .reaction { position: absolute; left: 74%; top: 6%; padding: 5px 10px; white-space: nowrap; border: 2px solid #a17c98; background: #fff7ee; border-radius: 12px; font-weight: 800; }
 .ball { position: absolute; z-index: 1; left: 50%; top: 83%; translate: -50% -50%; width: clamp(65px, 13%, 100px); aspect-ratio: 1; border: 3px solid #9d6933; border-radius: 50%; background: radial-gradient(circle at 35% 25%, #fffbd3 0 9%, #ffec99 23%, #f5c757 71%, #dda149); box-shadow: 0 7px 0 #8d5b3333; cursor: grab; touch-action: none; }
@@ -50,7 +62,7 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
 .finish button { border: 2px solid #b680a2; border-radius: 999px; padding: 8px 18px; background: #f6d2e6; color: inherit; font: inherit; font-weight: 750; cursor: pointer; }
 #guide { margin: 8px 4px 0; text-align: center; font-size: .9rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { .hit img { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .opponent.hit[data-face] img { animation: none; } }
 .opponent .hit-face, .impact { display: none; }
 .opponent.hit img:first-child { visibility: hidden; }
 .opponent.hit[data-face="squint"] [data-face="squint"],
