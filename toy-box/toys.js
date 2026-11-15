@@ -177,6 +177,9 @@ function bounceBun(bun) {
 const buns = all('.bun');
 const tray = one('#bun-tray');
 const mixLabel = one('#bun-mix-label');
+const mixResult = one('#bun-mix-result');
+const mixSwatches = mixResult.querySelector('.bun-mix-swatches');
+const sourceColors = ['pink', 'blue', 'yellow'];
 const heldBuns = new Map();
 const mixtures = {
   3: ['purple', 'Pink + blue = purple!', 'ピンク ＋ 水色 ＝ むらさき！'],
@@ -191,8 +194,30 @@ function showMix() {
     return sum | (lit ? 1 << index : 0);
   }, 0);
   const mix = mixtures[mask];
-  if (mix) tray.dataset.mix = mix[0];
-  else delete tray.dataset.mix;
+  const previousMix = tray.dataset.mix;
+  if (mix) {
+    tray.dataset.mix = mix[0];
+    if (previousMix !== mix[0]) {
+      const items = [];
+      function swatch(color, result = false) {
+        const chip = document.createElement('span');
+        chip.className = 'bun-mix-swatch';
+        chip.dataset.color = color;
+        chip.classList.toggle('is-result', result);
+        return chip;
+      }
+      sourceColors.forEach((color, index) => {
+        if (!(mask & (1 << index))) return;
+        if (items.length) items.push('+');
+        items.push(swatch(color));
+      });
+      mixSwatches.replaceChildren(...items, '=', swatch(mix[0], true));
+    }
+  } else {
+    delete tray.dataset.mix;
+    mixSwatches.replaceChildren();
+  }
+  mixResult.hidden = !mix;
   mixLabel.textContent = mix ? copy(mix[1], mix[2]) : '';
 }
 

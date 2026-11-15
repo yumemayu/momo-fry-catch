@@ -12,6 +12,21 @@
   const retry = document.querySelector('#retry');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const total = 5;
+  const winningScore = 3;
+  const guide = document.querySelector('#guide');
+  const catScore = document.querySelector('#cat-score');
+  const catHitsOutput = document.querySelector('#cat-hits');
+  const dodgeZone = document.querySelector('#dodge-zone');
+  const landing = document.querySelector('#landing');
+  const paw = document.querySelector('#paw-position');
+  const modeButtons = document.querySelectorAll('[data-mode]');
+  const dodgeButtons = document.querySelectorAll('[data-dodge]');
+  let mode = 'match';
+  let phase = 'throw';
+  let catHits = 0;
+  let playerPosition = 50;
+  let dodgeOrigin;
+  let dodgeResult = '';
   const hitFaces = ['squint', 'surprised', 'dizzy'];
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const say = (en, ja) => momoLanguage.pick(en, ja);
@@ -25,7 +40,7 @@
   let audio;
 
   function moveCat(time) {
-    if (!reducedMotion.matches && finish.hidden && !opponent.classList.contains('hit')) {
+    if (phase === 'throw' && !reducedMotion.matches && finish.hidden && !opponent.classList.contains('hit')) {
       catX = 50 + Math.sin(time / 650) * (21 + thrown * 1.8);
       opponent.style.left = catX + '%';
     }
@@ -55,12 +70,82 @@
   }
 
   function showResults() {
-    result.textContent = say(hits + ' / ' + total + ' hits!', total + '球中 ' + hits + '球ヒット！');
+    if (mode === 'practice') {
+      result.textContent = say(hits + ' / ' + total + ' hits!', total + '球中 ' + hits + '球ヒット！');
+      return;
+    }
+    const outcome = hits === catHits ? say('Draw!', 'ひきわけ！')
+      : hits > catHits ? say('You win!', 'きみの勝ち！') : say('Cat wins!', 'ねこの勝ち！');
+    result.textContent = outcome + ' ' + hits + '–' + catHits;
+  }
+
+  function renderGuide() {
+    if (phase === 'dodge') {
+      guide.textContent = say("Cat’s turn! Swipe left or right to dodge, or use ← →.", 'ねこの番！ 左右にスワイプか、← → でよけよう。');
+    } else if (phase === 'between') {
+      guide.textContent = dodgeResult === 'safe' ? say('Nice dodge!', 'よけた！') : say('Cat scores!', 'ねこに1点！');
+    } else {
+      guide.textContent = mode === 'match'
+        ? say('Your turn! Swipe up to throw, or aim with ← → and press Enter.', 'きみの番！ 上にスワイプ。キーなら ← → で狙って Enter。')
+        : say('Swipe the ball up. With a keyboard, aim with ← → and press Enter.', 'ボールを上にスワイプ。キーなら ← → で狙って Enter。');
+    }
+  }
+
+  function dodge(direction) {
+    if (phase !== 'dodge') return;
+    playerPosition = clamp(playerPosition + direction * 27, 23, 77);
+    paw.style.left = playerPosition + '%';
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function catTurn() {
+    phase = 'dodge';
+    playerPosition = 50;
+    paw.style.left = '50%';
+    // Aim near the center lane so either side gives the player a safe escape.
+    const destination = 44 + Math.random() * 12;
+    landing.style.left = destination + '%';
+    dodgeZone.hidden = false;
+    ball.classList.add('returning');
+    dodgeButtons[0].focus({ preventScroll: true });
+    renderGuide();
+    status.textContent = guide.textContent;
+    const width = court.clientWidth;
+    const height = court.clientHeight;
+    const from = (catX - 50) / 100 * width;
+    const to = (destination - 50) / 100 * width;
+    tone(520, 290);
+    const flight = ball.animate([
+      { transform: `translate(${from}px, ${-height * .37}px) scale(.43)` },
+      { transform: `translate(${to}px, 0) scale(.93)` }
+    ], { duration: 1250, easing: 'ease-in', fill: 'both' });
+    if (reducedMotion.matches) {
+      flight.pause();
+      flight.currentTime = 0;
+      await delay(1250);
+    } else await flight.finished;
+    const hit = Math.abs(destination - playerPosition) < 12;
+    phase = 'between';
+    dodgeOrigin = null;
+    dodgeZone.hidden = true;
+    ball.hidden = true;
+    ball.classList.remove('returning');
+    flight.cancel();
+    if (hit) catHitsOutput.textContent = ++catHits;
+    dodgeResult = hit ? 'hit' : 'safe';
+    renderGuide();
+    status.textContent = guide.textContent;
+    tone(hit ? 300 : 630, hit ? 190 : 890);
+    await delay(430);
   }
 
   async function throwBall(position) {
     if (busy || thrown >= total) return;
     busy = true;
+    modeButtons.forEach(button => { button.disabled = true; });
     ball.setAttribute('aria-disabled', 'true');
     aim.hidden = true;
     if (window.AudioContext) {
@@ -112,18 +197,31 @@
     await bounce.finished;
     bounce.cancel();
     flight.cancel();
-    busy = false;
-    ball.removeAttribute('aria-disabled');
-    if (thrown === total) {
-      ball.hidden = true;
-      showResults();
-      finish.hidden = false;
-      retry.focus();
-    }
     reactionTimer = setTimeout(() => {
       opponent.classList.remove('hit');
       reaction.hidden = true;
     }, 510);
+    if (mode === 'match' && hits < winningScore) {
+      ball.hidden = true;
+      await delay(560);
+      ball.hidden = false;
+      await catTurn();
+    }
+    busy = false;
+    modeButtons.forEach(button => { button.disabled = false; });
+    ball.removeAttribute('aria-disabled');
+    if (thrown === total || (mode === 'match' && Math.max(hits, catHits) >= winningScore)) {
+      phase = 'finished';
+      ball.hidden = true;
+      showResults();
+      finish.hidden = false;
+      retry.focus({ preventScroll: true });
+    } else {
+      phase = 'throw';
+      ball.hidden = false;
+      ball.focus({ preventScroll: true });
+      renderGuide();
+    }
   }
 
   function swipeTarget(event) {
@@ -163,20 +261,51 @@
   ball.addEventListener('click', event => {
     if (event.detail === 0) void throwBall(target);
   });
-  retry.addEventListener('click', () => {
+  function resetRound() {
     clearTimeout(reactionTimer);
     opponent.classList.remove('hit');
     reaction.hidden = true;
     finish.hidden = true;
-    thrown = hits = 0;
+    phase = 'throw';
+    thrown = hits = catHits = 0;
+    catHitsOutput.textContent = '0';
+    catScore.hidden = mode !== 'match';
+    renderGuide();
     target = 50;
     hitsOutput.textContent = hits;
     leftOutput.textContent = total;
     status.textContent = '';
     ball.hidden = false;
-    ball.focus();
+    ball.focus({ preventScroll: true });
+  }
+  dodgeButtons.forEach(button => button.addEventListener('click', () => dodge(Number(button.dataset.dodge))));
+  dodgeZone.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.target.closest('button')) return;
+    dodgeOrigin = { x: event.clientX, id: event.pointerId };
+    dodgeZone.setPointerCapture(event.pointerId);
   });
+  dodgeZone.addEventListener('pointerup', event => {
+    if (dodgeOrigin?.id !== event.pointerId) return;
+    const distance = event.clientX - dodgeOrigin.x;
+    dodgeOrigin = null;
+    if (Math.abs(distance) >= 18) dodge(Math.sign(distance));
+  });
+  dodgeZone.addEventListener('lostpointercapture', () => { dodgeOrigin = null; });
+  document.addEventListener('keydown', event => {
+    if (phase !== 'dodge' || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    dodge(event.key === 'ArrowLeft' ? -1 : 1);
+  });
+  modeButtons.forEach(button => button.addEventListener('click', () => {
+    if (mode === button.dataset.mode) return;
+    mode = button.dataset.mode;
+    modeButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+    resetRound();
+  }));
+  retry.addEventListener('click', resetRound);
+  catScore.hidden = mode !== 'match';
   momoLanguage.subscribe(() => {
+    renderGuide();
     if (!finish.hidden) showResults();
   });
   requestAnimationFrame(moveCat);
