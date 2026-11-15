@@ -1,0 +1,141 @@
+.trap-main .game-heading { gap: 9px; }
+.trap-main .game-heading h1 { font-size: clamp(24px, 3vw, 39px); }
+html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px); }
+
+/* HUD card, like the mock: one white pill card with a thick brown outline. */
+.trap-stats { justify-content: stretch; }
+.trap-stats > .trap-hud {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 8px;
+  min-height: 52px;
+  padding: 4px 14px;
+  border: 3px solid #4a2c1a;
+  border-radius: 999px;
+  background: #fff;
+  color: #4a2c1a;
+  box-shadow: 0 3px 0 rgba(74, 44, 26, .25);
+  font-size: 1.05rem;
+}
+.trap-hud-label { font-size: .85rem; letter-spacing: .04em; }
+.trap-stats output { color: #4a2c1a; font-size: 1.35rem; font-weight: bold; }
+.trap-hud-level { font-size: .82rem; opacity: .75; }
+/* The ready card must sit above the tiles and the cat's speech bubble. */
+.trap-main .game-card { z-index: 10; }
+.level-art { width: 34px; height: 34px; }
+.ready-cat { width: 52px; height: 52px; }
+.trap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
+
+/* The board: a soft grass panel holding 9x9 round tiles in offset rows. */
+.trap-field {
+  position: relative;
+  height: auto;
+  aspect-ratio: 9.5 / 9;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, .55) 0 26px, transparent 27px),
+    linear-gradient(180deg, #e9fbd7, #d3f0ba);
+  box-shadow: inset 0 0 0 2px rgba(90, 140, 60, .18), 0 5px 0 rgba(74, 44, 26, .18);
+}
+.tile {
+  position: absolute;
+  width: 10.4%;
+  aspect-ratio: 1;
+  min-height: 0;
+  padding: 0;
+  border: 3px solid #4a2c1a;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #a5e07a, #77c24e 72%);
+  box-shadow: 0 2px 0 rgba(74, 44, 26, .3);
+  cursor: pointer;
+}
+.tile:disabled { opacity: 1; cursor: default; }
+.tile:not(:disabled):hover, .tile:not(:disabled):focus-visible {
+  background: radial-gradient(circle at 35% 30%, #c2efa0, #93d468 72%);
+}
+.tile svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.tile.blocked { background: radial-gradient(circle at 35% 30%, #a5e07a, #77c24e 72%); }
+.tile.blocked svg { inset: 6%; width: 88%; height: 88%; }
+.tile.has-cat { z-index: 2; }
+.tile.has-cat svg { inset: -16%; width: 132%; height: 132%; }
+.tile.hop svg { animation: cat-hop .3s ease-out; }
+@keyframes cat-hop {
+  40% { transform: translateY(-16%) scale(1.05); }
+}
+
+/* Speech bubble above the cat. */
+.cat-bubble {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 108%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 190px;
+  padding: 4px 12px;
+  border: 3px solid #4a2c1a;
+  border-radius: 999px;
+  background: #fff;
+  color: #4a2c1a;
+  font-family: "Fredoka", var(--game-handwriting);
+  font-weight: 600;
+  font-size: clamp(.78rem, 3.4vw, 1rem);
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: bubble-bob 1.6s ease-in-out infinite alternate;
+}
+.cat-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 3px solid #4a2c1a;
+  border-bottom: 3px solid #4a2c1a;
+  background: #fff;
+}
+@keyframes bubble-bob {
+  from { transform: translateX(-50%) translateY(0); }
+  to { transform: translateX(-50%) translateY(-3px); }
+}
+
+.trap-verdict {
+  margin-top: 4px;
+  font-size: clamp(1.05rem, 4.5vw, 1.4rem);
+  font-weight: bold;
+  color: #9b2867;
+}
+.trap-verdict:empty { display: none; }
+
+.burst-star {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  color: #f6b73e;
+  text-shadow: 0 0 4px #fff, 0 0 6px #fff;
+  font-size: 22px;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  animation: burst-fly .95s ease-out forwards;
+}
+@keyframes burst-fly {
+  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4) rotate(120deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile.hop svg { animation: none; }
+  .cat-bubble { animation: none; }
+  .burst-star { display: none; }
+}
