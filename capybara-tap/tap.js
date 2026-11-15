@@ -36,8 +36,8 @@
     ['ろてん風呂カピバラ', 'Outdoor bath capybara']
   ];
   const copy = {
-    ja: { title: 'カピバラおふろタップ', retry: 'もういちど', on: 'おと ON', off: 'おと OFF', spot: 'スポット', decoy: 'おとり！' },
-    en: { title: 'Capybara Bath Tap', retry: 'Play again', on: 'Sound on', off: 'Sound off', spot: 'Spot', decoy: 'Decoy!' }
+    ja: { retry: 'もういちど', on: 'おと ON', off: 'おと OFF', spot: 'スポット', decoy: 'おとり！' },
+    en: { retry: 'Play again', on: 'Sound on', off: 'Sound off', spot: 'Spot', decoy: 'Decoy!' }
   };
   let language = 'en';
   let level = 'easy';
@@ -64,7 +64,6 @@
 
   function renderLanguage() {
     document.documentElement.lang = language;
-    document.title = copy[language].title + ' | Momo.squirrels';
     staticLabels.forEach(({ element, property, [language === 'ja' ? 'ja' : 'en']: value }) => {
       if (property === 'textContent') element.textContent = value;
       else element.setAttribute(property, value);
