@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="../game-picker.css">
 <link rel="stylesheet" href="../language.css">
   <script defer src="../language.js"></script>
+<script defer src="../nickname.js?v=compact"></script>
+<link rel="stylesheet" href="../nickname.css?v=compact">
   <script defer src="../stickers.js"></script>
 <script src="piano.js?v=stickers" defer></script>
 </head>
@@ -79,6 +81,15 @@
     <a class="picker-piano" href="../toy-box/#keys"><span class="game-art" aria-hidden="true">⌨</span><span data-ja="カチカチキー">Clicky Keys</span></a>
     <a class="picker-memory" href="../toy-box/#dog"><span class="game-art" aria-hidden="true">🐾</span><span data-ja="犬のまねっこ">Puppy Copycat</span></a>
 </nav>
+<details class="momo-nickname-panel" data-nickname-panel>
+  <summary>Set nickname</summary>
+  <form>
+    <label for="shared-nickname" data-ja="ニックネーム">Nickname</label>
+    <input id="shared-nickname" maxlength="20" autocomplete="off">
+    <button type="submit" data-ja="保存">Save</button>
+  </form>
+  <small role="status"></small>
+</details>
 </main>
 <footer class="sticker-footer"><a href="../toy-box/#stickers" data-sticker-link>✦ Sticker Book</a></footer>
 </body>
