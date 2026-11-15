@@ -12,10 +12,8 @@
   const SIZE = 11;
   const CENTER = Math.floor(SIZE / 2);
   const undoButton = document.querySelector('#trap-undo');
-  const hintButton = document.querySelector('#trap-hint');
   const newButton = document.querySelector('#trap-new');
   const history = [];
-  let showHint = true;
   let escapeTimer;
   const levelConfig = {
     easy: { blocks: 24 },
@@ -224,8 +222,6 @@
   }
 
   function render() {
-    const hinted = new Set((showHint && !escapeTimer ? shortestPathToEdge()?.slice(1) : [])
-      ?.map(([r, c]) => key(r, c)) ?? []);
     undoButton.disabled = !playing || !history.length || Boolean(escapeTimer);
     for (const tile of tiles) {
       const { button, r, c } = tile;
@@ -234,7 +230,6 @@
         button.dataset.content = content;
         button.classList.toggle('blocked', content === 'box');
       }
-      button.classList.toggle('hinted', hinted.has(key(r, c)));
       button.disabled = !playing || Boolean(escapeTimer) || content !== 'empty';
       labelTile(tile);
     }
@@ -409,8 +404,6 @@
   levelButtons.forEach(button => button.addEventListener('click', () => {
     if (playing) return;
     level = button.dataset.level;
-    showHint = level === 'easy';
-    hintButton.setAttribute('aria-pressed', String(showHint));
     levelButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
     newPuzzle();
     renderLanguage();
@@ -423,11 +416,6 @@
     cat = previous.cat;
     lineKey = previous.lineKey;
     moves--;
-    render();
-  });
-  hintButton.addEventListener('click', () => {
-    showHint = !showHint;
-    hintButton.setAttribute('aria-pressed', String(showHint));
     render();
   });
   newButton.addEventListener('click', () => {
