@@ -22,7 +22,6 @@ function cuteNoteRate(index) {
   return 2 ** (semitones / 12);
 }
 function play(index, pitch = 0) {
-  if (sound === 'mute') return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
   audio ??= new AudioContext();
@@ -77,7 +76,7 @@ function play(index, pitch = 0) {
 }
 
 function meow() {
-  if (!audio || sound === 'mute') return;
+  if (!audio) return;
   const now = audio.currentTime;
   const voice = audio.createOscillator();
   const vowel = audio.createBiquadFilter();
@@ -203,7 +202,7 @@ let nextMeow = 8;
 function pressKeycap(key, index, letter) {
   play(index);
   saveNote(notebook.value + letter);
-  const catSound = keyCase.dataset.theme === 'cat' && sound !== 'mute' && ++catPresses >= nextMeow;
+  const catSound = keyCase.dataset.theme === 'cat' && ++catPresses >= nextMeow;
   if (catSound) {
     catPresses = 0;
     nextMeow = 7 + Math.floor(Math.random() * 5);
