@@ -47,8 +47,9 @@ if (nicknamePanel) {
 
   function render() {
     const saved = momoNickname.read();
+    nicknamePanel.toggleAttribute('data-saved', Boolean(saved));
     summary.textContent = saved
-      ? pick('Nickname: ', 'ニックネーム：') + saved
+      ? pick('Change nickname', 'ニックネームをかえる')
       : pick('Set nickname', 'ニックネームを設定');
   }
 
@@ -64,6 +65,7 @@ if (nicknamePanel) {
       momoNickname.write(input.value.trim());
       nicknamePanel.open = false;
       render();
+      summary.focus();
       status.textContent = pick('Nickname updated.', 'ニックネームを更新しました。');
     } catch {
       status.textContent = pick('Could not save here.', 'この端末には保存できませんでした。');
