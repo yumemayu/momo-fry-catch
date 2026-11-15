@@ -37,9 +37,15 @@ let musicEnabled = true;
 function playMusic() {
   if (musicEnabled) music.play().catch(() => {});
 }
+let language = 'en';
+const L = (en, ja) => language === 'ja' ? ja : en;
+momoLanguage.subscribe(code => {
+  language = code;
+  musicButton.textContent = musicEnabled ? L('Music on', 'おと ON') : L('Music off', 'おと OFF');
+});
 musicButton.addEventListener('click', () => {
   musicEnabled = !musicEnabled;
-  musicButton.textContent = musicEnabled ? 'Music on' : 'Music off';
+  musicButton.textContent = musicEnabled ? L('Music on', 'おと ON') : L('Music off', 'おと OFF');
   musicButton.setAttribute('aria-pressed', String(musicEnabled));
   if (!musicEnabled) music.pause();
   else if (startTime !== null) playMusic();
@@ -243,7 +249,7 @@ function step(now) {
         practicing = false;
         practiced = true;
         startTime = now;
-        result.textContent = 'You got it! Go!';
+        result.textContent = L('You got it! Go!', 'つかまえた！ そのちょうし！');
         catches.push({ x: player, at: now, label: '✓' });
         return false;
       }
@@ -266,9 +272,9 @@ function finishGame(completed = false) {
   startButton.disabled = false;
   stopButton.hidden = true;
   difficultyButtons.forEach(button => { button.disabled = false; });
-  startButton.textContent = 'Play again';
+  startButton.textContent = L('Play again', 'もういちど');
   gameScores.finish(score, completed);
-  result.textContent = bunMode ? 'Final score: ' + score : 'You caught ' + score + (score === 1 ? ' fry!' : ' fries!');
+  result.textContent = bunMode ? L('Final score: ', 'スコア：') + score : L('You caught ' + score + (score === 1 ? ' fry!' : ' fries!'), 'フライを ' + score + 'こ つかまえた！');
   draw();
 }
 stopButton.addEventListener('click', () => {
@@ -285,14 +291,14 @@ startButton.addEventListener('click', () => {
   timeOutput.value = duration;
   nextSpawn = 0;
   startTime = previous = performance.now();
-  startButton.textContent = 'Playing…';
+  startButton.textContent = L('Playing…', 'プレイ中…');
   startButton.disabled = true;
   stopButton.hidden = false;
   level = levels[selectedLevel];
   difficultyButtons.forEach(button => { button.disabled = true; });
   music.currentTime = 0;
   playMusic();
-  result.textContent = bunMode ? 'Catch the smiling buns! Dodge the Devil Buns!' : practicing ? 'Catch this fry to start!' : 'Here come the fries!';
+  result.textContent = bunMode ? L('Catch the smiling buns! Dodge the Devil Buns!', 'にこにこ肉まんを つかまえて！ デビル肉まんは よけて！') : practicing ? L('Catch this fry to start!', 'このフライを つかまえて スタート！') : L('Here come the fries!', 'フライが きたよ！');
   requestAnimationFrame(step);
 });
 

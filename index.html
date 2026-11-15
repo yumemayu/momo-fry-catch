@@ -19,10 +19,10 @@
 <button type="button" data-level="hard" aria-pressed="false"><span class="level-icon" aria-hidden="true">⭐</span><span data-ja="むずかしい">Hard</span></button>
 <button type="button" data-level="impossible" aria-pressed="false"><span class="level-icon" aria-hidden="true">🚀</span><span data-ja="超むずかしい">Impossible</span></button>
 </div></fieldset>
-<div class="stats"><span><img class="stat-icon" src="assets/game-fries.png" alt=""> <output id="score">0</output> fries</span><span><output id="time">30</output>s left</span></div>
+<div class="stats"><span><img class="stat-icon" src="assets/game-fries.png" alt=""> <output id="score">0</output> <span data-ja="こ">fries</span></span><span><output id="time">30</output><span data-ja="秒">s left</span></span></div>
 <div class="play-stack">
 <div class="play-stage">
-<canvas class="game-field" id="field" aria-label="Fry Catch play area">Fry Catch play area</canvas>
+<canvas class="game-field" id="field" aria-label="Fry Catch play area" data-ja-label="フライキャッチの画面">Fry Catch play area</canvas>
 <div class="game-card" id="ready-card">
 <img src="assets/game-fries.png" alt="" width="72" height="72">
 <strong data-ja="はじめよう！">Ready to play?</strong>
@@ -38,7 +38,7 @@
 <button id="left" aria-label="Move left">←</button><button id="right" aria-label="Move right">→</button>
 </div>
 </div>
-<p id="result" role="status">Drag on the game or use the arrow buttons.</p>
+<p id="result" role="status" data-ja="ドラッグするか、やじるしボタンで うごかしてね">Drag on the game or use the arrow buttons.</p>
 <div class="music"><button id="music" type="button" aria-pressed="true">Music on</button><label><span data-ja="音量">Volume</span> <input id="volume" type="range" min="0" max="100" value="25"></label></div>
 <section class="score-board" aria-labelledby="board-title">
 <div class="score-board-heading">

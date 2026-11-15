@@ -8,6 +8,8 @@ let found = 0;
 let remaining = 0;
 let deadline;
 let stopped = false;
+let language = 'en';
+const L = (en, ja) => language === 'ja' ? ja : en;
 
 const practice = document.querySelector('#practice');
 const stop = document.querySelector('#stop');
@@ -41,22 +43,22 @@ function makeBoard() {
     const target = targets.has(i);
     const cat = document.createElement('button');
     cat.type = 'button';
-    cat.setAttribute('aria-label', 'Cat ' + (i + 1) + (target ? ', wearing glasses' : ', no glasses'));
+    cat.setAttribute('aria-label', L('Cat ', 'ねこ') + (i + 1) + (target ? L(', wearing glasses', '、メガネあり') : L(', no glasses', '、メガネなし')));
     cat.innerHTML = catArt(target);
     cat.addEventListener('click', () => {
       if (performance.now() >= deadline || cat.getAttribute('aria-disabled') === 'true') return;
       cat.setAttribute('aria-disabled', 'true');
       cat.classList.add(target ? 'found' : 'miss');
       if (!target) {
-        result.textContent = 'No glasses on that cat. Keep looking!';
+        result.textContent = L('No glasses on that cat. Keep looking!', 'そのねこは メガネなし。さがしてね！');
         return;
       }
       score.value = ++found;
       remaining--;
-      result.textContent = remaining ? 'Found one!' : 'New cats!';
+      result.textContent = remaining ? L('Found one!', 'みつけた！') : L('New cats!', 'あたらしい ねこたち！');
       if (!remaining) {
         if (deadline === Infinity) {
-          result.textContent = 'You found all three! Practice again or tap Play.';
+          result.textContent = L('You found all three! Practice again or tap Play.', '3ひき みつけた！ れんしゅうか、Playをおしてね');
           for (const tile of cats.children) tile.disabled = true;
         } else {
           makeBoard();
@@ -70,7 +72,7 @@ function makeBoard() {
 
 function tick() {
   const seconds = Math.max(0, Math.ceil((deadline - performance.now()) / 1000));
-  time.value = seconds + 's left';
+  time.value = L(seconds + 's left', 'のこり' + seconds + '秒');
   if (seconds > 0) {
     requestAnimationFrame(tick);
     return;
@@ -79,23 +81,23 @@ function tick() {
   stop.hidden = true;
   play.disabled = false;
   practice.disabled = false;
-  play.textContent = 'Play again';
+  play.textContent = L('Play again', 'もういちど');
   gameScores.finish(found, !stopped);
-  result.textContent = 'You found ' + found + (found === 1 ? ' cat!' : ' cats!');
+  result.textContent = L('You found ' + found + (found === 1 ? ' cat!' : ' cats!'), found + 'ひき みつけた！');
 }
 
 play.addEventListener('click', () => {
   gameScores.start();
   stopped = false;
   score.value = found = 0;
-  time.value = '30s left';
+  time.value = L('30s left', 'のこり30秒');
   deadline = performance.now() + 30000;
-  play.textContent = 'Playing…';
+  play.textContent = L('Playing…', 'プレイ中…');
   play.disabled = true;
   stop.hidden = false;
   practice.disabled = true;
   cats.dataset.practice = "false";
-  result.textContent = 'Find the glasses!';
+  result.textContent = L('Find the glasses!', 'メガネねこを さがして！');
   makeBoard();
   requestAnimationFrame(tick);
 });
@@ -103,9 +105,16 @@ play.addEventListener('click', () => {
 practice.addEventListener('click', () => {
   gameScores.clear();
   score.value = found = 0;
-  time.value = 'No timer';
+  time.value = L('No timer', 'タイマーなし');
   deadline = Infinity;
   cats.dataset.practice = 'true';
-  result.textContent = 'Find three cats with glasses!';
+  result.textContent = L('Find three cats with glasses!', 'メガネねこを 3ひき さがして！');
   makeBoard();
+});
+
+momoLanguage.subscribe(code => {
+  language = code;
+  if (deadline === undefined) time.value = L('30s left', 'のこり30秒');
+  else if (play.disabled) play.textContent = L('Playing…', 'プレイ中…');
+  else if (deadline !== Infinity) play.textContent = L('Play again', 'もういちど');
 });
