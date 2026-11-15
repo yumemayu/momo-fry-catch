@@ -67,7 +67,12 @@ html[lang="en"] .trap-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px
   height: 100%;
   pointer-events: none;
 }
-.tile.blocked svg { inset: 1%; width: 98%; height: 98%; }
+.tile.blocked {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.tile.blocked svg { inset: 0; width: 100%; height: 100%; }
 /* The cat is a field-level layer (not a tile child), so it can glide
    from tile to tile and never blocks taps on the tiles underneath. */
 .cat-art {
