@@ -18,7 +18,12 @@
     <img class="hello-rainbow" src="../assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592">
     <h1><span data-en="Capybara">カピバラ</span><br><span data-en="Onsen Merge">温泉マージ</span></h1>
   </header>
+  <div class="capy-modes" role="group" aria-label="あそびかた" data-en-label="Game mode">
+    <button type="button" data-level="quick" aria-pressed="true"><span data-en="1-Minute Merge">1分マージ</span></button>
+    <button type="button" data-level="standard" aria-pressed="false"><span data-en="Relaxed Merge">ゆったりマージ</span></button>
+  </div>
   <div class="stats capy-stats">
+    <span id="quick-clock"><span class="capy-stat-label" data-en="Time">のこり</span> <output id="quick-time" aria-live="off">60</output><span data-en="sec">秒</span></span>
     <span><span class="capy-stat-label" data-en="Score">スコア</span> <output id="score">0</output></span>
     <span><span class="capy-stat-label" data-en="Next">つぎ</span> <img id="next-piece" src="pieces/1.webp" alt="ゆず" width="44" height="44"></span>
   </div>
@@ -62,6 +67,7 @@
   <section class="score-board" aria-labelledby="board-title">
     <div class="score-board-heading">
       <h2 id="board-title"><img src="pieces/4.webp" alt="" width="24" height="24"><span data-en="Leaderboard">ランキング</span></h2>
+      <span id="score-level"></span>
       <div class="score-period" aria-label="Ranking period" role="group">
         <button type="button" data-period="weekly" aria-pressed="true" data-en="This week">今週</button>
         <button type="button" data-period="all" aria-pressed="false" data-en="All time">すべて</button>

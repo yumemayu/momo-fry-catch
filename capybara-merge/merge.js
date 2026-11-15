@@ -2,6 +2,12 @@
   const field = document.querySelector('#field');
   const ink = field.getContext('2d');
   const scoreOutput = document.querySelector('#score');
+  const modeButtons = document.querySelectorAll('.capy-modes [data-level]');
+  const quickClock = document.querySelector('#quick-clock');
+  const quickTime = document.querySelector('#quick-time');
+  const roundMs = 60000;
+  const settleMs = 1100;
+  const babyStage = 3;
   const nextImage = document.querySelector('#next-piece');
   const guide = document.querySelector('#growth');
   const growthBest = document.querySelector('#growth-best');
@@ -22,9 +28,9 @@
   const saveKey = 'momo:capybara:best-stage';
   const copy = {
     ja: {title:'カピバラ温泉マージ', growth:'いちばん育った姿', retry:'もういちど', on:'おと ON', off:'おと OFF',
-      special:'ろてん風呂に とうちゃく！', full:'いっぱいになったよ。もういちど！', error:'ゲームを読みこめませんでした。ページを開きなおしてください。'},
+      special:'ろてん風呂に とうちゃく！', full:'いっぱいになったよ。もういちど！', timeUp:'1分たったよ！', settling:'さいごの合体を待ってね。', error:'ゲームを読みこめませんでした。ページを開きなおしてください。'},
     en: {title:'Capybara Onsen Merge', growth:'Biggest piece', retry:'Play again', on:'Sound on', off:'Sound off',
-      special:'You made it to the outdoor bath!', full:'The bath is full. Try again!', error:'The game could not load. Please reload the page.'}
+      special:'You made it to the outdoor bath!', full:'The bath is full. Try again!', timeUp:'Time is up!', settling:'Let the last pieces settle!', error:'The game could not load. Please reload the page.'}
   };
   let language = 'en';
   const stages = [
@@ -61,6 +67,9 @@
   }
   let engine;
   let playing = false;
+  let mode = 'quick';
+  let deadline = 0;
+  let settling = false;
   let score = 0;
   let biggest = 0;
   let current = 0;
@@ -110,6 +119,7 @@
 
   function queuePiece() {
     const draw = Math.random();
+    if (mode === 'quick') return draw < .25 ? 0 : draw < .51 ? 1 : draw < .77 ? 2 : babyStage;
     return draw < .54 ? 0 : draw < .87 ? 1 : 2;
   }
 
@@ -229,11 +239,16 @@
     const backedUp = [...pieces.values()].some(({body, stage, born}) =>
       age - born > 550 && body.position.y - stages[stage].radius < limit && Math.abs(body.velocity.y) < 1.5);
     overTime = backedUp ? overTime + timestep : 0;
-    if (overTime >= 2000) finish(true);
+    if (!settling && overTime >= 2000) finish(true);
   }
 
   function setControls() {
-    left.disabled = right.disabled = dropButton.disabled = !playing;
+    left.disabled = right.disabled = dropButton.disabled = !playing || settling;
+    modeButtons.forEach(button => {
+      button.disabled = playing;
+      button.setAttribute('aria-pressed', String(button.dataset.level === mode));
+    });
+    quickClock.hidden = mode !== 'quick';
     start.disabled = playing || !physics;
     stop.hidden = !playing;
   }
@@ -245,7 +260,10 @@
     effects.length = pairs.length = 0;
     score = biggest = age = backlog = overTime = cooldown = 0;
     lastTime = pointer = null;
-    current = queuePiece();
+    settling = false;
+    deadline = mode === 'quick' ? performance.now() + roundMs : 0;
+    quickTime.value = roundMs / 1000;
+    current = deadline ? babyStage : queuePiece();
     next = queuePiece();
     aim = width / 2;
     playing = true;
@@ -253,7 +271,8 @@
     setNotice('');
     finalGrowth.textContent = '';
     start.textContent = 'Play';
-    gameScores.start();
+    if (deadline) insert(babyStage, aim, floor - stages[babyStage].radius);
+    gameScores.start(mode);
     updateNext();
     setControls();
     playChime();
@@ -261,20 +280,22 @@
     if (frame === null) frame = requestAnimationFrame(tick);
   }
 
-  function finish(completed) {
+  function finish(completed, reason = 'full') {
     playing = false;
+    settling = false;
+    deadline = 0;
     pointer = null;
     playedRound = true;
     finalGrowth.textContent = biggest ? copy[language].growth + ': ' + stages[biggest - 1][language] : '';
     gameScores.finish(score, completed, {stage: biggest, stageName: stages[biggest - 1]?.ja});
-    setNotice(completed ? 'full' : '');
+    setNotice(completed ? reason : '');
     start.textContent = copy[language].retry;
     setControls();
     start.focus({preventScroll: true});
   }
 
   function drop() {
-    if (!playing || age < cooldown) return;
+    if (!playing || settling || (deadline && performance.now() >= deadline) || age < cooldown) return;
     insert(current, aim, limit - 36);
     cooldown = age + 370;
     current = next;
@@ -332,7 +353,7 @@
     ink.lineTo(width - wall - 8, limit);
     ink.stroke();
     ink.setLineDash([]);
-    if (playing) {
+    if (playing && !settling) {
       ink.globalAlpha = age < cooldown ? .35 : .70;
       ink.strokeStyle = '#c2a0cc';
       ink.setLineDash([3, 7]);
@@ -381,12 +402,23 @@
 
   function tick(time) {
     frame = null;
+    if (playing && deadline) {
+      const remaining = Math.max(0, Math.ceil((deadline - time) / 1000));
+      if (Number(quickTime.value) !== remaining) quickTime.value = remaining;
+      if (remaining === 0 && !settling) {
+        settling = true;
+        pointer = null;
+        setControls();
+        setNotice('settling');
+      }
+    }
     if (lastTime !== null) backlog += Math.min(50, time - lastTime);
     lastTime = time;
     while (playing && backlog >= timestep) {
       backlog -= timestep;
       stepWorld();
     }
+    if (playing && settling && time >= deadline + settleMs) finish(true, 'timeUp');
     drawBoard();
     if (playing) frame = requestAnimationFrame(tick);
   }
@@ -397,13 +429,13 @@
   }
 
   field.addEventListener('pointerdown', event => {
-    if (!playing || pointer !== null || event.button !== 0) return;
+    if (!playing || settling || pointer !== null || event.button !== 0) return;
     pointer = event.pointerId;
     aimPointer(event);
     field.setPointerCapture(pointer);
   });
   field.addEventListener('pointermove', event => {
-    if (playing && (event.pointerId === pointer || (pointer === null && event.pointerType === 'mouse'))) aimPointer(event);
+    if (playing && !settling && (event.pointerId === pointer || (pointer === null && event.pointerType === 'mouse'))) aimPointer(event);
   });
   field.addEventListener('pointerup', event => {
     if (event.pointerId !== pointer) return;
@@ -413,7 +445,7 @@
   });
   field.addEventListener('lostpointercapture', () => { pointer = null; });
   field.addEventListener('keydown', event => {
-    if (!playing || !['ArrowLeft', 'ArrowRight', ' ', 'Enter'].includes(event.key)) return;
+    if (!playing || settling || !['ArrowLeft', 'ArrowRight', ' ', 'Enter'].includes(event.key)) return;
     event.preventDefault();
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       aim = clampAim(aim + (event.key === 'ArrowLeft' ? -12 : 12));
@@ -422,6 +454,23 @@
   left.addEventListener('click', () => { aim = clampAim(aim - 17); });
   right.addEventListener('click', () => { aim = clampAim(aim + 17); });
   dropButton.addEventListener('click', drop);
+  modeButtons.forEach(button => button.addEventListener('click', () => {
+    if (playing || mode === button.dataset.level) return;
+    mode = button.dataset.level;
+    playedRound = false;
+    pieces.clear();
+    effects.length = 0;
+    score = biggest = overTime = 0;
+    scoreOutput.value = 0;
+    quickTime.value = roundMs / 1000;
+    next = mode === 'quick' ? babyStage : 1;
+    document.querySelector('#score-card').hidden = true;
+    setNotice(physics ? '' : 'error');
+    renderLanguage();
+    setControls();
+    gameScores.showLevel(mode);
+    drawBoard();
+  }));
   start.addEventListener('click', begin);
   stop.addEventListener('click', () => finish(false));
   sound.addEventListener('click', () => {
@@ -431,7 +480,9 @@
     if (!muted) playChime();
   });
   if (!physics) setNotice('error');
+  next = babyStage;
   setControls();
+  gameScores.showLevel(mode);
   momoLanguage.subscribe(code => { language = code; renderLanguage(); });
   new ResizeObserver(drawBoard).observe(field);
   drawBoard();
