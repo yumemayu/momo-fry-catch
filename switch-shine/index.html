@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title data-en-title="Switch &amp; Shine | MOMO Games">ピカッとスイッチ | MOMOゲーム集</title>
   <link rel="stylesheet" href="../language.css">
-  <link rel="stylesheet" href="switch-shine.css">
+  <link rel="stylesheet" href="switch-shine.css?v=records">
   <script defer src="../language.js"></script>
-  <script defer src="switch-shine.js?v=twenty-circuits"></script>
+  <script defer src="switch-shine.js?v=records"></script>
 </head>
 <body>
 <main>
@@ -30,6 +30,12 @@
     </div>
     <p id="goal" hidden></p>
     <button type="button" id="reset" data-ja="リセット">Reset</button>
+  </div>
+  <div id="records" class="records" hidden>
+    <label><span data-ja="問題">Circuit</span> <select id="circuit-select"></select></label>
+    <span><span data-ja="クリア">Cleared</span> <strong id="cleared"></strong></span>
+    <span><span data-ja="手数">Moves</span> <strong id="moves"></strong></span>
+    <span><span data-ja="最少手数">Best</span> <strong id="best-moves"></strong></span>
   </div>
   <section class="board" aria-label="Interactive circuit" data-ja-label="操作できる回路" aria-describedby="readout">
     <svg id="wires" viewBox="0 0 1000 440" preserveAspectRatio="none" aria-hidden="true"></svg>

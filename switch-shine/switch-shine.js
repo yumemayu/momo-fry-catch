@@ -8,6 +8,12 @@
   const readout = document.querySelector('#readout');
   const advance = document.querySelector('#advance');
   const reset = document.querySelector('#reset');
+  const recordBar = document.querySelector('#records');
+  const circuitSelect = document.querySelector('#circuit-select');
+  const clearedOutput = document.querySelector('#cleared');
+  const movesOutput = document.querySelector('#moves');
+  const bestOutput = document.querySelector('#best-moves');
+  const recordKey = 'momo:switch-shine:best-moves:v1';
   const pick = momoLanguage.pick;
   const svgNS = 'http://www.w3.org/2000/svg';
   const gatePaths = {
@@ -50,11 +56,48 @@
   const binaryGates = new Set(['OR', 'AND', 'XOR', 'NAND']);
   let mode = 'lab';
   let kind = 'WIRE';
+  const bestMoves = puzzles.map(() => null);
   let index = 0;
+  let moves = 0;
   let stage;
   let bits;
   let inputs;
   let outputs;
+
+  function mergeSavedRecords() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(recordKey));
+      if (!Array.isArray(saved)) return;
+      bestMoves.forEach((best, i) => {
+        const candidate = saved[i];
+        if (Number.isSafeInteger(candidate) && candidate > 0 && (best === null || candidate < best)) {
+          bestMoves[i] = candidate;
+        }
+      });
+    } catch {}
+  }
+
+  function recordClear() {
+    mergeSavedRecords();
+    if (bestMoves[index] !== null && bestMoves[index] <= moves) return;
+    bestMoves[index] = moves;
+    try { localStorage.setItem(recordKey, JSON.stringify(bestMoves)); } catch {}
+  }
+
+  function renderRecords() {
+    recordBar.hidden = mode !== 'puzzle';
+    if (recordBar.hidden) return;
+    const cleared = bestMoves.filter(best => best !== null).length;
+    clearedOutput.textContent = cleared + '/' + puzzles.length;
+    movesOutput.textContent = moves;
+    bestOutput.textContent = bestMoves[index] ?? '—';
+    const unlocked = bestMoves.indexOf(null);
+    const count = unlocked < 0 ? puzzles.length : unlocked + 1;
+    if (circuitSelect.options.length !== count) {
+      circuitSelect.replaceChildren(...Array.from({ length: count }, (_, i) => new Option(String(i + 1), String(i))));
+    }
+    circuitSelect.value = String(index);
+  }
 
   function evaluate(type, [a, b]) {
     switch (type) {
@@ -106,6 +149,7 @@
     });
     const values = outputs.map(({ type, pins }) => evaluate(type, pins.map(pin => bits[pin])));
     const solved = mode === 'puzzle' && values.every((value, i) => value === stage.target[i]);
+    if (solved && animate) recordClear();
     outputs.forEach(({ pins, lamp, digit, gate, y, name }, i) => {
       const isBinary = pins.length === 2;
       const on = values[i] === 1;
@@ -125,6 +169,7 @@
       lamp.classList.toggle('correct', solved && on);
     });
     renderCopy(solved);
+    renderRecords();
   }
 
   function renderCopy(solved) {
@@ -148,6 +193,7 @@
   }
 
   function loadStage() {
+    moves = 0;
     stage = mode === 'puzzle' ? puzzles[index] : {
       outputs: [kind], count: binaryGates.has(kind) ? 2 : 1
     };
@@ -163,6 +209,7 @@
       caption(button, name);
       button.addEventListener('click', () => {
         bits[i] ^= 1;
+        if (mode === 'puzzle') moves++;
         playClick();
         redraw(true);
       });
@@ -217,6 +264,11 @@
   modes.forEach(button => button.addEventListener('click', () => {
     if (mode === button.dataset.mode) return;
     mode = button.dataset.mode;
+    if (mode === 'puzzle') {
+      mergeSavedRecords();
+      const firstUnsolved = bestMoves.indexOf(null);
+      index = Math.max(0, firstUnsolved);
+    }
     modes.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
     loadStage();
   }));
@@ -226,6 +278,15 @@
     gates.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
     loadStage();
   }));
+  circuitSelect.addEventListener('change', () => {
+    index = Number(circuitSelect.value);
+    loadStage();
+  });
+  window.addEventListener('storage', event => {
+    if (event.key !== recordKey) return;
+    mergeSavedRecords();
+    renderRecords();
+  });
   reset.addEventListener('click', loadStage);
   advance.addEventListener('click', () => {
     index = (index + 1) % puzzles.length;
