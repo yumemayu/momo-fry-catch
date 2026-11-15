@@ -66,10 +66,3 @@
     margin-top: 50px;
   }
 }
-
-@media (min-width: 1050px), (orientation: landscape) and (min-width: 700px) {
-  .trap-main > .play-stack {
-    width: min(100%, clamp(380px, calc(100dvh - 130px), 760px));
-    align-self: start;
-  }
-}

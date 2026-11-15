@@ -442,15 +442,22 @@ body[data-game="buns"] {
 }
 
 
-/* Catch games use a 400 × 360 drawing area. Preserve that shape on desktop. */
+/* Keep desktop playfields at a common height while preserving board proportions. */
 @media (min-width: 1050px), (orientation: landscape) and (min-width: 700px) {
-  body:is([data-game="fries"], [data-game="buns"]) main > .play-stack {
-    width: min(100%, calc(var(--game-field-height) * 10 / 9));
+  body:is([data-game="fries"], [data-game="buns"], [data-game="cats"],
+    [data-game="capybara-memory"], [data-game="capybara-tap"], [data-game="cat-trap"]) main > .play-stack {
+    width: min(100%, calc(var(--game-field-height) * var(--playfield-ratio, 10 / 9)));
+    align-self: start;
     justify-self: center;
   }
-  body:is([data-game="fries"], [data-game="buns"]) .game-field {
+  body:is([data-game="fries"], [data-game="buns"], [data-game="cats"],
+    [data-game="capybara-memory"], [data-game="capybara-tap"], [data-game="cat-trap"]) .game-field {
     height: auto;
-    aspect-ratio: 10 / 9;
+    min-height: 0;
+    aspect-ratio: var(--playfield-ratio, 10 / 9);
+  }
+  body[data-game="cat-trap"] {
+    --playfield-ratio: 9.5 / 9;
   }
 }
 

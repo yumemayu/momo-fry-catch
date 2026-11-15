@@ -38,7 +38,6 @@
 /* The ready/score cards float over the tub; the spots carry z-index 1,
    so the cards need a higher one or the water rings paint over them. */
 .tap-main .game-card { z-index: 6; }
-.tap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 
 /* The field is a wooden onsen tub filled with blue water. */
 .bath-field {

@@ -22,7 +22,6 @@
 .trap-main .game-card { z-index: 10; }
 .level-art { width: 34px; height: 34px; }
 .ready-cat { width: 52px; height: 52px; object-fit: contain; }
-.trap-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 
 /* The board: a pale mint block plate holding 9x9 chunky square tiles
    with studs, per the user-approved mock (2026-11-15). */
