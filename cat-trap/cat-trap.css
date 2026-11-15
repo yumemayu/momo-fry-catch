@@ -70,7 +70,7 @@
 .cat-art.face-left .cat-flip { transform: scaleX(-1); }
 .cat-art .leg, .cat-art .cat-tail { transform-box: view-box; }
 .cat-art .cat-tail {
-  transform-origin: 25px 67px;
+  transform-origin: 26px 74px;
   animation: cat-tail-sway 2.6s ease-in-out infinite alternate;
 }
 @keyframes cat-tail-sway {

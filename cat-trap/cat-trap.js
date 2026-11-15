@@ -56,17 +56,26 @@
   // its direction of travel and its legs swing while it glides.
   const CAT_SVG = `<div class="cat-flip"><svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
     <g class="cat-bob">
-      <path class="cat-tail" d="M25 67 C11 63 6 45 14 30" fill="none" stroke="#33302e" stroke-width="7.5" stroke-linecap="round"/>
-      <rect class="leg leg-a" style="transform-origin: 33.5px 80px" x="30" y="80" width="7" height="30" rx="3.5" fill="#57524d"/>
-      <rect class="leg leg-b" style="transform-origin: 84.5px 80px" x="81" y="80" width="7" height="30" rx="3.5" fill="#57524d"/>
-      <ellipse cx="60" cy="66" rx="33" ry="19" fill="#33302e"/>
-      <path d="M85 41 L82 25 L97 33 Z" fill="#33302e"/>
-      <path d="M97 37 L101 21 L109 33 Z" fill="#33302e"/>
-      <circle cx="95" cy="50" r="14.5" fill="#33302e"/>
-      <circle cx="100.5" cy="49" r="2.4" fill="#ffd94d"/>
-      <circle cx="109.5" cy="55.5" r="1.9" fill="#f28bb4"/>
-      <rect class="leg leg-b" style="transform-origin: 41.5px 80px" x="38" y="80" width="7" height="30" rx="3.5" fill="#33302e"/>
-      <rect class="leg leg-a" style="transform-origin: 92.5px 80px" x="89" y="80" width="7" height="30" rx="3.5" fill="#33302e"/>
+      <path class="cat-tail" d="M26 74 C8 70 4 48 14 32" fill="none" stroke="#3a3634" stroke-width="9" stroke-linecap="round"/>
+      <rect class="leg leg-a" style="transform-origin: 32.5px 82px" x="28" y="82" width="9" height="28" rx="4.5" fill="#5a544e"/>
+      <rect class="leg leg-b" style="transform-origin: 70.5px 82px" x="66" y="82" width="9" height="28" rx="4.5" fill="#5a544e"/>
+      <ellipse cx="50" cy="70" rx="31" ry="18" fill="#3a3634"/>
+      <path d="M76 32 L72 12 L90 24 Z" fill="#3a3634"/>
+      <path d="M94 26 L102 8 L110 24 Z" fill="#3a3634"/>
+      <path d="M77 28 L75.5 17.5 L86 24.5 Z" fill="#f6a8c1"/>
+      <path d="M97 22.5 L102 13 L106.5 23.5 Z" fill="#f6a8c1"/>
+      <circle cx="90" cy="44" r="20" fill="#3a3634"/>
+      <ellipse cx="97" cy="46" rx="5.5" ry="8" fill="#ffffff"/>
+      <ellipse cx="97.5" cy="47" rx="4" ry="6.5" fill="#f6a821"/>
+      <ellipse cx="97.5" cy="47" rx="2" ry="4" fill="#26221f"/>
+      <circle cx="95.8" cy="42.8" r="1.8" fill="#ffffff"/>
+      <circle cx="99.2" cy="50.5" r="1.1" fill="#ffffff"/>
+      <ellipse cx="92" cy="56" rx="4" ry="2.2" fill="#f6a8c1" opacity=".85"/>
+      <path d="M103 53 L117 49 M103 57 L117 59" stroke="#d8d2cc" stroke-width="1.2" stroke-linecap="round"/>
+      <ellipse cx="109" cy="52" rx="2" ry="1.5" fill="#f28bb4"/>
+      <path d="M104.5 57.5 L107 57.5 L105.7 60.5 Z" fill="#ffffff"/>
+      <rect class="leg leg-b" style="transform-origin: 42.5px 82px" x="38" y="82" width="9" height="28" rx="4.5" fill="#3a3634"/>
+      <rect class="leg leg-a" style="transform-origin: 78.5px 82px" x="74" y="82" width="9" height="28" rx="4.5" fill="#3a3634"/>
     </g>
   </svg></div>`;
   let catImg;
