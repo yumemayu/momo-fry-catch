@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>カピバラ神経衰弱 | Momo.squirrels</title>
 <link rel="stylesheet" href="../game.css">
+<link rel="stylesheet" href="../game-picker.css">
 <link rel="stylesheet" href="../language.css">
 <link rel="stylesheet" href="memory.css">
 <script defer src="../language.js"></script>
@@ -67,15 +68,15 @@
     <p class="personal-best" id="personal-best"></p>
     <ol id="score-list"></ol>
   </section>
-  <nav aria-label="Choose a game">
+  <nav class="game-picker" aria-label="Choose a game">
     <a href="../"><img class="game-art" src="../assets/game-fries.png" alt="" width="40" height="40"><span data-en="Fry Catch">フライキャッチ</span></a>
     <a href="../smiley-bun-catch/"><img class="game-art" src="../assets/game-bun.png" alt="" width="40" height="40"><span data-en="Smiley Bun Catch">にこにこ肉まんキャッチ</span></a>
     <a href="../glasses-cat/"><img class="game-art" src="../assets/game-cat.png" alt="" width="40" height="40"><span data-en="Find the Glasses Cat">メガネ猫さがし</span></a>
-    <a href="../piano/"><span class="game-art piano-nav-icon" aria-hidden="true">♪</span><span data-en="MOMO Piano">MOMOピアノ</span></a>
-    <a href="../capybara-merge/"><img class="game-art" src="../capybara-merge/pieces/4.webp" alt="" width="40" height="40"><span data-en="Capybara Onsen Merge">カピバラ温泉マージ</span></a>
-    <a aria-current="page" href="./"><img class="game-art" src="../capybara-merge/pieces/7.webp" alt="" width="40" height="40"><span data-en="Capybara Memory">カピバラ神経衰弱</span></a>
-    <a href="../capybara-tap/"><img class="game-art" src="../capybara-merge/pieces/7.webp" alt="" width="40" height="40"><span data-en="Capybara Bath Tap">カピバラおふろタップ</span></a>
-    <a href="../cat-trap/"><svg class="game-art" viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="11" fill="#cdeeb2"/><rect x="43" y="1" width="17" height="14" rx="2.5" fill="#d9a066" stroke="#b57e42" stroke-width="1.6"/><g transform="translate(9.6 7) scale(0.7)"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#fdf3e3" stroke="#57344a" stroke-width="3"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.4" fill="#57344a"/><circle cx="41" cy="35" r="2.4" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2.5" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3.5"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/></g></svg><span data-en="Trap the Cat">ねこを かこもう！</span></a>
+    <a class="picker-piano" href="../piano/"><span class="picker-illustration" aria-hidden="true">♪</span><span data-en="MOMO Piano">MOMOピアノ</span></a>
+    <a class="picker-merge" href="../capybara-merge/"><span class="picker-illustration" aria-hidden="true"></span><span data-en="Capybara Onsen Merge">カピバラ温泉マージ</span></a>
+    <a class="picker-memory" aria-current="page" href="./"><span class="picker-illustration" aria-hidden="true"></span><span data-en="Capybara Memory">カピバラ神経衰弱</span></a>
+    <a class="picker-bath" href="../capybara-tap/"><span class="picker-illustration" aria-hidden="true"></span><span data-en="Capybara Bath Tap">カピバラおふろタップ</span></a>
+    <a class="picker-trap" href="../cat-trap/"><svg class="game-art" viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="11" fill="#cdeeb2"/><rect x="43" y="1" width="17" height="14" rx="2.5" fill="#d9a066" stroke="#b57e42" stroke-width="1.6"/><g transform="translate(9.6 7) scale(0.7)"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#fdf3e3" stroke="#57344a" stroke-width="3"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.4" fill="#57344a"/><circle cx="41" cy="35" r="2.4" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2.5" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3.5"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/></g></svg><span data-en="Trap the Cat">ねこを かこもう！</span></a>
   </nav>
 </main>
 <footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer" data-en="Send feedback">感想をおくる</a><small>Copyright Momo.squirrels</small></footer>
