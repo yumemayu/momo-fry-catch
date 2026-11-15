@@ -1,7 +1,17 @@
+.capy-main .capy-language { display: flex; gap: 6px; margin-bottom: 8px; }
+.capy-language button {
+  min-height: 44px;
+  padding: 5px 10px;
+  border: 1px solid #dbb6d7;
+  background: #fff8fc;
+  color: #57324f;
+}
+.capy-language button[aria-pressed="true"] { background: #ead5f6; border-color: #96629c; }
 .capy-main .game-heading { gap: 9px; }
 .capy-main .game-heading h1 { font-size: clamp(24px, 3vw, 39px); }
+html[lang="en"] .capy-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32px); }
 .capy-stats { justify-content: flex-start; flex-wrap: wrap; }
-.capy-stats span {
+.capy-stats > span {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -41,6 +51,7 @@
   }
 }
 @media (max-width: 679px) {
+  .capy-main > .capy-language { order: 0; }
   .capy-main > .capy-guide { order: 6; width: 100%; }
   .capy-main > #instructions { order: 5; }
 }

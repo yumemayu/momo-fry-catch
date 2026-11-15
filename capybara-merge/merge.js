@@ -20,22 +20,35 @@
   const limit = 88;
   const timestep = 1000 / 60;
   const saveKey = 'momo:capybara:best-stage';
+  const languageKey = 'momo:capybara:language';
+  const copy = {
+    ja: {title:'カピバラ温泉マージ', growth:'いちばん育った姿', retry:'もういちど', on:'おと ON', off:'おと OFF',
+      special:'ろてん風呂に とうちゃく！', full:'いっぱいになったよ。もういちど！', error:'ゲームを読みこめませんでした。ページを開きなおしてください。'},
+    en: {title:'Capybara Onsen Merge', growth:'Biggest piece', retry:'Play again', on:'Sound on', off:'Sound off',
+      special:'You made it to the outdoor bath!', full:'The bath is full. Try again!', error:'The game could not load. Please reload the page.'}
+  };
+  let language = navigator.language?.toLowerCase().startsWith('en') ? 'en' : 'ja';
+  try {
+    const saved = localStorage.getItem(languageKey);
+    if (saved === 'ja' || saved === 'en') language = saved;
+  } catch {}
   const stages = [
-    ['ゆず', 14], ['みかん', 18], ['おふろアヒル', 23],
-    ['あかちゃんカピバラ', 29], ['こどもカピバラ', 35],
-    ['おとなカピバラ', 43], ['ゆずのせカピバラ', 50],
-    ['てぬぐいカピバラ', 58], ['おけ風呂カピバラ', 67], ['ろてん風呂カピバラ', 77]
-  ].map(([name, radius], index) => {
+    ['ゆず', 'Yuzu', 14], ['みかん', 'Mandarin', 18], ['おふろアヒル', 'Rubber duck', 23],
+    ['あかちゃんカピバラ', 'Baby capybara', 29], ['こどもカピバラ', 'Young capybara', 35],
+    ['おとなカピバラ', 'Adult capybara', 43], ['ゆずのせカピバラ', 'Capybara with yuzu', 50],
+    ['てぬぐいカピバラ', 'Capybara with towel', 58], ['おけ風呂カピバラ', 'Wooden tub capybara', 67],
+    ['ろてん風呂カピバラ', 'Outdoor bath capybara', 77]
+  ].map(([ja, en, radius], index) => {
     const image = new Image(192, 192);
     image.src = 'pieces/' + (index + 1) + '.webp';
     const thumbnail = document.createElement('li');
     const icon = document.createElement('img');
     icon.src = image.src;
-    icon.alt = name;
+    icon.alt = language === 'en' ? en : ja;
     icon.width = icon.height = 48;
     thumbnail.append(icon);
     guide.append(thumbnail);
-    return {name, radius, image, thumbnail};
+    return {ja, en, radius, image, thumbnail, icon};
   });
   const physics = window.Matter;
   let bestStage = 0;
@@ -45,11 +58,12 @@
   } catch {}
 
   function renderGrowth() {
-    stages.forEach(({thumbnail}, index) => thumbnail.classList.toggle('seen', index < bestStage));
-    growthBest.textContent = 'いちばん育った姿 ' + (stages[bestStage - 1]?.name ?? '—');
+    stages.forEach(({thumbnail, icon, [language]: name}, index) => {
+      thumbnail.classList.toggle('seen', index < bestStage);
+      icon.alt = name;
+    });
+    growthBest.textContent = copy[language].growth + ': ' + (stages[bestStage - 1]?.[language] ?? '—');
   }
-  renderGrowth();
-
   let engine;
   let playing = false;
   let score = 0;
@@ -66,6 +80,37 @@
   let frame = null;
   let audio;
   let muted = false;
+  let playedRound = false;
+  let noticeKey = '';
+  const finalGrowth = document.querySelector('#final-growth');
+  const languageButtons = document.querySelectorAll('[data-language]');
+  const staticLabels = [['data-en', 'textContent'], ['data-en-label', 'aria-label'], ['data-en-placeholder', 'placeholder']]
+    .flatMap(([data, property]) => Array.from(document.querySelectorAll('[' + data + ']'), element => ({
+      element, property, en: element.getAttribute(data),
+      ja: property === 'textContent' ? element.textContent : element.getAttribute(property)
+    })));
+
+  function setNotice(key) {
+    noticeKey = key;
+    notice.textContent = copy[language][key] ?? '';
+  }
+
+  function renderLanguage() {
+    document.documentElement.lang = language;
+    document.title = copy[language].title + ' | Momo.squirrels';
+    languageButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.language === language)));
+    staticLabels.forEach(({element, property, [language]: value}) => {
+      if (property === 'textContent') element.textContent = value;
+      else element.setAttribute(property, value);
+    });
+    renderGrowth();
+    updateNext();
+    setNotice(noticeKey);
+    start.textContent = playedRound && !playing ? copy[language].retry : 'Play';
+    sound.textContent = copy[language][muted ? 'off' : 'on'];
+    finalGrowth.textContent = playedRound && !playing && biggest ? copy[language].growth + ': ' + stages[biggest - 1][language] : '';
+    gameScores.setStageFormatter?.((stage, fallback) => stages[stage - 1]?.[language] ?? fallback);
+  }
   const pieces = new Map();
   const pairs = [];
   const effects = [];
@@ -77,7 +122,7 @@
 
   function updateNext() {
     nextImage.src = stages[next].image.src;
-    nextImage.alt = stages[next].name;
+    nextImage.alt = stages[next][language];
   }
 
   function playChime(stage, special) {
@@ -179,7 +224,7 @@
       const special = stage === stages.length - 1;
       effects.push({x: merged.body.position.x, y, stage, at: age, special});
       playChime(stage, special);
-      if (special) notice.textContent = 'ろてん風呂に とうちゃく！';
+      if (special) setNotice('special');
     }
     pairs.length = 0;
   }
@@ -212,7 +257,8 @@
     aim = width / 2;
     playing = true;
     scoreOutput.value = 0;
-    notice.textContent = '';
+    setNotice('');
+    finalGrowth.textContent = '';
     start.textContent = 'Play';
     gameScores.start();
     updateNext();
@@ -225,10 +271,11 @@
   function finish(completed) {
     playing = false;
     pointer = null;
-    document.querySelector('#final-growth').textContent = biggest ? 'いちばん育った姿：' + stages[biggest - 1].name : '';
-    gameScores.finish(score, completed, {stage: biggest, stageName: stages[biggest - 1]?.name});
-    notice.textContent = completed ? 'いっぱいになったよ。もういちど！' : '';
-    start.textContent = 'もういちど';
+    playedRound = true;
+    finalGrowth.textContent = biggest ? copy[language].growth + ': ' + stages[biggest - 1][language] : '';
+    gameScores.finish(score, completed, {stage: biggest, stageName: stages[biggest - 1]?.ja});
+    setNotice(completed ? 'full' : '');
+    start.textContent = copy[language].retry;
     setControls();
     start.focus({preventScroll: true});
   }
@@ -387,12 +434,17 @@
   sound.addEventListener('click', () => {
     muted = !muted;
     sound.setAttribute('aria-pressed', String(!muted));
-    sound.textContent = muted ? 'おと OFF' : 'おと ON';
+    sound.textContent = copy[language][muted ? 'off' : 'on'];
     if (!muted) playChime();
   });
-  if (!physics) notice.textContent = 'ゲームを読みこめませんでした。ページを開きなおしてください。';
+  languageButtons.forEach(button => button.addEventListener('click', () => {
+    language = button.dataset.language;
+    try { localStorage.setItem(languageKey, language); } catch {}
+    renderLanguage();
+  }));
+  if (!physics) setNotice('error');
   setControls();
-  updateNext();
+  renderLanguage();
   new ResizeObserver(drawBoard).observe(field);
   drawBoard();
 })();
