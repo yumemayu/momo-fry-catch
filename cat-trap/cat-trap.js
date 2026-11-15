@@ -215,7 +215,7 @@
     catImg.style.left = cx + '%';
     catImg.style.bottom = bottom + '%';
     bubbleEl.style.left = (cx + 4.5) + '%';
-    bubbleEl.style.bottom = (bottom + 25) + '%';
+    bubbleEl.style.bottom = (bottom + 21) + '%';
   }
 
   function render() {
