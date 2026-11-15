@@ -425,6 +425,22 @@ function renderKeys(theme) {
   keyCase.dataset.theme = theme;
   const words = themeWords[theme] ?? themeWords.pastel;
   spaceWord.textContent = words.space;
+  // Animals hide on a random few keys, mixed in with the icon keys.
+  let animalMap = new Map();
+  if (theme === 'choco' || theme === 'puppy') {
+    const shuffle = list => {
+      const arr = [...list];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+    const spots = shuffle([...Array(26).keys()]);
+    const faces = shuffle(animals);
+    const count = 7 + Math.floor(Math.random() * 3);
+    animalMap = new Map(spots.slice(0, count).map((spot, i) => [spot, faces[i]]));
+  }
   wordRow.replaceChildren(...words.words.map(([icon, word], i) => {
     const key = document.createElement('button');
     key.type = 'button';
@@ -462,9 +478,9 @@ function renderKeys(theme) {
       if (theme === 'cat') {
         art.textContent = '•ᴗ•';
         art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
-      } else if (theme === 'choco' || theme === 'puppy') {
+      } else if (animalMap.has(keyIndex)) {
         art.classList.add('animal');
-        art.textContent = animals[keyIndex % animals.length];
+        art.textContent = animalMap.get(keyIndex);
       } else {
         art.dataset.art = symbol;
       }
