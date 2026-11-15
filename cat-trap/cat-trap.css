@@ -64,10 +64,31 @@
   transition: left .3s ease, bottom .3s ease;
 }
 .trap-field.no-anim .cat-art { transition: none; }
-.cat-art.hopping { animation: cat-glide-hop .3s ease; }
-@keyframes cat-glide-hop {
-  40% { transform: translateX(-50%) translateY(-14%) scale(1.04); }
+/* Side-profile cat (inline SVG): faces its direction of travel, legs
+   swing and body bobs while it glides, tail sways when idle. */
+.cat-art svg { display: block; width: 100%; height: auto; overflow: visible; }
+.cat-art.face-left .cat-flip { transform: scaleX(-1); }
+.cat-art .leg, .cat-art .cat-tail { transform-box: view-box; }
+.cat-art .cat-tail {
+  transform-origin: 25px 67px;
+  animation: cat-tail-sway 2.6s ease-in-out infinite alternate;
 }
+@keyframes cat-tail-sway {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(7deg); }
+}
+.cat-art.walking .leg-a { animation: cat-leg-swing .17s ease-in-out infinite alternate; }
+.cat-art.walking .leg-b { animation: cat-leg-swing .17s ease-in-out infinite alternate-reverse; }
+@keyframes cat-leg-swing {
+  from { transform: rotate(17deg); }
+  to { transform: rotate(-17deg); }
+}
+.cat-art.walking .cat-bob { animation: cat-bob .17s ease-in-out infinite alternate; }
+@keyframes cat-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-2.6px); }
+}
+.cat-art.walking .cat-tail { animation-duration: .34s; }
 
 /* Speech bubble above the cat. */
 .cat-bubble {
@@ -130,7 +151,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .cat-art { transition: none; }
-  .cat-art.hopping { animation: none; }
+  .cat-art .leg, .cat-art .cat-tail, .cat-art .cat-bob { animation: none; }
   .cat-bubble { animation: none; }
   .burst-star { display: none; }
 }

@@ -52,6 +52,23 @@
   let audio;
   let muted = false;
   const tiles = [];
+  // Side-profile black cat in the style of the original game: it faces
+  // its direction of travel and its legs swing while it glides.
+  const CAT_SVG = `<div class="cat-flip"><svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+    <g class="cat-bob">
+      <path class="cat-tail" d="M25 67 C11 63 6 45 14 30" fill="none" stroke="#33302e" stroke-width="7.5" stroke-linecap="round"/>
+      <rect class="leg leg-a" style="transform-origin: 33.5px 80px" x="30" y="80" width="7" height="30" rx="3.5" fill="#57524d"/>
+      <rect class="leg leg-b" style="transform-origin: 84.5px 80px" x="81" y="80" width="7" height="30" rx="3.5" fill="#57524d"/>
+      <ellipse cx="60" cy="66" rx="33" ry="19" fill="#33302e"/>
+      <path d="M85 41 L82 25 L97 33 Z" fill="#33302e"/>
+      <path d="M97 37 L101 21 L109 33 Z" fill="#33302e"/>
+      <circle cx="95" cy="50" r="14.5" fill="#33302e"/>
+      <circle cx="100.5" cy="49" r="2.4" fill="#ffd94d"/>
+      <circle cx="109.5" cy="55.5" r="1.9" fill="#f28bb4"/>
+      <rect class="leg leg-b" style="transform-origin: 41.5px 80px" x="38" y="80" width="7" height="30" rx="3.5" fill="#33302e"/>
+      <rect class="leg leg-a" style="transform-origin: 92.5px 80px" x="89" y="80" width="7" height="30" rx="3.5" fill="#33302e"/>
+    </g>
+  </svg></div>`;
   let catImg;
   let bubbleEl;
 
@@ -185,10 +202,10 @@
         field.append(button);
       }
     }
-    catImg = document.createElement('img');
+    catImg = document.createElement('div');
     catImg.className = 'cat-art';
-    catImg.src = CAT_SRC;
-    catImg.alt = '';
+    catImg.innerHTML = CAT_SVG;
+    catImg.setAttribute('aria-hidden', 'true');
     bubbleEl = document.createElement('span');
     bubbleEl.className = 'cat-bubble';
     bubbleEl.setAttribute('role', 'status');
@@ -237,11 +254,17 @@
     updateBubble();
   }
 
-  function hopCat() {
+  let walkTimer;
+  function walkCat(fromR, fromC) {
+    if (!catImg) return;
+    const fromCx = fromC + (fromR % 2 ? .5 : 0) + .5;
+    const toCx = cat.c + (cat.r % 2 ? .5 : 0) + .5;
+    if (toCx < fromCx - .01) catImg.classList.add('face-left');
+    else if (toCx > fromCx + .01) catImg.classList.remove('face-left');
     if (reducedMotion.matches) return;
-    catImg.classList.remove('hopping');
-    void catImg.offsetWidth;
-    catImg.classList.add('hopping');
+    catImg.classList.add('walking');
+    clearTimeout(walkTimer);
+    walkTimer = setTimeout(() => catImg.classList.remove('walking'), 340);
   }
 
   function newPuzzle() {
@@ -258,6 +281,7 @@
       blocked.add(key(r, c));
     }
     cat = { r: CENTER, c: CENTER };
+    if (catImg) catImg.classList.remove('face-left', 'walking');
     moves = 0;
     lineKey = 'idle';
     verdict.textContent = '';
@@ -292,6 +316,7 @@
   }
 
   function moveCat() {
+    const prev = cat;
     const path = shortestPathToEdge();
     if (path && path.length > 1) {
       const [nr, nc] = path[1];
@@ -299,7 +324,7 @@
       lineKey = 'taunt';
       playMeow();
       render();
-      hopCat();
+      walkCat(prev.r, prev.c);
       if (isEdge(nr, nc)) {
         lineKey = 'bye';
         updateBubble();
@@ -318,7 +343,7 @@
     lineKey = 'worried';
     playMeow();
     render();
-    hopCat();
+    walkCat(prev.r, prev.c);
     if (catSurrounded()) endRound('win');
   }
 
