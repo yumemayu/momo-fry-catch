@@ -166,21 +166,29 @@ function draw() {
     ctx.strokeStyle = '#a7521d';
     ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.moveTo(-6, -15);
-    ctx.quadraticCurveTo(-3, -19, 3, -18);
-    ctx.lineTo(7, -15);
-    ctx.lineTo(6, 14);
-    ctx.quadraticCurveTo(6, 18, 2, 18);
-    ctx.lineTo(-5, 16);
-    ctx.quadraticCurveTo(-8, 15, -7, 11);
+    ctx.moveTo(-6, -17);
+    ctx.quadraticCurveTo(0, -20, 6, -17);
+    for (let y = -17; y < 15; y += 8) {
+      ctx.quadraticCurveTo(10, y + 2, 6, y + 4);
+      ctx.quadraticCurveTo(3, y + 6, 6, y + 8);
+    }
+    ctx.quadraticCurveTo(7, 20, -6, 17);
+    ctx.lineTo(-6, 15);
+    for (let y = 15; y > -17; y -= 8) {
+      ctx.quadraticCurveTo(-3, y - 2, -6, y - 4);
+      ctx.quadraticCurveTo(-10, y - 6, -6, y - 8);
+    }
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = '#fff0ad';
-    ctx.fillRect(-4, -12, 2, 21);
-    ctx.fillStyle = '#b65e22';
-    ctx.fillRect(2, -10, 2, 2);
-    ctx.fillRect(1, 11, 2, 2);
+    ctx.strokeStyle = '#fff0b8';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-3, -14);
+    for (let y = -14; y < 10; y += 8) {
+      ctx.bezierCurveTo(-.5, y + 2, -5, y + 6, -3, y + 8);
+    }
+    ctx.stroke();
     ctx.restore();
   }
   if (squirrel.complete && squirrel.naturalWidth) {

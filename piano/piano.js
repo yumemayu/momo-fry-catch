@@ -323,6 +323,7 @@
       piano.classList.toggle('with-roll', falling);
       playScreen.classList.toggle('rolling', falling);
       const finished = Boolean(notes && next === undefined);
+      if (finished) window.momoStickers?.award('piano');
       celebration.hidden = !finished;
       celebration.querySelector('strong').textContent = challenge && hits !== notes?.length ? copy.challengeDone : copy.cheer;
       const result = celebration.querySelector('.challenge-result');
