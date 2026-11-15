@@ -1,8 +1,6 @@
 /* Lights Out: the classic 5x5 flipping-lights puzzle, kept faithful.
    The only decoration is in the motion: glowing panels, ripples,
    sparkles and soft sounds. */
-.level-art { width: 34px; height: 34px; }
-
 .lights-stats { flex-wrap: wrap; row-gap: 4px; }
 
 .turn-line {

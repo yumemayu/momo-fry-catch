@@ -203,23 +203,29 @@
     if (lightsOn() === 0) finishGame();
   }
 
-  function begin() {
-    if (playing) return;
-    ensureAudio();
-    gameScores.start(level);
+  // Scramble by pressing random panels from the solved state, so the
+  // puzzle is always solvable — the original game's one rule. Also used
+  // for the preview board shown before Play, so the page opens with a
+  // lit puzzle instead of a blank-looking all-off grid.
+  function newPuzzle() {
     grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(false));
-    // Scramble by pressing random panels from the solved state, so the
-    // puzzle is always solvable — the original game's one rule.
     const presses = scramblePresses[level] || 8;
     for (let i = 0; i < presses; i++) {
       applyPress(Math.floor(Math.random() * SIZE), Math.floor(Math.random() * SIZE), grid);
     }
     if (lightsOn() === 0) applyPress(2, 2, grid);
+    buildBoard();
+  }
+
+  function begin() {
+    if (playing) return;
+    ensureAudio();
+    gameScores.start(level);
     moves = 0;
     verdict.textContent = '';
     playing = true;
     playedRound = true;
-    buildBoard();
+    newPuzzle();
     setControls();
   }
 
@@ -259,6 +265,7 @@
     level = button.dataset.level;
     levelButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
     gameScores.showLevel(level);
+    newPuzzle();
   }));
 
   start.addEventListener('click', begin);
@@ -270,8 +277,7 @@
     if (!muted) tone(660, 0, .1, 'triangle', .08);
   });
 
-  grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(false));
-  buildBoard();
+  newPuzzle();
   setControls();
   momoLanguage.subscribe(code => { language = code; renderLanguage(); });
 })();

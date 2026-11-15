@@ -1,8 +1,6 @@
 /* Flow: connect matching colours and fill the whole board, faithful
    to the original. The cuteness lives in the motion: glossy glowing
    pipes, bubbly pops, sparkles and a rainbow wave at the win. */
-.level-art { width: 34px; height: 34px; }
-
 .flow-stats { flex-wrap: wrap; row-gap: 4px; }
 
 .turn-line {
