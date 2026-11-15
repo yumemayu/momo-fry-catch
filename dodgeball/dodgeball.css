@@ -34,7 +34,12 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
 .opponent::before { content: ""; position: absolute; inset: 90% 15% 0; border-radius: 50%; background: #8b615537; }
 .opponent img { width: 100%; height: 100%; object-fit: contain; position: relative; }
 .hit img { animation: surprised .44s ease-out; }
-@keyframes surprised { 25% { transform: translateY(-12%) rotate(-12deg) scale(.95, 1.1); } 60% { transform: rotate(9deg) scale(1.1, .91); } }
+@keyframes surprised {
+  15% { transform: translate(-3%, 5%) rotate(-7deg) scale(1.09, .89); }
+  32% { transform: translate(4%, -9%) rotate(8deg); }
+  53% { transform: translateX(-3%) rotate(-5deg); }
+  72% { transform: translateX(2%) rotate(3deg); }
+}
 .reaction { position: absolute; left: 74%; top: 6%; padding: 5px 10px; white-space: nowrap; border: 2px solid #a17c98; background: #fff7ee; border-radius: 12px; font-weight: 800; }
 .ball { position: absolute; z-index: 1; left: 50%; top: 83%; translate: -50% -50%; width: clamp(65px, 13%, 100px); aspect-ratio: 1; border: 3px solid #9d6933; border-radius: 50%; background: radial-gradient(circle at 35% 25%, #fffbd3 0 9%, #ffec99 23%, #f5c757 71%, #dda149); box-shadow: 0 7px 0 #8d5b3333; cursor: grab; touch-action: none; }
 .ball:active { cursor: grabbing; }

@@ -10,6 +10,8 @@ const gameScores = (() => {
   let level = 'standard';
   let period = 'weekly';
   const nameKey = 'momo:nickname';
+  const expiryKey = 'momo:nickname:expires';
+  const nicknameLifetime = 7 * 24 * 60 * 60 * 1000;
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
   const ONLINE_URL = 'https://script.google.com/macros/s/AKfycbwIZWAIOqgmjctFItur6QacLZqf2zL6paAyLxFeCoV1cAnD2O3yV70ZiKiprBi1xTdIVQ/exec';
@@ -18,6 +20,8 @@ const gameScores = (() => {
   let player;
   let formatStage = (_, fallback) => fallback;
   let nicknameState = '';
+  let nicknameCelebration;
+  let editingNickname = false;
   const saveNicknameButton = document.createElement('button');
   saveNicknameButton.type = 'button';
   saveNicknameButton.className = 'save-nickname';
@@ -31,10 +35,36 @@ const gameScores = (() => {
   onlineNote.hidden = true;
   scoreList.after(best, onlineNote);
 
-  try {
-    nameInput.value = localStorage.getItem(nameKey) || '';
-    if (nameInput.value) nicknameState = 'saved';
-  } catch {}
+  function readNickname() {
+    try {
+      const name = (localStorage.getItem(nameKey) || '').trim();
+      if (!name) return '';
+      const expires = localStorage.getItem(expiryKey);
+      if (expires === null) {
+        // Give nicknames from older versions the same seven-day window.
+        localStorage.setItem(expiryKey, String(Date.now() + nicknameLifetime));
+        return name;
+      }
+      if (Number(expires) > Date.now()) return name;
+      localStorage.removeItem(nameKey);
+      localStorage.removeItem(expiryKey);
+    } catch {}
+    return '';
+  }
+
+  function restoreNickname() {
+    if (editingNickname || nameInput.readOnly) return;
+    const saved = readNickname();
+    const previous = nameInput.value;
+    nameInput.value = saved;
+    nicknameState = saved ? 'saved' : '';
+    if (!saved && !previous) return;
+    readyCard.hidden = Boolean(saved);
+    changePlayer.hidden = !saved;
+    renderNickname();
+  }
+
+  restoreNickname();
 
   function renderNickname() {
     saveNicknameButton.textContent = momoLanguage.pick('Save nickname', 'ニックネームを保存');
@@ -47,20 +77,32 @@ const gameScores = (() => {
   }
 
   function saveNickname(celebrate = false) {
+    clearTimeout(nicknameCelebration);
+    nicknameFeedback.classList.remove('lets-go');
     const name = nameInput.value.trim();
     nameInput.value = name;
     try {
-      if (name) localStorage.setItem(nameKey, name);
-      else localStorage.removeItem(nameKey);
+      if (name) {
+        const previous = readNickname();
+        if (celebrate || name !== previous) {
+          localStorage.setItem(nameKey, name);
+          localStorage.setItem(expiryKey, String(Date.now() + nicknameLifetime));
+        }
+      } else {
+        localStorage.removeItem(nameKey);
+        localStorage.removeItem(expiryKey);
+      }
       nicknameState = name ? 'saved' : 'cleared';
     } catch { nicknameState = 'unavailable'; }
+    editingNickname = nicknameState === 'unavailable';
     renderNickname();
     render();
     if (celebrate && name && nicknameState === 'saved') {
       nicknameFeedback.textContent = momoLanguage.pick("Let's go!", 'レッツゴー！');
       nicknameFeedback.classList.add('lets-go');
-      setTimeout(() => {
+      nicknameCelebration = setTimeout(() => {
         readyCard.hidden = true;
+        changePlayer.hidden = false;
         nicknameFeedback.classList.remove('lets-go');
         renderNickname();
       }, 950);
@@ -173,6 +215,9 @@ const gameScores = (() => {
   }
 
   nameInput.addEventListener('input', () => {
+    clearTimeout(nicknameCelebration);
+    nicknameFeedback.classList.remove('lets-go');
+    editingNickname = true;
     nicknameState = '';
     renderNickname();
     render();
@@ -189,12 +234,19 @@ const gameScores = (() => {
     refreshBoard();
   }));
   changePlayer.addEventListener('click', () => {
+    editingNickname = true;
     readyCard.hidden = false;
     nameInput.focus();
   });
   const initialLevel = document.querySelector('[data-level][aria-pressed="true"]');
   if (initialLevel) level = initialLevel.dataset.level;
-  window.addEventListener('storage', render);
+  window.addEventListener('storage', event => {
+    if (event.key === nameKey || event.key === expiryKey) restoreNickname();
+    render();
+  });
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) restoreNickname();
+  });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) refreshBoard();
   });
@@ -214,6 +266,7 @@ const gameScores = (() => {
 
   return {
     start(level = 'standard') {
+      restoreNickname();
       const name = saveNickname();
       player = { name, level };
       nameInput.readOnly = true;
