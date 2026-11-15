@@ -1,8 +1,5 @@
 #momo-piano-levels { display:grid; grid-template-columns:minmax(0,390px); justify-content:center; gap:10px; max-width:470px; margin:auto; padding:12px; box-sizing:border-box; color:#49336b; }
   #momo-piano-levels * { box-sizing:border-box; }
-  #momo-piano-levels .languages { grid-column:1 / -1; display:flex; justify-content:center; gap:6px; }
-  #momo-piano-levels .languages button { background:#fff8fc; color:#49336b; border:1px solid #d8bde8; border-radius:12px; min-height:42px; padding:0 16px; font:inherit; font-size:13px; font-weight:700; }
-  #momo-piano-levels .languages button[aria-pressed="true"] { background:#e3cffd; border-color:#955bbf; }
   #momo-piano-levels .phone { min-height:490px; border:3px solid #fff8fc; border-radius:30px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 7px 19px #51326824, 0 0 0 1px #d6b7e4; }
   #momo-piano-levels [hidden] { display:none !important; }
   #momo-piano-levels .momo-art { display:flex; flex-direction:column; align-items:center; padding:18px 16px 12px; border-radius:28px; background:repeating-linear-gradient(0deg,#f29bc335 0 25px,transparent 25px 50px),repeating-linear-gradient(90deg,#bb9bef42 0 25px,transparent 25px 50px),#fff3f4; }

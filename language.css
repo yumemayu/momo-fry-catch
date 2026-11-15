@@ -1,0 +1,24 @@
+.momo-language {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px auto 2px;
+}
+.momo-language button {
+  min-height: 44px;
+  padding: 5px 13px;
+  border: 1px solid #dbb6d7;
+  border-radius: 12px;
+  background: #fff8fc;
+  color: #57324f;
+  font: 700 14px system-ui, sans-serif;
+  cursor: pointer;
+}
+.momo-language button[aria-pressed="true"] {
+  background: #ead5f6;
+  border-color: #96629c;
+}
+.momo-language button:focus-visible {
+  outline: 2px solid #703b79;
+  outline-offset: 2px;
+}

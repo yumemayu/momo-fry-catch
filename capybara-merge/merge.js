@@ -20,18 +20,13 @@
   const limit = 88;
   const timestep = 1000 / 60;
   const saveKey = 'momo:capybara:best-stage';
-  const languageKey = 'momo:capybara:language';
   const copy = {
     ja: {title:'カピバラ温泉マージ', growth:'いちばん育った姿', retry:'もういちど', on:'おと ON', off:'おと OFF',
       special:'ろてん風呂に とうちゃく！', full:'いっぱいになったよ。もういちど！', error:'ゲームを読みこめませんでした。ページを開きなおしてください。'},
     en: {title:'Capybara Onsen Merge', growth:'Biggest piece', retry:'Play again', on:'Sound on', off:'Sound off',
       special:'You made it to the outdoor bath!', full:'The bath is full. Try again!', error:'The game could not load. Please reload the page.'}
   };
-  let language = navigator.language?.toLowerCase().startsWith('en') ? 'en' : 'ja';
-  try {
-    const saved = localStorage.getItem(languageKey);
-    if (saved === 'ja' || saved === 'en') language = saved;
-  } catch {}
+  let language = 'en';
   const stages = [
     ['ゆず', 'Yuzu', 14], ['みかん', 'Mandarin', 18], ['おふろアヒル', 'Rubber duck', 23],
     ['あかちゃんカピバラ', 'Baby capybara', 29], ['こどもカピバラ', 'Young capybara', 35],
@@ -83,7 +78,6 @@
   let playedRound = false;
   let noticeKey = '';
   const finalGrowth = document.querySelector('#final-growth');
-  const languageButtons = document.querySelectorAll('[data-language]');
   const staticLabels = [['data-en', 'textContent'], ['data-en-label', 'aria-label'], ['data-en-placeholder', 'placeholder']]
     .flatMap(([data, property]) => Array.from(document.querySelectorAll('[' + data + ']'), element => ({
       element, property, en: element.getAttribute(data),
@@ -98,7 +92,6 @@
   function renderLanguage() {
     document.documentElement.lang = language;
     document.title = copy[language].title + ' | Momo.squirrels';
-    languageButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.language === language)));
     staticLabels.forEach(({element, property, [language]: value}) => {
       if (property === 'textContent') element.textContent = value;
       else element.setAttribute(property, value);
@@ -437,14 +430,9 @@
     sound.textContent = copy[language][muted ? 'off' : 'on'];
     if (!muted) playChime();
   });
-  languageButtons.forEach(button => button.addEventListener('click', () => {
-    language = button.dataset.language;
-    try { localStorage.setItem(languageKey, language); } catch {}
-    renderLanguage();
-  }));
   if (!physics) setNotice('error');
   setControls();
-  renderLanguage();
+  momoLanguage.subscribe(code => { language = code; renderLanguage(); });
   new ResizeObserver(drawBoard).observe(field);
   drawBoard();
 })();
