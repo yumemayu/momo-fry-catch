@@ -13,13 +13,17 @@
   const gatePaths = {
     NOT: 'M12 9 65 32 12 55Z M75 32a5 5 0 1 0-10 0 5 5 0 0 0 10 0Z',
     OR: 'M9 9 Q52 8 74 32 Q52 56 9 55 Q28 32 9 9Z',
-    AND: 'M12 9H38 C83 9 83 55 38 55H12Z'
+    AND: 'M12 9H38 C83 9 83 55 38 55H12Z',
+    XOR: 'M16 9 Q55 8 74 32 Q55 56 16 55 Q34 32 16 9Z M7 9 Q25 32 7 55',
+    NAND: 'M9 9H35 C75 9 75 55 35 55H9Z M75 32a5 5 0 1 0-10 0 5 5 0 0 0 10 0Z'
   };
   const rules = {
     WIRE: ['The output follows the input.', '入力と同じ値が出る。'],
     NOT: ['The output flips: 0 → 1, 1 → 0.', '入力を反転する。0 → 1、1 → 0。'],
     OR: ['At least one input must be 1.', '入力のどちらか一方、または両方が1なら出力は1。'],
-    AND: ['Both inputs must be 1.', '両方の入力が1のときだけ出力は1。']
+    AND: ['Both inputs must be 1.', '両方の入力が1のときだけ出力は1。'],
+    XOR: ['The output is 1 when exactly one input is 1.', '入力の片方だけが1のとき、出力は1。'],
+    NAND: ['The output is 0 only when both inputs are 1.', '両方の入力が1のときだけ出力は0。']
   };
   const puzzles = [
     { outputs: ['WIRE', 'NOT'], count: 1, target: [1, 0] },
@@ -27,8 +31,23 @@
     { outputs: ['OR'], count: 2, target: [1] },
     { outputs: ['AND'], count: 2, target: [1] },
     { outputs: ['OR', 'AND'], count: 2, target: [1, 0] },
-    { outputs: ['NOT', 'AND'], count: 2, initial: [0, 1], target: [0, 0] }
+    { outputs: ['NOT', 'AND'], count: 2, initial: [0, 1], target: [0, 0] },
+    { outputs: ['XOR'], count: 2, target: [1] },
+    { outputs: ['NAND'], count: 2, initial: [1, 1], target: [1] },
+    { outputs: ['WIRE', 'XOR'], count: 2, initial: [1, 0], target: [0, 1] },
+    { outputs: ['XOR', 'NAND'], count: 2, initial: [1, 0], target: [0, 0] },
+    { outputs: ['WIRE', 'OR'], pins: [[2], [0, 1]], count: 3, target: [1, 1] },
+    { outputs: ['NOT', 'AND'], pins: [[0], [1, 2]], count: 3, target: [1, 1] },
+    { outputs: ['OR', 'AND'], pins: [[0, 1], [1, 2]], count: 3, initial: [1, 1, 1], target: [1, 0] },
+    { outputs: ['AND', 'XOR'], pins: [[0, 1], [1, 2]], count: 3, target: [1, 1] },
+    { outputs: ['XOR', 'OR'], pins: [[0, 2], [1, 2]], count: 3, target: [1, 0] },
+    { outputs: ['NAND', 'NOT'], pins: [[0, 2], [1]], count: 3, target: [0, 0] },
+    { outputs: ['AND', 'WIRE', 'NOT'], pins: [[0, 1], [2], [0]], count: 3, target: [1, 1, 0] },
+    { outputs: ['XOR', 'AND', 'WIRE'], pins: [[0, 1], [1, 2], [0]], count: 3, target: [1, 1, 0] },
+    { outputs: ['NAND', 'OR', 'XOR'], pins: [[0, 2], [0, 1], [1, 2]], count: 3, initial: [1, 1, 1], target: [1, 0, 1] },
+    { outputs: ['XOR', 'NAND', 'AND'], pins: [[0, 2], [0, 1], [1, 2]], count: 3, initial: [1, 0, 0], target: [1, 1, 1] }
   ];
+  const binaryGates = new Set(['OR', 'AND', 'XOR', 'NAND']);
   let mode = 'lab';
   let kind = 'WIRE';
   let index = 0;
@@ -37,12 +56,14 @@
   let inputs;
   let outputs;
 
-  function evaluate(type) {
+  function evaluate(type, [a, b]) {
     switch (type) {
-      case 'NOT': return 1 - bits[0];
-      case 'OR': return bits[0] | bits[1];
-      case 'AND': return bits[0] & bits[1];
-      default: return bits[0];
+      case 'NOT': return 1 - a;
+      case 'OR': return a | b;
+      case 'AND': return a & b;
+      case 'XOR': return a ^ b;
+      case 'NAND': return 1 - (a & b);
+      default: return a;
     }
   }
 
@@ -83,14 +104,14 @@
       button.setAttribute('aria-pressed', String(bits[i] === 1));
       button.setAttribute('aria-label', pick('Input ', '入力 ') + name + ': ' + bits[i]);
     });
-    const values = stage.outputs.map(evaluate);
+    const values = outputs.map(({ type, pins }) => evaluate(type, pins.map(pin => bits[pin])));
     const solved = mode === 'puzzle' && values.every((value, i) => value === stage.target[i]);
-    outputs.forEach(({ type, lamp, digit, gate, y, name }, i) => {
-      const isBinary = type === 'OR' || type === 'AND';
+    outputs.forEach(({ pins, lamp, digit, gate, y, name }, i) => {
+      const isBinary = pins.length === 2;
       const on = values[i] === 1;
-      const from = isBinary ? [0, 1] : [0];
-      from.forEach((n, port) => {
-        const elbow = isBinary && outputs.length > 1 ? 285 + 48 * n + 18 * i : 310;
+      pins.forEach((n, port) => {
+        const elbow = inputs.length > 2 ? 220 + 48 * n + 12 * i
+          : isBinary && outputs.length > 1 ? 285 + 48 * n + 18 * i : 310;
         const endY = isBinary ? y + (port === 0 ? -17 : 17) : y;
         path('M120 ' + inputs[n].y + 'H' + elbow + 'V' + endY + 'H' + (gate ? 500 : 860), bits[n], animate, 0);
       });
@@ -117,20 +138,24 @@
     const targets = stage.target.map((value, i) => outputs[i].name + ' = ' + value).join(' / ');
     goal.textContent = pick('Goal ', 'お題 ') + (index + 1) + '/' + puzzles.length + '  ·  ' + targets;
     readout.textContent = solved
-      ? (index === puzzles.length - 1 ? pick('All six circuits solved!', '6問すべてクリア！') : pick('Circuit solved!', 'クリア！'))
+      ? (index === puzzles.length - 1 ? pick('All ' + puzzles.length + ' circuits solved!', puzzles.length + '問すべてクリア！') : pick('Circuit solved!', 'クリア！'))
       : pick('Set the inputs to match the target outputs.', 'スイッチを切り替えて、お題と同じ出力にしよう。');
     advance.textContent = index === puzzles.length - 1 ? pick('Play again', 'もういちど') : pick('Next circuit →', '次の回路 →');
   }
 
+  function rowPosition(index, count) {
+    return 220 + (index - (count - 1) / 2) * (count === 3 ? 127 : 178);
+  }
+
   function loadStage() {
     stage = mode === 'puzzle' ? puzzles[index] : {
-      outputs: [kind], count: kind === 'OR' || kind === 'AND' ? 2 : 1
+      outputs: [kind], count: binaryGates.has(kind) ? 2 : 1
     };
     bits = stage.initial?.slice() || Array(stage.count).fill(0);
     nodes.replaceChildren();
     inputs = bits.map((_, i) => {
-      const y = bits.length === 1 ? 220 : 125 + i * 178;
-      const name = i === 0 ? 'A' : 'B';
+      const y = rowPosition(i, bits.length);
+      const name = 'ABC'[i];
       const button = node('button', 'input', 120, y);
       button.type = 'button';
       const digit = document.createElement('span');
@@ -144,8 +169,9 @@
       return { button, digit, name, y };
     });
     outputs = stage.outputs.map((type, i) => {
-      const y = stage.outputs.length === 1 ? 220 : 125 + i * 178;
-      const name = i === 0 ? 'X' : 'Y';
+      const y = rowPosition(i, stage.outputs.length);
+      const name = 'XYZ'[i];
+      const pins = stage.pins?.[i] ?? (binaryGates.has(type) ? [0, 1] : [0]);
       let gate;
       if (type !== 'WIRE') {
         gate = node('div', 'gate', 500, y);
@@ -164,7 +190,7 @@
       const digit = document.createElement('span');
       lamp.append(digit);
       caption(lamp, name);
-      return { type, lamp, digit, gate, y, name };
+      return { type, pins, lamp, digit, gate, y, name };
     });
     redraw();
   }
