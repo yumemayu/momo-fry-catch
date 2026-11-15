@@ -78,6 +78,7 @@
   let aim = width / 2;
   let pointer = null;
   let cooldown = 0;
+  let pendingDrop = null;
   let overTime = 0;
   let age = 0;
   let lastTime = null;
@@ -273,7 +274,7 @@
     pieces.clear();
     effects.length = ripples.length = pairs.length = 0;
     score = biggest = age = backlog = overTime = cooldown = 0;
-    lastTime = pointer = null;
+    lastTime = pointer = pendingDrop = null;
     settling = false;
     deadline = mode === 'quick' ? performance.now() + roundMs : 0;
     quickTime.value = roundMs / 1000;
@@ -298,7 +299,7 @@
     playing = false;
     settling = false;
     deadline = 0;
-    pointer = null;
+    pointer = pendingDrop = null;
     playedRound = true;
     finalGrowth.textContent = biggest ? copy[language].growth + ': ' + stages[biggest - 1][language] : '';
     gameScores.finish(score, completed, {stage: biggest, stageName: stages[biggest - 1]?.ja});
@@ -309,8 +310,16 @@
   }
 
   function drop() {
-    if (!playing || settling || (deadline && performance.now() >= deadline) || age < cooldown) return;
-    insert(current, aim, limit - 36);
+    if (!playing || settling || (deadline && performance.now() >= deadline) || pendingDrop !== null) return;
+    if (age < cooldown) {
+      pendingDrop = aim;
+      return;
+    }
+    placePiece(aim);
+  }
+
+  function placePiece(x) {
+    insert(current, x, limit - 36);
     cooldown = age + 370;
     current = next;
     next = queuePiece();
@@ -336,10 +345,9 @@
   }
 
   function drawBoard() {
-    const bounds = field.getBoundingClientRect();
     const density = Math.min(2, window.devicePixelRatio || 1);
-    const pixelWidth = Math.max(1, Math.round(bounds.width * density));
-    const pixelHeight = Math.max(1, Math.round(bounds.height * density));
+    const pixelWidth = Math.max(1, Math.round(field.clientWidth * density));
+    const pixelHeight = Math.max(1, Math.round(field.clientHeight * density));
     if (field.width !== pixelWidth) field.width = pixelWidth;
     if (field.height !== pixelHeight) field.height = pixelHeight;
     ink.setTransform(pixelWidth / width, 0, 0, pixelHeight / height, 0, 0);
@@ -381,22 +389,29 @@
     ink.lineTo(width - wall - 8, limit);
     ink.stroke();
     ink.setLineDash([]);
+    for (const {body, stage, born, grew} of pieces.values()) {
+      const progress = Math.min(1, (age - born) / 230);
+      const scale = grew && !reducedMotion.matches ? 1 + .17 * Math.sin(progress * Math.PI) : 1;
+      drawPiece(stage, body.position.x, body.position.y, body.angle, scale);
+    }
     if (playing && !settling) {
-      ink.globalAlpha = age < cooldown ? .35 : .70;
-      ink.strokeStyle = '#c2a0cc';
+      ink.globalAlpha = age < cooldown ? .55 : .85;
+      ink.strokeStyle = '#79558b';
+      ink.lineWidth = 1.5;
       ink.setLineDash([3, 7]);
       ink.beginPath();
       ink.moveTo(aim, limit);
       ink.lineTo(aim, floor);
       ink.stroke();
       ink.setLineDash([]);
+      if (pendingDrop !== null) {
+        ink.fillStyle = '#79558b';
+        ink.beginPath();
+        ink.arc(pendingDrop, limit - 8, 4, 0, Math.PI * 2);
+        ink.fill();
+      }
       drawPiece(current, aim, limit - 36, 0);
       ink.globalAlpha = 1;
-    }
-    for (const {body, stage, born, grew} of pieces.values()) {
-      const progress = Math.min(1, (age - born) / 230);
-      const scale = grew && !reducedMotion.matches ? 1 + .17 * Math.sin(progress * Math.PI) : 1;
-      drawPiece(stage, body.position.x, body.position.y, body.angle, scale);
     }
     drawEffects();
   }
@@ -470,7 +485,7 @@
       if (Number(quickTime.value) !== remaining) quickTime.value = remaining;
       if (remaining === 0 && !settling) {
         settling = true;
-        pointer = null;
+        pointer = pendingDrop = null;
         setControls();
         setNotice('settling');
       }
@@ -481,14 +496,19 @@
       backlog -= timestep;
       stepWorld();
     }
+    if (playing && pendingDrop !== null && age >= cooldown) {
+      const x = pendingDrop;
+      pendingDrop = null;
+      placePiece(x);
+    }
     if (playing && settling && time >= deadline + settleMs) finish(true, 'timeUp');
     drawBoard();
     if (playing) frame = requestAnimationFrame(tick);
   }
 
   function aimPointer(event) {
-    const bounds = field.getBoundingClientRect();
-    aim = clampAim((event.clientX - bounds.left) / bounds.width * width);
+    const leftEdge = field.getBoundingClientRect().left + field.clientLeft;
+    aim = clampAim((event.clientX - leftEdge) / field.clientWidth * width);
   }
 
   field.addEventListener('pointerdown', event => {
@@ -506,7 +526,9 @@
     aimPointer(event);
     drop();
   });
-  field.addEventListener('lostpointercapture', () => { pointer = null; });
+  field.addEventListener('lostpointercapture', event => {
+    if (event.pointerId === pointer) pointer = null;
+  });
   field.addEventListener('keydown', event => {
     if (!playing || settling || !['ArrowLeft', 'ArrowRight', ' ', 'Enter'].includes(event.key)) return;
     event.preventDefault();
