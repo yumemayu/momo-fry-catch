@@ -17,15 +17,15 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A glasses-wearing cat on a mint-green block board.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="../game.css">
+<link rel="stylesheet" href="../game.css?v=tablet-board">
 <link rel="stylesheet" href="../game-picker.css">
 <link rel="stylesheet" href="../language.css">
-<link rel="stylesheet" href="cat-trap.css?v=title-banner">
+<link rel="stylesheet" href="cat-trap.css?v=hex-board">
 <link rel="stylesheet" href="../game-title-banner.css">
 <script defer src="../language.js"></script>
 <script defer src="../stickers.js"></script>
 <script defer src="../scores.js?v=stickers"></script>
-<script defer src="cat-trap.js?v=title-banner"></script>
+<script defer src="cat-trap.js?v=hex-board"></script>
 </head>
 <body data-game="cat-trap">
 <main class="trap-main">
@@ -40,12 +40,17 @@
   <fieldset class="difficulty">
     <legend data-en="Choose a level">レベルを えらぶ</legend>
     <div class="level-buttons" role="group" aria-label="レベル" data-en-label="Level">
-      <button type="button" data-level="easy" aria-pressed="true"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#d5eac6" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Easy · 12 boxes ready">かんたん ・ はじめの箱12こ</span></button>
-      <button type="button" data-level="normal" aria-pressed="false"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#f6b57f" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Normal · 8 boxes ready">ふつう ・ はじめの箱8こ</span></button>
-      <button type="button" data-level="hard" aria-pressed="false"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#d2b0eb" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Hard · 5 boxes ready">むずかしい ・ はじめの箱5こ</span></button>
+      <button type="button" data-level="easy" aria-pressed="true"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#d5eac6" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Easy">かんたん</span></button>
+      <button type="button" data-level="normal" aria-pressed="false"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#f6b57f" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Normal">ふつう</span></button>
+      <button type="button" data-level="hard" aria-pressed="false"><svg class="level-art" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#d2b0eb" stroke="#57344a" stroke-width="2"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.2" fill="#57344a"/><circle cx="41" cy="35" r="2.2" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3"/></svg><span data-en="Hard">むずかしい</span></button>
     </div>
   </fieldset>
   <div class="play-stack">
+    <div class="trap-tools" aria-label="Board tools">
+      <button type="button" id="trap-undo" data-en="↶ Undo" disabled>↶ もどす</button>
+      <button type="button" id="trap-hint" data-en="Hint" aria-pressed="true">ヒント</button>
+      <button type="button" id="trap-new" data-en="↻ New">↻ あたらしく</button>
+    </div>
     <div class="play-stage">
       <div class="trap-field game-field" id="field" role="group" aria-label="ねこの いる ばん" data-en-label="Cat board"></div>
       <div class="game-card" id="ready-card">
@@ -69,7 +74,7 @@
       <button class="stop-button" id="stop" type="button" hidden>■ Stop</button>
     </div>
   </div>
-  <p id="instructions" data-en="Tap a tile to drop a cardboard box. Surround the cat before it slips off the edge!">マスをタップして ダンボール箱を置こう。猫が 端から にげる前に、まわりを 全部 かこんでね！</p>
+  <p id="instructions" data-en="Tap a hex to block it. The dots show the path the cat can take. Block its way before it reaches the edge!">六角マスをタップして道をふさごう。点は猫がにげるルート。端につく前に、先回りしてかこんでね！</p>
   <div class="music"><button id="sound" type="button" aria-pressed="true">おと ON</button></div>
   <section class="score-board" aria-labelledby="board-title">
     <div class="score-board-heading">
@@ -92,7 +97,10 @@
     <a class="picker-memory" href="../capybara-memory/"><span class="picker-illustration" aria-hidden="true"></span><span data-en="Capybara Memory">カピバラ神経衰弱</span></a>
     <a class="picker-bath" href="../capybara-tap/"><span class="picker-illustration" aria-hidden="true"></span><span data-en="Capybara Bath Tap">カピバラおふろタップ</span></a>
     <a class="picker-trap" aria-current="page" href="./"><svg class="game-art" viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="11" fill="#cdeeb2"/><rect x="43" y="1" width="17" height="14" rx="2.5" fill="#d9a066" stroke="#b57e42" stroke-width="1.6"/><g transform="translate(9.6 7) scale(0.7)"><path d="M9 30 11 11 26 19 Q32 17 38 19 L53 11 55 30 C65 65 -1 65 9 30Z" fill="#fdf3e3" stroke="#57344a" stroke-width="3"/><path d="M15 17 21 23 14 26Z M49 17 50 26 43 23Z" fill="#f987aa"/><circle cx="23" cy="35" r="2.4" fill="#57344a"/><circle cx="41" cy="35" r="2.4" fill="#57344a"/><path d="M28 43Q30 46 32 42Q34 46 37 43" fill="none" stroke="#57344a" stroke-width="2.5" stroke-linecap="round"/><path d="M29 35h6" stroke="#493153" stroke-width="3.5"/><circle cx="22" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/><circle cx="42" cy="35" r="7" fill="none" stroke="#493153" stroke-width="3.5"/></g></svg><span data-en="Trap the Cat">ねこを かこもう！</span></a>
-  </nav>
+      <a class="picker-bath" href="../toy-box/#bun"><img class="game-art" src="../assets/game-bun.png" alt="" width="42" height="42"><span data-en="Bun Lights">肉まんライト</span></a>
+    <a class="picker-piano" href="../toy-box/#keys"><span class="game-art" aria-hidden="true">⌨</span><span data-en="Clicky Keys">カチカチキー</span></a>
+    <a class="picker-memory" href="../toy-box/#dog"><span class="game-art" aria-hidden="true">🐾</span><span data-en="Puppy Copycat">犬のまねっこ</span></a>
+</nav>
 </main>
 <footer class="feedback"><a href="../toy-box/#stickers" data-sticker-link>✦ Sticker Book</a><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer" data-en="Send feedback">感想をおくる</a><small>Copyright Momo.squirrels</small></footer>
 </body>

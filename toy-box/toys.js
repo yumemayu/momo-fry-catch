@@ -53,7 +53,7 @@ momoStickers.subscribe(id => {
   if (item) one('#sticker-announcement').textContent = copy(item[2] + ' sticker unlocked!', item[3] + 'のシールをゲット！');
 });
 momoLanguage.subscribe(renderStickers);
-if (location.hash === '#stickers') one('[data-toy="stickers"]').click();
+tabs.find(button => '#' + button.dataset.toy === location.hash)?.click();
 
 let audio;
 const keySamples = new Map();
