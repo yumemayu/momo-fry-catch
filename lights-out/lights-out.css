@@ -55,6 +55,12 @@
   0%, 100% { box-shadow: 0 0 12px 3px rgba(255, 208, 46, .65), 0 0 26px 5px rgba(255, 208, 46, .3), inset 0 -3px 0 rgba(214, 144, 0, .45), inset 0 3px 4px rgba(255, 255, 255, .8); }
   50% { box-shadow: 0 0 18px 5px rgba(255, 208, 46, .85), 0 0 36px 9px rgba(255, 208, 46, .42), inset 0 -3px 0 rgba(214, 144, 0, .45), inset 0 3px 4px rgba(255, 255, 255, .8); }
 }
+/* Before Play, the nickname card sits over the board: keep the preview
+   glow small and still, so the light does not wash over the card. */
+.lo-board.preview .lo-tile.on {
+  animation: none;
+  box-shadow: 0 0 5px 1px rgba(255, 208, 46, .45), inset 0 -3px 0 rgba(214, 144, 0, .45), inset 0 3px 4px rgba(255, 255, 255, .8);
+}
 .lo-tile.pop { animation: tile-pop .28s ease; }
 @keyframes tile-pop {
   35% { transform: scale(.9); }

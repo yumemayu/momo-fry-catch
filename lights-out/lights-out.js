@@ -123,6 +123,7 @@
   }
 
   function render() {
+    board.classList.toggle('preview', !playing);
     tiles.forEach((row, r) => row.forEach((tile, c) => {
       tile.classList.toggle('on', !!grid[r]?.[c]);
       tile.disabled = !playing;
