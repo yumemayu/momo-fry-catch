@@ -114,6 +114,9 @@
       {level:0, singleOctave:true, ja:'ロンドン橋', en:'London Bridge', icon:'♫',
         notes:[4,5,4,3,2,3,4,1,2,3,2,3,4,4,5,4,3,2,3,4,1,4,2,0],
         beats:[1,.5,.5,1,1,1,2,1,1,2,1,1,2,1,.5,.5,1,1,1,2,1,1,1,3]},
+      {level:0, singleOctave:true, ja:'歓喜の歌（冒頭）', en:'Ode to Joy (Opening)', icon:'♫',
+        notes:[2,2,3,4,4,3,2,1,0,0,1,2,2,1,1,2,2,3,4,4,3,2,1,0,0,1,2,1,0,0],
+        beats:[1,1,1,1,1,1,1,1,1,1,1,1,1.5,.5,2,1,1,1,1,1,1,1,1,1,1,1,1,1.5,.5,2]},
       {level:0, ja:'星のかいだん', en:'Stairway of Stars', icon:'✦',
         notes:toKeys([0,4,7,12,7,4,0,2,5,9,14,9,5,2,4,7,12,16,12,7,4,5,9,12,17,19,21,24,21,19,17,16,14,12,7,4,0])},
       {level:1, ja:'きらきら星 ♯', en:'Twinkle, Twinkle (Sharps)', icon:'♯',
@@ -432,13 +435,11 @@
         key.querySelector('.note-name').textContent = label.visible;
       });
     }
-    const languageButtons = root.querySelectorAll('[data-lang]');
     function setLanguage(nextLanguage) {
       language = nextLanguage;
       const copy = labels[language];
       root.lang = language;
       document.documentElement.lang = language;
-      languageButtons.forEach(button => button.setAttribute('aria-pressed', button.dataset.lang === language));
       root.querySelectorAll('[data-copy]').forEach(element => {
         element.textContent = copy[element.dataset.copy];
       });
@@ -453,9 +454,8 @@
       chart.forEach(({index, block}) => { block.textContent = noteLabel(index).visible; });
       update();
     }
-    languageButtons.forEach(button => button.addEventListener('click', () => setLanguage(button.dataset.lang)));
     new ResizeObserver(() => { if (chart.length) positionNotes(); }).observe(roll);
-    setLanguage('ja');
+    momoLanguage.subscribe(setLanguage);
     root.dataset.ready = 'true';
   }
   if (document.readyState === 'loading') {

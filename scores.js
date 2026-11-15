@@ -14,8 +14,42 @@ const gameScores = (() => {
   const cache = new Map();
   let player;
   let formatStage = (_, fallback) => fallback;
+  let nicknameState = '';
+  const saveNicknameButton = document.createElement('button');
+  saveNicknameButton.type = 'button';
+  saveNicknameButton.className = 'save-nickname';
+  const nicknameFeedback = document.createElement('small');
+  nicknameFeedback.className = 'nickname-saved';
+  nicknameFeedback.setAttribute('role', 'status');
+  nameInput.parentElement.append(saveNicknameButton, nicknameFeedback);
 
-  try { nameInput.value = localStorage.getItem(nameKey) || ''; } catch {}
+  try {
+    nameInput.value = localStorage.getItem(nameKey) || '';
+    if (nameInput.value) nicknameState = 'saved';
+  } catch {}
+
+  function renderNickname() {
+    saveNicknameButton.textContent = momoLanguage.pick('Save nickname', 'ニックネームを保存');
+    const messages = {
+      saved: ['Nickname saved on this device.', 'この端末にニックネームを保存しました。'],
+      cleared: ['Saved nickname cleared.', '保存したニックネームを消しました。'],
+      unavailable: ['Could not save on this device.', 'この端末には保存できませんでした。']
+    };
+    nicknameFeedback.textContent = nicknameState ? momoLanguage.pick(...messages[nicknameState]) : '';
+  }
+
+  function saveNickname() {
+    const name = nameInput.value.trim();
+    nameInput.value = name;
+    try {
+      if (name) localStorage.setItem(nameKey, name);
+      else localStorage.removeItem(nameKey);
+      nicknameState = name ? 'saved' : 'cleared';
+    } catch { nicknameState = 'unavailable'; }
+    renderNickname();
+    render();
+    return name;
+  }
 
   function weekKey(now = Date.now()) {
     // Japan time, Monday at midnight. A UTC date shifted by nine hours
@@ -42,8 +76,8 @@ const gameScores = (() => {
     const record = rows.find(row => row.name.toLowerCase() === nickname);
     const rank = record ? 1 + rows.filter(row => row.score > record.score).length : null;
     best.textContent = record
-      ? 'Your best: ' + record.score + ' points · Rank #' + rank
-      : rows.length ? 'Your best: —' : 'No scores yet';
+      ? momoLanguage.pick(`Your best: ${record.score} points · Rank #${rank}`, `ベスト：${record.score}点 · ${rank}位`)
+      : rows.length ? momoLanguage.pick('Your best: —', 'ベスト：—') : momoLanguage.pick('No scores yet', 'まだスコアがありません');
 
     scoreList.replaceChildren();
     let place = 0;
@@ -54,7 +88,7 @@ const gameScores = (() => {
       badge.className = 'score-rank';
       badge.textContent = '#' + place;
       const name = document.createElement('span');
-      name.textContent = row === record ? row.name + ' (you)' : row.name;
+      name.textContent = row === record ? row.name + momoLanguage.pick(' (you)', '（あなた）') : row.name;
       if (typeof row.stageName === 'string' && row.stageName) {
         const stage = document.createElement('small');
         stage.className = 'score-stage';
@@ -69,7 +103,17 @@ const gameScores = (() => {
     });
   }
 
-  nameInput.addEventListener('input', render);
+  nameInput.addEventListener('input', () => {
+    nicknameState = '';
+    renderNickname();
+    render();
+  });
+  saveNicknameButton.addEventListener('click', saveNickname);
+  nameInput.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' || event.isComposing || nameInput.readOnly) return;
+    event.preventDefault();
+    saveNickname();
+  });
   periodButtons.forEach(button => button.addEventListener('click', () => {
     period = button.dataset.period;
     periodButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
@@ -90,16 +134,15 @@ const gameScores = (() => {
     displayedWeek = currentWeek;
     render();
   }, 1000);
-  render();
+  momoLanguage.subscribe(() => {
+    renderNickname();
+    render();
+  });
 
   return {
     start(level = 'standard') {
-      const name = nameInput.value.trim();
+      const name = saveNickname();
       player = { name, level };
-      try {
-        if (name) localStorage.setItem(nameKey, name);
-        else localStorage.removeItem(nameKey);
-      } catch {}
       nameInput.readOnly = true;
       changePlayer.hidden = true;
       readyCard.hidden = scoreCard.hidden = true;

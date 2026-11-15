@@ -122,7 +122,7 @@ nav a[aria-current] {
   main{max-width:1320px;display:grid;grid-template-columns:minmax(230px, 310px) minmax(0,1fr);column-gap:20px;align-items:start}
   main > *{grid-column:1}
   main > .play-stack{grid-column:2;grid-row:1 / span 8;margin:0}
-  main > .score-board{grid-column:1 / -1;grid-row:9}
+  main > .score-board{grid-column:1;grid-row:auto;margin-top:12px}
   main > nav{grid-column:1 / -1;grid-row:10}
   main{--game-field-height:clamp(220px,65dvh,570px)}
   .cat-grid{width:100%;grid-template-columns:repeat(8,minmax(0,1fr));justify-self:center}
@@ -446,4 +446,16 @@ body[data-game="buns"] {
     height: auto;
     aspect-ratio: 10 / 9;
   }
+}
+
+.player-setup .save-nickname {
+  grid-column: 1 / -1;
+  min-height: 44px;
+  background: #e9d6ff;
+  color: #553369;
+}
+.player-setup .nickname-saved {
+  grid-column: 1 / -1;
+  min-height: 1.25em;
+  color: #66406e;
 }
