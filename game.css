@@ -439,13 +439,6 @@ body[data-game="buns"] {
   font: 700 28px/1 system-ui, sans-serif;
 }
 
-.trap-nav-icon {
-  display: grid;
-  place-items: center;
-  color: #3c7a2c;
-  font-size: 26px;
-  line-height: 1;
-}
 
 /* Catch games use a 400 × 360 drawing area. Preserve that shape on desktop. */
 @media (min-width: 1050px), (orientation: landscape) and (min-width: 700px) {
