@@ -245,6 +245,22 @@ button:disabled { opacity: .55; cursor: default; }
   font-weight: 800;
 }
 .key-notebook { max-width: 420px; margin: 18px auto 0; padding: 12px 14px; border: 1px solid #ebc7db; border-radius: 16px; background: #fff6fa; text-align: left; }
+.notebook-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.momo-ribbon {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  border: 1px solid #e6badb; border-radius: 999px; background: #fbe0f1;
+  color: #754779; font-size: .8rem; font-weight: 700;
+}
+.momo-ribbon[hidden] { display: none; }
+.momo-ribbon .key-art { width: 14px; margin: 0; }
+.toy-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.momo-celebration .keycap { animation: momo-key-shine .44s ease-out var(--shine-delay, 650ms); }
+@keyframes momo-key-shine {
+  35% { filter: brightness(1.18); outline: 2px solid #fff5cb; box-shadow: 0 0 16px #fff1a7, 0 4px #b878a0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .momo-celebration .keycap { animation: none; outline: 2px solid #fff5cb; }
+}
 .key-notebook label { display: block; margin-bottom: 5px; font-weight: 700; }
 .key-notebook textarea { display: block; width: 100%; resize: none; padding: 4px 5px; border: 0; background: repeating-linear-gradient(transparent 0 23px,#ebcee0 23px 24px); color: inherit; font: inherit; line-height: 24px; }
 .key-notebook .choices { justify-content: flex-end; margin-top: 8px; }

@@ -250,6 +250,23 @@ const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
 const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
+const ribbon = one('#momo-ribbon');
+const ribbonStatus = one('#momo-unlock-status');
+const ribbonStorage = 'momo:toy-box:ribbon';
+const momoCommand = 'MOMO';
+try { ribbon.hidden = localStorage.getItem(ribbonStorage) !== '1'; } catch {}
+let celebrationTimer;
+function celebrateMomo() {
+  if (ribbon.hidden) {
+    ribbon.hidden = false;
+    ribbonStatus.textContent = copy('Ribbon sticker unlocked!', 'リボンシールをゲット！');
+    try { localStorage.setItem(ribbonStorage, '1'); } catch {}
+  }
+  if (keyCase.classList.contains('momo-celebration')) return;
+  keyCase.classList.add('momo-celebration');
+  clearTimeout(celebrationTimer);
+  celebrationTimer = setTimeout(() => keyCase.classList.remove('momo-celebration'), 1250);
+}
 const noteLimit = 120;
 try { notebook.value = (localStorage.getItem(noteStorage) || '').slice(-noteLimit); } catch {}
 function saveNote(value) {
@@ -265,6 +282,7 @@ let nextMeow = 8;
 function pressKeycap(key, index, letter) {
   play(index);
   saveNote(notebook.value + letter);
+  if (notebook.value.endsWith(momoCommand)) celebrateMomo();
   const catSound = keyCase.dataset.theme === 'cat' && ++catPresses >= nextMeow;
   if (catSound) {
     catPresses = 0;
@@ -290,6 +308,7 @@ function renderKeys(theme) {
       key.className = 'keycap';
       key.type = 'button';
       key.dataset.color = (index + rowIndex * 3) % 7;
+      key.style.setProperty('--shine-delay', (index * 65 + rowIndex * 35) + 'ms');
       const legend = document.createElement('span');
       legend.className = 'key-legend';
       legend.textContent = letter;

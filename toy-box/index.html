@@ -46,7 +46,14 @@
       <button type="button" data-sound="cute" aria-pressed="false" data-ja="かわいい">Cute</button>
     </div>
     <div class="key-notebook">
-      <label for="key-note" data-ja="れんらくちょう">Notebook</label>
+      <div class="notebook-heading">
+        <label for="key-note" data-ja="れんらくちょう">Notebook</label>
+        <span id="momo-ribbon" class="momo-ribbon" hidden>
+          <span class="key-art" data-art="bow" aria-hidden="true"></span>
+          <span data-ja="リボンシール">Ribbon sticker</span>
+        </span>
+      </div>
+      <span id="momo-unlock-status" class="toy-sr-only" role="status"></span>
       <textarea id="key-note" rows="2" readonly placeholder="What will you type?" data-ja-placeholder="キーをおすと ここにのこるよ"></textarea>
       <div class="choices">
         <button type="button" id="note-back" data-ja="１文字けす">Backspace</button>
