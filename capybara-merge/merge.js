@@ -28,9 +28,9 @@
   const timestep = 1000 / 60;
   const saveKey = 'momo:capybara:best-stage';
   const copy = {
-    ja: {title:'カピバラ温泉マージ', growth:'いちばん育った姿', retry:'もういちど', on:'おと ON', off:'おと OFF',
+    ja: {growth:'いちばん育った姿', retry:'もういちど', on:'おと ON', off:'おと OFF',
       special:'ろてん風呂に とうちゃく！', full:'いっぱいになったよ。もういちど！', timeUp:'1分たったよ！', settling:'さいごの合体を待ってね。', error:'ゲームを読みこめませんでした。ページを開きなおしてください。'},
-    en: {title:'Capybara Onsen Merge', growth:'Biggest piece', retry:'Play again', on:'Sound on', off:'Sound off',
+    en: {growth:'Biggest piece', retry:'Play again', on:'Sound on', off:'Sound off',
       special:'You made it to the outdoor bath!', full:'The bath is full. Try again!', timeUp:'Time is up!', settling:'Let the last pieces settle!', error:'The game could not load. Please reload the page.'}
   };
   let language = 'en';
@@ -101,7 +101,6 @@
 
   function renderLanguage() {
     document.documentElement.lang = language;
-    document.title = copy[language].title + ' | Momo.squirrels';
     staticLabels.forEach(({element, property, [language]: value}) => {
       if (property === 'textContent') element.textContent = value;
       else element.setAttribute(property, value);

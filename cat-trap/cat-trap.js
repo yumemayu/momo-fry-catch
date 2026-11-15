@@ -18,13 +18,13 @@
   };
   const copy = {
     ja: {
-      title: 'ねこを かこもう！', retry: 'もういちど', on: 'おと ON', off: 'おと OFF',
+      retry: 'もういちど', on: 'おと ON', off: 'おと OFF',
       tile: 'マス', box: '箱', catHere: '猫',
       lines: { idle: 'にゃーん！', taunt: 'つかまえられないよ！', worried: 'あれ…？', caught: 'つかまった〜', bye: 'バイバイ！' },
       verdictWin: '猫を つかまえた！🎉', verdictEscape: '猫に にげられた！🐾'
     },
     en: {
-      title: 'Trap the Cat', retry: 'Play again', on: 'Sound on', off: 'Sound off',
+      retry: 'Play again', on: 'Sound on', off: 'Sound off',
       tile: 'Tile', box: 'box', catHere: 'cat',
       lines: { idle: 'Meow!', taunt: "Can't catch me!", worried: 'Uh oh…', caught: 'You got me!', bye: 'Bye-bye!' },
       verdictWin: 'You trapped the cat! 🎉', verdictEscape: 'The cat escaped! 🐾'
@@ -102,7 +102,6 @@
 
   function renderLanguage() {
     document.documentElement.lang = language;
-    document.title = copy[language].title + ' | Momo.squirrels';
     staticLabels.forEach(({ element, property, [language === 'ja' ? 'ja' : 'en']: value }) => {
       if (property === 'textContent') element.textContent = value;
       else element.setAttribute(property, value);
