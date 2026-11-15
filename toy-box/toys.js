@@ -12,7 +12,7 @@ tabs.forEach(button => button.addEventListener('click', () => {
 
 let audio;
 const keySamples = new Map();
-let sound = 'creamy';
+let sound = 'soft';
 function play(index, pitch = 0) {
   if (sound === 'mute') return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -23,18 +23,24 @@ function play(index, pitch = 0) {
   if (!pitch) {
     if (!keySamples.has(sound)) {
       const rate = audio.sampleRate;
-      const sample = audio.createBuffer(1, Math.ceil(rate * .105), rate);
+      const cute = sound === 'cute';
+      const sample = audio.createBuffer(1, Math.ceil(rate * (cute ? .19 : .105)), rate);
       const data = sample.getChannelData(0);
-      const quiet = sound === 'soft';
-      const fundamental = quiet ? 185 : 245;
       for (let frame = 0; frame < data.length; frame++) {
         const t = frame / rate;
+        if (cute) {
+          const envelope = (1 - Math.exp(-t * 490)) * Math.exp(-t * 45);
+          const pop = Math.sin(2 * Math.PI * (560 * t + 420 * t * t));
+          const shimmer = Math.sin(2 * Math.PI * 825 * t) * Math.exp(-t * 52);
+          data[frame] = envelope * (pop * .68 + shimmer * .20);
+          continue;
+        }
         const rise = 1 - Math.exp(-t * 730);
         const strike = rise * Math.exp(-t * 100);
         const releaseTime = Math.max(0, t - .043);
         const release = .19 * (1 - Math.exp(-releaseTime * 520)) * Math.exp(-releaseTime * 170);
-        const body = Math.sin(2 * Math.PI * fundamental * t);
-        const shell = Math.sin(2 * Math.PI * (quiet ? 330 : 470) * t);
+        const body = Math.sin(2 * Math.PI * 245 * t);
+        const shell = Math.sin(2 * Math.PI * 470 * t);
         const returnTone = Math.sin(2 * Math.PI * 305 * releaseTime);
         data[frame] = strike * (body * .68 + shell * .23) + release * returnTone;
       }
@@ -44,7 +50,7 @@ function play(index, pitch = 0) {
     const level = audio.createGain();
     source.buffer = keySamples.get(sound);
     source.playbackRate.value = .92 + (index % 7) * .037;
-    level.gain.value = sound === 'soft' ? .09 : .15;
+    level.gain.value = sound === 'cute' ? .105 : .15;
     source.connect(level).connect(audio.destination);
     source.start(now);
     return;
