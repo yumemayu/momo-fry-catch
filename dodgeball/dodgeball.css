@@ -189,3 +189,22 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
   transition: left .12s ease-out;
 }
 @media (prefers-reduced-motion: reduce) { .paw-position { transition: none; } }
+
+.dodge-cue {
+  position: absolute;
+  top: 17%;
+  left: 50%;
+  translate: -50% 0;
+  padding: 6px 14px;
+  border: 2px solid #805176;
+  border-radius: 999px;
+  background: #fff2f9;
+  color: #603b5e;
+  font-weight: 850;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.dodge-zone button {
+  width: clamp(48px, 11%, 75px);
+  box-shadow: 0 3px 0 #80517655;
+}

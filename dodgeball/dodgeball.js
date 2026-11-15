@@ -17,6 +17,8 @@
   const catScore = document.querySelector('#cat-score');
   const catHitsOutput = document.querySelector('#cat-hits');
   const dodgeZone = document.querySelector('#dodge-zone');
+  const dodgeCue = document.querySelector('#dodge-cue');
+  const dodgeDuration = 1850;
   const landing = document.querySelector('#landing');
   const paw = document.querySelector('#paw-position');
   const modeButtons = document.querySelectorAll('[data-mode]');
@@ -81,7 +83,8 @@
 
   function renderGuide() {
     if (phase === 'dodge') {
-      guide.textContent = say("Cat’s turn! Swipe left or right to dodge, or use ← →.", 'ねこの番！ 左右にスワイプか、← → でよけよう。');
+      dodgeCue.textContent = say('DODGE!  ←  →', 'よけて！  ←  →');
+      guide.textContent = say("Cat’s turn! Swipe or tap either side to dodge. Keyboard: ← →.", 'ねこの番！ 横にスワイプ、または左右をタップ。キーなら ← →。');
     } else if (phase === 'between') {
       guide.textContent = dodgeResult === 'safe' ? say('Nice dodge!', 'よけた！') : say('Cat scores!', 'ねこに1点！');
     } else {
@@ -93,7 +96,7 @@
 
   function dodge(direction) {
     if (phase !== 'dodge') return;
-    playerPosition = clamp(playerPosition + direction * 27, 23, 77);
+    playerPosition = direction < 0 ? 23 : 77;
     paw.style.left = playerPosition + '%';
   }
 
@@ -121,11 +124,11 @@
     const flight = ball.animate([
       { transform: `translate(${from}px, ${-height * .37}px) scale(.43)` },
       { transform: `translate(${to}px, 0) scale(.93)` }
-    ], { duration: 1250, easing: 'ease-in', fill: 'both' });
+    ], { duration: dodgeDuration, easing: 'ease-in', fill: 'both' });
     if (reducedMotion.matches) {
       flight.pause();
       flight.currentTime = 0;
-      await delay(1250);
+      await delay(dodgeDuration);
     } else await flight.finished;
     const hit = Math.abs(destination - playerPosition) < 12;
     phase = 'between';
@@ -280,15 +283,20 @@
   }
   dodgeButtons.forEach(button => button.addEventListener('click', () => dodge(Number(button.dataset.dodge))));
   dodgeZone.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.target.closest('button')) return;
-    dodgeOrigin = { x: event.clientX, id: event.pointerId };
+    if (!event.isPrimary || event.button !== 0 || event.target.closest('button')) return;
+    dodgeOrigin = { x: event.clientX, id: event.pointerId, moved: false };
     dodgeZone.setPointerCapture(event.pointerId);
+    // A tap on either side works immediately, including on touch screens.
+    const rect = dodgeZone.getBoundingClientRect();
+    const location = (event.clientX - rect.left) / rect.width;
+    if (location < .4 || location > .6) dodge(location < .5 ? -1 : 1);
   });
-  dodgeZone.addEventListener('pointerup', event => {
-    if (dodgeOrigin?.id !== event.pointerId) return;
+  dodgeZone.addEventListener('pointermove', event => {
+    if (dodgeOrigin?.id !== event.pointerId || dodgeOrigin.moved) return;
     const distance = event.clientX - dodgeOrigin.x;
-    dodgeOrigin = null;
-    if (Math.abs(distance) >= 18) dodge(Math.sign(distance));
+    if (Math.abs(distance) < 12) return;
+    dodgeOrigin.moved = true;
+    dodge(Math.sign(distance));
   });
   dodgeZone.addEventListener('lostpointercapture', () => { dodgeOrigin = null; });
   document.addEventListener('keydown', event => {
