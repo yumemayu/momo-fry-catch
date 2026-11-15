@@ -291,7 +291,32 @@ button:disabled { opacity: .55; cursor: default; }
 .bun-night-sky { display: none; }
 .bun-tray[data-night] {
   padding-top: 68px;
+  overflow: clip;
   background: radial-gradient(ellipse at 70% 9%, #394079, #191b35 56%, #111225);
+}
+.bun-tray[data-night]::before {
+  content: ""; position: absolute; z-index: -1; inset: 13% -8% -11%;
+  pointer-events: none; transform-origin: 50% 86%;
+  background:
+    radial-gradient(ellipse 46% 75% at 19% 88%, #f5a4d4ba, transparent 83%),
+    radial-gradient(ellipse 46% 78% at 50% 93%, #86d9f8b5, transparent 84%),
+    radial-gradient(ellipse 46% 76% at 82% 88%, #ffe4a7b8, transparent 83%);
+  filter: blur(clamp(9px, 2.2vw, 17px));
+  opacity: .18; transform: scale(.62, .5);
+  transition: opacity 1.6s ease;
+}
+.bun-tray[data-night]:not([data-sleeping])::before {
+  animation: night-spread 11s ease-in-out infinite;
+}
+.bun-tray[data-night][data-sleeping]::before { opacity: 0; }
+@keyframes night-spread {
+  0%, 100% { opacity: .25; transform: scale(.67, .52); }
+  48%, 55% { opacity: .82; transform: scale(1.18, 1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bun-tray[data-night]:not([data-sleeping])::before {
+    animation: none; opacity: .58; transform: scale(.99, .89);
+  }
 }
 .bun-tray[data-night] .bun-night-sky { display: block; position: absolute; inset: 0; pointer-events: none; z-index: -1; }
 .bun-moon {
@@ -330,7 +355,7 @@ button:disabled { opacity: .55; cursor: default; }
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -8% -13% 3%;
+  inset: -17% -32% -9%;
   border-radius: 50%;
   background: radial-gradient(ellipse, var(--light), transparent 69%);
   filter: blur(clamp(9px, 2.9vw, 22px));
