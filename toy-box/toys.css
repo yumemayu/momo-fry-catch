@@ -271,3 +271,60 @@ button:disabled { opacity: .55; cursor: default; }
 #puppy-move { position: absolute; top: 9%; right: 8%; padding: 2px 10px; border-radius: 13px; background: #fff6e6; font-size: clamp(15px, 4vw, 28px); }
 #puppy-move:empty { display: none; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; } }
+
+#stickers { background: #fff8f1; }
+#stickers h3 { margin: 18px 0 7px; font-size: 1rem; }
+#sticker-progress { color: #825788; font-weight: 700; }
+.sticker-sheet {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 132px), 1fr));
+  gap: 8px; margin: 0; padding: 0; list-style: none;
+}
+.sticker-sheet li {
+  display: grid; place-items: center; align-content: start; gap: 3px;
+  min-height: 108px; padding: 8px 5px; border: 1px dashed #dcbccc; border-radius: 13px; background: #fffdf9;
+}
+.sticker-sheet li[data-earned="true"] { background: #f9e7f2; border-style: solid; border-color: #e2abc8; }
+.sticker-art { font-size: 1.8rem; line-height: 1.15; color: #af83ad; }
+.sticker-sheet strong { font-size: .85rem; }
+.sticker-sheet small { font-size: .73rem; color: #765c75; }
+
+.bun-night-sky { display: none; }
+.bun-tray[data-night] {
+  padding-top: 68px;
+  background: radial-gradient(ellipse at 70% 9%, #394079, #191b35 56%, #111225);
+}
+.bun-tray[data-night] .bun-night-sky { display: block; position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+.bun-moon {
+  position: absolute; top: 17px; right: 15%; width: 29px; height: 29px;
+  border-radius: 50%; box-shadow: -8px 4px 0 #fff0b8;
+  transform: rotate(-14deg); filter: drop-shadow(0 0 6px #ffd88c88);
+}
+.bun-stars {
+  position: absolute; top: 27px; left: 15%; color: #fff3c5;
+  text-shadow: 32px -13px #d9ceff, 69px 16px #efdcff, 141px -10px #fff3c5, 196px 15px #ccc9fc;
+  font-size: 11px;
+}
+.night-controls:not([hidden]) { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px; }
+.night-controls select { border: 1px solid #d4acd0; border-radius: 8px; padding: 4px; color: #50394e; background: #fff8ff; font: inherit; }
+.night-controls output { min-width: 40px; font-variant-numeric: tabular-nums; }
+.bun[data-face="sleepy"] .bun-face,
+.bun-tray[data-night] .bun-face {
+  background:
+    radial-gradient(ellipse at 18% 39%, #382333 0 8%, transparent 11%),
+    radial-gradient(ellipse at 82% 39%, #382333 0 8%, transparent 11%),
+    radial-gradient(ellipse at 5% 63%, #ee8e7866 0 12%, transparent 14%),
+    radial-gradient(ellipse at 95% 63%, #ee8e7866 0 12%, transparent 14%);
+}
+.bun[data-face="sleepy"] .bun-face::after,
+.bun-tray[data-night] .bun-face::after {
+  top: 46%; left: 42%; width: 14%; height: 22%;
+  border: 1px solid #382333; border-radius: 50%; background: #8a5a78;
+}
+.bun-tray[data-night] .bun[aria-pressed="true"] .bun-cap { animation: night-breath 6s ease-in-out infinite; }
+.bun-tray[data-night] .bun.soda .bun-cap { animation-delay: -.7s; }
+.bun-tray[data-night] .bun.milk .bun-cap { animation-delay: -1.4s; }
+.bun-tray[data-sleeping] .bun-cap { filter: brightness(.48); }
+@keyframes night-breath { 0%,100% { filter: brightness(.77) saturate(.9); } 50% { filter: brightness(1.11) saturate(1.03); } }
+@media (prefers-reduced-motion: reduce) {
+  .bun-tray[data-night] .bun[aria-pressed="true"] .bun-cap { animation: none; }
+}

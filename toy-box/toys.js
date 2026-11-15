@@ -10,6 +10,51 @@ tabs.forEach(button => button.addEventListener('click', () => {
   all('.toy').forEach(panel => { panel.hidden = panel.id !== button.dataset.toy; });
 }));
 
+const stickerCatalog = [
+  ['bun-light', '🏮', 'Bun Lights', '肉まんライト', 'Mix two colors', '２色をまぜる'],
+  ['ribbon', '🎀', 'MOMO ribbon', 'MOMOのリボン', 'Type the secret word', 'ひみつの言葉を入力'],
+  ['puppy', '🐾', 'Cloud dog', '雲の犬', 'Copy the first sequence', '最初のまねっこをクリア'],
+  ['fries', '🍟', 'Fry Catch', 'フライキャッチ'],
+  ['buns', '🥟', 'Smiley Bun Catch', 'にこにこ肉まんキャッチ'],
+  ['cats', '🐱', 'Find the Glasses Cat', 'メガネ猫さがし'],
+  ['piano', '🎹', 'MOMO Piano', 'MOMOピアノ', 'Finish a song', '１曲最後まで弾く'],
+  ['capybara', '♨️', 'Capybara Onsen Merge', 'カピバラ温泉マージ'],
+  ['capybara-memory', '🃏', 'Capybara Memory', 'カピバラ神経衰弱'],
+  ['capybara-tap', '🫧', 'Capybara Bath Tap', 'カピバラおふろタップ'],
+  ['cat-trap', '📦', 'Trap the Cat', 'ねこをかこもう！', 'Trap the cat', 'ねこを囲む'],
+];
+function stickerEntry([id, icon, en, ja, taskEn = 'Finish a round', taskJa = '１ラウンド最後まで遊ぶ']) {
+  const earned = momoStickers.has(id);
+  const item = document.createElement('li');
+  item.dataset.earned = String(earned);
+  const art = document.createElement('span');
+  art.className = 'sticker-art';
+  art.setAttribute('aria-hidden', 'true');
+  art.textContent = earned ? icon : '✧';
+  const title = document.createElement('strong');
+  title.textContent = copy(en, ja);
+  const hint = document.createElement('small');
+  hint.textContent = earned ? copy('Collected!', 'ゲット！') : copy(taskEn, taskJa);
+  item.append(art, title, hint);
+  return item;
+}
+function renderStickers() {
+  const count = stickerCatalog.filter(([id]) => momoStickers.has(id)).length;
+  one('#sticker-progress').textContent = copy(
+    count + ' / ' + stickerCatalog.length + ' collected',
+    stickerCatalog.length + '枚のうち ' + count + '枚 ゲット',
+  );
+  one('#toy-stickers').replaceChildren(...stickerCatalog.slice(0, 3).map(stickerEntry));
+  one('#game-stickers').replaceChildren(...stickerCatalog.slice(3).map(stickerEntry));
+}
+momoStickers.subscribe(id => {
+  renderStickers();
+  const item = stickerCatalog.find(sticker => sticker[0] === id);
+  if (item) one('#sticker-announcement').textContent = copy(item[2] + ' sticker unlocked!', item[3] + 'のシールをゲット！');
+});
+momoLanguage.subscribe(renderStickers);
+if (location.hash === '#stickers') one('[data-toy="stickers"]').click();
+
 let audio;
 const keySamples = new Map();
 let sound = 'soft';
@@ -125,7 +170,7 @@ const mixtures = {
 };
 
 function showMix() {
-  const mask = colors.length ? 0 : buns.reduce((sum, bun, index) => {
+  const mask = colors.length || isNight() ? 0 : buns.reduce((sum, bun, index) => {
     const lit = bun.getAttribute('aria-pressed') === 'true' || [...heldBuns.values()].includes(index);
     return sum | (lit ? 1 << index : 0);
   }, 0);
@@ -137,6 +182,52 @@ function showMix() {
 
 const bunStatus = one('#bun-status');
 const bunStart = one('#bun-mission');
+const nightButton = one('#bun-night');
+const nightControls = one('#bun-night-controls');
+const nightDuration = one('#bun-night-duration');
+const nightClock = one('#bun-night-clock');
+let nightEndsAt = 0;
+let nightInterval;
+const isNight = () => nightButton.getAttribute('aria-pressed') === 'true';
+
+function updateNightClock() {
+  const left = Math.max(0, Math.ceil((nightEndsAt - Date.now()) / 1000));
+  nightClock.value = left ? Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') : '☾';
+  if (left) return;
+  clearInterval(nightInterval);
+  tray.dataset.sleeping = '';
+  buns.forEach(bun => bun.setAttribute('aria-pressed', 'false'));
+  bunStatus.textContent = copy('Good night ♡', 'おやすみ ♡');
+}
+function startNightTimer() {
+  clearInterval(nightInterval);
+  nightEndsAt = Date.now() + Number(nightDuration.value) * 60000;
+  delete tray.dataset.sleeping;
+  buns.forEach(bun => bun.setAttribute('aria-pressed', 'true'));
+  bunStatus.textContent = '';
+  updateNightClock();
+  nightInterval = setInterval(updateNightClock, 1000);
+}
+nightButton.addEventListener('click', () => {
+  const active = !isNight();
+  nightButton.setAttribute('aria-pressed', String(active));
+  nightControls.hidden = !active;
+  bunStart.disabled = active;
+  if (active) {
+    clearInterval(clock);
+    colors = [];
+    tray.dataset.night = '';
+    startNightTimer();
+  } else {
+    clearInterval(nightInterval);
+    delete tray.dataset.night;
+    delete tray.dataset.sleeping;
+    buns.forEach(bun => bun.setAttribute('aria-pressed', 'false'));
+    bunStatus.textContent = '';
+  }
+  showMix();
+});
+nightDuration.addEventListener('change', startNightTimer);
 let colors = [];
 let colorStep = 0;
 let clock;
@@ -170,11 +261,16 @@ bunStart.addEventListener('click', () => {
   clock = setInterval(showColors, 1000);
 });
 function activateBun(bun, index) {
+  if (isNight()) {
+    if ('sleeping' in tray.dataset) startNightTimer();
+    return;
+  }
   play(index, 280 + index * 77);
   bounceBun(bun);
   if (!colors.length) {
     bun.setAttribute('aria-pressed', String(bun.getAttribute('aria-pressed') !== 'true'));
     showMix();
+    if (buns.filter(item => item.getAttribute('aria-pressed') === 'true').length >= 2) momoStickers.award('bun-light');
     return;
   }
   if (Date.now() >= endsAt) return endColors(false);
@@ -188,15 +284,23 @@ function activateBun(bun, index) {
 
 buns.forEach((bun, index) => {
   let expressionTimer;
+  let sleepyTimer;
   function squeeze() {
     clearTimeout(expressionTimer);
+    clearTimeout(sleepyTimer);
+    if (isNight()) return;
     bun.classList.remove('bouncing');
     bun.classList.add('squeezed');
     bun.dataset.face = 'squeeze';
-    expressionTimer = setTimeout(() => { bun.dataset.face = 'surprised'; }, 550);
+    expressionTimer = setTimeout(() => {
+      bun.dataset.face = 'surprised';
+      if (!isNight()) play(index, 460 + index * 45);
+    }, 550);
+    sleepyTimer = setTimeout(() => { bun.dataset.face = 'sleepy'; }, 1450);
   }
   function relax() {
     clearTimeout(expressionTimer);
+    clearTimeout(sleepyTimer);
     bun.classList.remove('squeezed');
     delete bun.dataset.face;
   }
@@ -251,17 +355,12 @@ const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
 const ribbon = one('#momo-ribbon');
-const ribbonStatus = one('#momo-unlock-status');
-const ribbonStorage = 'momo:toy-box:ribbon';
 const momoCommand = 'MOMO';
-try { ribbon.hidden = localStorage.getItem(ribbonStorage) !== '1'; } catch {}
+ribbon.hidden = !momoStickers.has('ribbon');
+momoStickers.subscribe(id => { if (id === 'ribbon') ribbon.hidden = false; });
 let celebrationTimer;
 function celebrateMomo() {
-  if (ribbon.hidden) {
-    ribbon.hidden = false;
-    ribbonStatus.textContent = copy('Ribbon sticker unlocked!', 'リボンシールをゲット！');
-    try { localStorage.setItem(ribbonStorage, '1'); } catch {}
-  }
+  momoStickers.award('ribbon');
   if (keyCase.classList.contains('momo-celebration')) return;
   keyCase.classList.add('momo-celebration');
   clearTimeout(celebrationTimer);
@@ -410,6 +509,7 @@ moves.forEach(button => button.addEventListener('click', () => {
   pose(move);
   play(move, 460 + move * 90);
   if (++guess < sequence.length) return;
+  momoStickers.award('puppy');
   if (sequence.length === 5) return finishPuppy(true);
   sequence.push(Math.floor(Math.random() * 3));
   pose('');

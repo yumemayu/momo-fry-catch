@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../language.css">
   <link rel="stylesheet" href="toys.css">
   <script defer src="../language.js"></script>
+  <script defer src="../stickers.js"></script>
   <script defer src="toys.js"></script>
 </head>
 <body>
@@ -16,18 +17,30 @@
     <button data-toy="bun" aria-pressed="true" data-ja="肉まんライト">Bun Lights</button>
     <button data-toy="keys" aria-pressed="false" data-ja="カチカチキー">Clicky Keys</button>
     <button data-toy="dog" aria-pressed="false" data-ja="犬のまねっこ">Puppy Copycat</button>
+    <button data-toy="stickers" aria-pressed="false" data-ja="シール帳">Sticker Book</button>
   </nav>
   <section id="bun" class="toy">
     <h2 data-ja="むぎゅっと肉まんライト">Squishy Bun Lights</h2>
     <p data-ja="長押しでむぎゅっ。２つ光らせると色がまざるよ！">Hold to squish. Light up two buns to mix their colors!</p>
     <div class="bun-tray" id="bun-tray">
       <span class="bun-mixed-glow" aria-hidden="true"></span>
+      <div class="bun-night-sky" aria-hidden="true"><span class="bun-moon"></span><span class="bun-stars">✦</span></div>
       <button class="bun strawberry" aria-label="Strawberry" data-ja-label="いちご" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
       <button class="bun soda" aria-label="Soda" data-ja-label="ソーダ" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
       <button class="bun milk" aria-label="Milk" data-ja-label="ミルク" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
     </div>
     <p class="bun-mix-label" id="bun-mix-label" role="status"></p>
     <button id="bun-mission" class="action" data-ja="30秒の色チャレンジ">30-second Color Challenge</button>
+    <button id="bun-night" class="action" type="button" aria-pressed="false" data-ja="☾ おやすみモード">☾ Night light</button>
+    <div id="bun-night-controls" class="night-controls" hidden>
+      <label for="bun-night-duration" data-ja="消えるまで">Turn off after</label>
+      <select id="bun-night-duration">
+        <option value="1" data-ja="1分">1 min</option>
+        <option value="3" selected data-ja="3分">3 min</option>
+        <option value="5" data-ja="5分">5 min</option>
+      </select>
+      <output id="bun-night-clock" for="bun-night-duration" aria-live="off"></output>
+    </div>
     <p id="bun-status" class="status" role="status"></p>
   </section>
   <section id="keys" class="toy" hidden>
@@ -53,7 +66,6 @@
           <span data-ja="リボンシール">Ribbon sticker</span>
         </span>
       </div>
-      <span id="momo-unlock-status" class="toy-sr-only" role="status"></span>
       <textarea id="key-note" rows="2" readonly placeholder="What will you type?" data-ja-placeholder="キーをおすと ここにのこるよ"></textarea>
       <div class="choices">
         <button type="button" id="note-back" data-ja="１文字けす">Backspace</button>
@@ -74,6 +86,15 @@
     </div>
     <a class="puppy-video" href="https://www.youtube.com/watch?v=kfjC_qBUi0I" target="_blank" rel="noopener noreferrer" data-ja="▶ 雲の犬をYouTubeで見る">▶ Watch the cloud dog on YouTube</a>
   </section>
+  <section id="stickers" class="toy" hidden>
+    <h2 data-ja="MOMOのシール帳">MOMO Sticker Book</h2>
+    <p id="sticker-progress" role="status"></p>
+    <h3 data-ja="おもちゃのシール">Toy stickers</h3>
+    <ul class="sticker-sheet" id="toy-stickers"></ul>
+    <h3 data-ja="ゲームのシール">Game stickers</h3>
+    <ul class="sticker-sheet" id="game-stickers"></ul>
+  </section>
 </main>
+<span id="sticker-announcement" class="toy-sr-only" role="status"></span>
 </body>
 </html>

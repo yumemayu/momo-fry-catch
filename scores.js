@@ -230,6 +230,7 @@ const gameScores = (() => {
       render();
     },
     finish(score, completed, growth) {
+      if (completed) window.momoStickers?.award(document.body.dataset.game);
       nameInput.readOnly = false;
       changePlayer.hidden = false;
       document.querySelector('#final-score').textContent = String(score);

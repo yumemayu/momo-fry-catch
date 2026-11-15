@@ -161,3 +161,6 @@ body { margin:0; background:#fff0f7; font-family:Nunito,"Hiragino Maru Gothic Pr
   opacity:0;
   pointer-events:none;
 }
+
+.sticker-footer { padding: 0 16px 18px; text-align: center; }
+.sticker-footer a { color: #754779; font-weight: 700; }
