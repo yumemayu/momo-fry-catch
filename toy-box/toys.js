@@ -58,6 +58,44 @@ function play(index, pitch = 0) {
   osc.stop(now + .09);
 }
 
+function meow() {
+  if (!audio || sound === 'mute') return;
+  const now = audio.currentTime;
+  const voice = audio.createOscillator();
+  const vowel = audio.createBiquadFilter();
+  const level = audio.createGain();
+  voice.type = 'sawtooth';
+  voice.frequency.setValueAtTime(305, now);
+  voice.frequency.exponentialRampToValueAtTime(595, now + .115);
+  voice.frequency.exponentialRampToValueAtTime(350, now + .40);
+  vowel.type = 'bandpass';
+  vowel.frequency.setValueAtTime(860, now);
+  vowel.frequency.linearRampToValueAtTime(550, now + .38);
+  vowel.Q.value = 2;
+  level.gain.setValueAtTime(.001, now);
+  level.gain.exponentialRampToValueAtTime(.11, now + .08);
+  level.gain.exponentialRampToValueAtTime(.001, now + .43);
+  voice.connect(vowel).connect(level).connect(audio.destination);
+  voice.start(now);
+  voice.stop(now + .44);
+}
+
+function bounceBun(bun) {
+  bun.classList.add('bouncing');
+  for (let i = 0; i < 6; i++) {
+    const spark = document.createElement('span');
+    const angle = (i / 5) * Math.PI;
+    const radius = bun.clientWidth * .73;
+    spark.className = 'bun-spark';
+    spark.setAttribute('aria-hidden', 'true');
+    spark.textContent = i % 2 ? '✧' : '✦';
+    spark.style.setProperty('--x', Math.round(Math.cos(angle) * radius) + 'px');
+    spark.style.setProperty('--y', Math.round(-Math.sin(angle) * radius - 18) + 'px');
+    bun.append(spark);
+    setTimeout(() => spark.remove(), 680);
+  }
+}
+
 const buns = all('.bun');
 const bunStatus = one('#bun-status');
 const bunStart = one('#bun-mission');
@@ -93,12 +131,17 @@ bunStart.addEventListener('click', () => {
   clock = setInterval(showColors, 1000);
 });
 buns.forEach((bun, index) => {
-  bun.addEventListener('pointerdown', () => bun.classList.add('squeezed'));
+  bun.addEventListener('pointerdown', () => {
+    bun.classList.remove('bouncing');
+    bun.classList.add('squeezed');
+  });
+  bun.querySelector('.bun-cap').addEventListener('animationend', () => bun.classList.remove('bouncing'));
   for (const event of ['pointerup', 'pointercancel', 'pointerleave']) {
     bun.addEventListener(event, () => bun.classList.remove('squeezed'));
   }
   bun.addEventListener('click', () => {
     play(index, 280 + index * 77);
+    bounceBun(bun);
     if (!colors.length) {
       bun.setAttribute('aria-pressed', String(bun.getAttribute('aria-pressed') !== 'true'));
       return;
@@ -118,17 +161,41 @@ const keyCase = one('.key-case');
 const paletteButtons = all('[data-palette]');
 const soundButtons = all('[data-sound]');
 const keyboardRows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
-const decorations = {Q:'♡', E:'🍓', U:'✿', O:'🎀', A:'✦', F:'🍒', J:'🐾', L:'♡', Z:'🍓', C:'☁', N:'✿', M:'✦'};
+const decorations = [
+  'bow', 'heart', 'strawberry', 'flower', 'star', 'paw', 'flower', 'heart', 'bow', 'star',
+  'star', 'paw', 'heart', 'strawberry', 'flower', 'bow', 'paw', 'star', 'heart',
+  'strawberry', 'bow', 'heart', 'flower', 'paw', 'strawberry', 'star',
+];
 const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
 const keyByLetter = new Map();
+const notebook = one('#key-note');
+const noteStorage = 'momo:toy-box:note';
+const noteLimit = 120;
+try { notebook.value = (localStorage.getItem(noteStorage) || '').slice(-noteLimit); } catch {}
+function saveNote(value) {
+  notebook.value = value.slice(-noteLimit);
+  notebook.scrollTop = notebook.scrollHeight;
+  try { localStorage.setItem(noteStorage, notebook.value); } catch {}
+}
+one('#note-back').addEventListener('click', () => saveNote(notebook.value.slice(0, -1)));
+one('#note-clear').addEventListener('click', () => saveNote(''));
+let catPresses = 0;
+let nextMeow = 8;
 
-function pressKeycap(key, index) {
+function pressKeycap(key, index, letter) {
   play(index);
+  saveNote(notebook.value + letter);
+  const catSound = keyCase.dataset.theme === 'cat' && sound !== 'mute' && ++catPresses >= nextMeow;
+  if (catSound) {
+    catPresses = 0;
+    nextMeow = 7 + Math.floor(Math.random() * 5);
+    meow();
+  }
   key.querySelector('.key-spark')?.remove();
   const sparkle = document.createElement('span');
-  sparkle.className = 'key-spark';
+  sparkle.className = catSound ? 'key-spark meow' : 'key-spark';
   sparkle.setAttribute('aria-hidden', 'true');
-  sparkle.textContent = '✦';
+  sparkle.textContent = catSound ? copy('Meow!', 'にゃ〜') : '✦';
   key.append(sparkle);
   setTimeout(() => sparkle.remove(), 330);
 }
@@ -147,16 +214,18 @@ function renderKeys(theme) {
       legend.className = 'key-legend';
       legend.textContent = letter;
       key.append(legend);
-      const symbol = decorations[letter];
-      if (theme === 'cat' || symbol) {
-        const art = document.createElement('span');
-        art.className = theme === 'cat' ? 'cat-face' : 'key-art';
-        art.setAttribute('aria-hidden', 'true');
-        art.textContent = theme === 'cat' ? '•ᴗ•' : symbol;
-        if (theme === 'cat') art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
-        key.append(art);
+      const symbol = decorations[keyByLetter.size];
+      const art = document.createElement('span');
+      art.className = theme === 'cat' ? 'cat-face' : 'key-art';
+      art.setAttribute('aria-hidden', 'true');
+      if (theme === 'cat') {
+        art.textContent = '•ᴗ•';
+        art.style.setProperty('--fur', furs[(index + rowIndex) % furs.length]);
+      } else {
+        art.dataset.art = symbol;
       }
-      key.addEventListener('click', () => pressKeycap(key, index + rowIndex * 3));
+      key.append(art);
+      key.addEventListener('click', () => pressKeycap(key, index + rowIndex * 3, letter));
       keyByLetter.set(letter, key);
       row.append(key);
     });
@@ -175,10 +244,15 @@ soundButtons.forEach(button => button.addEventListener('click', () => {
 }));
 renderKeys('pastel');
 const spaceKey = one('.space');
-spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 0));
+spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 0, ' '));
 document.addEventListener('keydown', event => {
   if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || one('#keys').hidden) return;
-  if (event.code === 'Space' && event.target.closest('button, a')) return;
+  if (event.key === 'Backspace') {
+    event.preventDefault();
+    saveNote(notebook.value.slice(0, -1));
+    return;
+  }
+  if (event.code === 'Space' && event.target.closest('button:not(.keycap), a')) return;
   const key = event.code === 'Space' ? spaceKey : keyByLetter.get(event.key.toUpperCase());
   if (!key) return;
   event.preventDefault();

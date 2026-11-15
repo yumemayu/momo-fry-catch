@@ -37,12 +37,20 @@
     </div>
     <div class="key-case" data-theme="pastel">
       <div id="key-grid" role="group" aria-label="Keyboard" data-ja-label="キーボード"></div>
-      <div class="bottom-row"><span aria-hidden="true">✿</span><button type="button" class="space keycap" aria-label="Space" data-ja-label="スペースキー">MOMO <span aria-hidden="true">♡</span></button><span aria-hidden="true">✦</span></div>
+      <div class="bottom-row"><span aria-hidden="true">✿</span><button type="button" class="space keycap" aria-label="Space" data-ja-label="スペースキー"><span class="key-art" data-art="flower" aria-hidden="true"></span><span class="key-art" data-art="strawberry" aria-hidden="true"></span><small aria-hidden="true">MOMO</small><span class="key-art" data-art="bow" aria-hidden="true"></span><span class="key-art" data-art="heart" aria-hidden="true"></span></button><span aria-hidden="true">✦</span></div>
     </div>
     <div class="choices">
       <button type="button" data-sound="click" aria-pressed="true" data-ja="カチッ">Click</button>
       <button type="button" data-sound="soft" aria-pressed="false" data-ja="コトッ">Soft</button>
       <button type="button" data-sound="mute" aria-pressed="false" data-ja="音なし">Mute</button>
+    </div>
+    <div class="key-notebook">
+      <label for="key-note" data-ja="れんらくちょう">Notebook</label>
+      <textarea id="key-note" rows="2" readonly placeholder="What will you type?" data-ja-placeholder="キーをおすと ここにのこるよ"></textarea>
+      <div class="choices">
+        <button type="button" id="note-back" data-ja="１文字けす">Backspace</button>
+        <button type="button" id="note-clear" data-ja="ぜんぶけす">Clear</button>
+      </div>
     </div>
   </section>
   <section id="dog" class="toy" hidden>
@@ -56,6 +64,7 @@
       <button type="button" disabled data-move="1" data-ja="🐾 おて">🐾 Paw</button>
       <button type="button" disabled data-move="2" data-ja="✦ ジャンプ">✦ Jump</button>
     </div>
+    <a class="puppy-video" href="https://www.youtube.com/watch?v=kfjC_qBUi0I" target="_blank" rel="noopener noreferrer" data-ja="▶ 雲の犬をYouTubeで見る">▶ Watch the cloud dog on YouTube</a>
   </section>
 </main>
 </body>
