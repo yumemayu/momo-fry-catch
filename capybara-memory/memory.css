@@ -14,9 +14,10 @@ html[lang="en"] .memory-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32
 }
 .memory-stats output { color: #8f3675; font-size: 1.22rem; }
 .level-art { width: 34px; height: 34px; object-fit: contain; }
-.memory-main .play-stack { width: 100%; max-width: 520px; align-self: center; justify-self: center; }
+.memory-main .play-stack { width: 100%; align-self: center; justify-self: center; }
 .memory-board {
   display: grid;
+  grid-auto-rows: 1fr;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   padding: 10px;
@@ -33,7 +34,6 @@ html[lang="en"] .memory-main .game-heading h1 { font-size: clamp(22px, 2.3vw, 32
   border: 0;
   border-radius: 16px;
   background: transparent;
-  aspect-ratio: 1;
   min-height: 0;
   perspective: 600px;
   cursor: pointer;

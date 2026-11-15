@@ -115,7 +115,7 @@
   }
 
   function renderBoard(interactive) {
-    board.className = 'memory-board ' + level;
+    board.className = 'memory-board game-field ' + level;
     board.replaceChildren();
     deck.forEach((stageIndex, i) => {
       const card = document.createElement('button');
