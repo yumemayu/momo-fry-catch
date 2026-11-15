@@ -2,112 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MOMO Toy Box</title>
-  <link rel="stylesheet" href="../language.css">
-  <link rel="stylesheet" href="toys.css">
-  <script defer src="../language.js"></script>
-  <script defer src="../stickers.js"></script>
-  <script defer src="toys.js"></script>
+  <title>MOMO Games</title>
+  <script>
+    const pages = { '#bun': '../bun-lights/', '#keys': '../clicky-keys/', '#dog': '../', '#stickers': '../sticker-book/' };
+    location.replace(pages[location.hash] || '../bun-lights/');
+  </script>
 </head>
-<body>
-<main>
-  <header><a href="../" data-ja="← ゲーム一覧">← Games</a><h1>MOMO Toy Box</h1></header>
-  <nav aria-label="Toys">
-    <button data-toy="bun" aria-pressed="true" data-ja="肉まんライト">Bun Lights</button>
-    <button data-toy="keys" aria-pressed="false" data-ja="カチカチキー">Clicky Keys</button>
-    <button data-toy="dog" aria-pressed="false" data-ja="犬のまねっこ">Puppy Copycat</button>
-    <button data-toy="stickers" aria-pressed="false" data-ja="シール帳">Sticker Book</button>
-  </nav>
-  <section id="bun" class="toy">
-    <h2 data-ja="むぎゅっと肉まんライト">Squishy Bun Lights</h2>
-    <p data-ja="長押しでむぎゅっ。２つ光らせると色がまざるよ！">Hold to squish. Light up two buns to mix their colors!</p>
-    <div class="bun-tray" id="bun-tray">
-      <span class="bun-mixed-glow" aria-hidden="true"></span>
-      <div class="bun-night-sky" aria-hidden="true"><span class="bun-moon"></span><span class="bun-stars">✦</span></div>
-      <button class="bun strawberry" aria-label="Strawberry" data-ja-label="いちご" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
-      <button class="bun soda" aria-label="Soda" data-ja-label="ソーダ" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
-      <button class="bun milk" aria-label="Milk" data-ja-label="ミルク" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
-    </div>
-    <p class="bun-mix-label" id="bun-mix-label" role="status"></p>
-    <button id="bun-mission" class="action" data-ja="30秒の色チャレンジ">30-second Color Challenge</button>
-    <button id="bun-night" class="action" type="button" aria-pressed="false" data-ja="☾ おやすみモード">☾ Night light</button>
-    <div id="bun-night-controls" class="night-controls" hidden>
-      <label for="bun-night-duration" data-ja="消えるまで">Turn off after</label>
-      <select id="bun-night-duration">
-        <option value="1" data-ja="1分">1 min</option>
-        <option value="3" selected data-ja="3分">3 min</option>
-        <option value="5" data-ja="5分">5 min</option>
-      </select>
-      <output id="bun-night-clock" for="bun-night-duration" aria-live="off"></output>
-    </div>
-    <p id="bun-status" class="status" role="status"></p>
-  </section>
-  <section id="keys" class="toy" hidden>
-    <h2 data-ja="MOMOのカチカチキーボード">MOMO Clicky Keys</h2>
-    <p data-ja="キーを押して、カチッ。パソコンなら A〜Z とスペースキーでも遊べるよ。">Tap the keys for a click. On a computer, try A–Z and Space.</p>
-    <div class="choices">
-      <button type="button" data-palette="choco" aria-pressed="true" data-ja="チョコミント">Choco Mint</button>
-      <button type="button" data-palette="pastel" aria-pressed="false" data-ja="いちごミルク">Strawberry Milk</button>
-      <button type="button" data-palette="cat" aria-pressed="false" data-ja="ねこキー">Cat Keys</button>
-      <button type="button" data-palette="puppy" aria-pressed="false" data-ja="パピー">Puppy</button>
-    </div>
-    <div class="key-case" data-theme="choco">
-      <div class="symbol-row" role="group" aria-label="Symbol keys" data-ja-label="マークキー">
-        <button type="button" class="keycap symbol-key" data-color="1" data-glyph="⬆" style="color:#5b8dd9" aria-label="Up arrow">⬆</button>
-        <button type="button" class="keycap symbol-key" data-color="2" data-glyph="⬅" style="color:#f2a93b" aria-label="Left arrow">⬅</button>
-        <button type="button" class="keycap symbol-key" data-color="3" data-glyph="⬇" style="color:#e77cab" aria-label="Down arrow">⬇</button>
-        <button type="button" class="keycap symbol-key" data-color="4" data-glyph="➡" style="color:#7bc47f" aria-label="Right arrow">➡</button>
-        <button type="button" class="keycap symbol-key" data-color="5" data-glyph="♥" style="color:#e77cab" aria-label="Heart">♥</button>
-        <button type="button" class="keycap symbol-key" data-color="6" data-glyph="★" style="color:#dba83f" aria-label="Star">★</button>
-        <button type="button" class="keycap symbol-key" data-color="0" data-glyph="♪" style="color:#9a7bd9" aria-label="Music note">♪</button>
-        <button type="button" class="keycap symbol-key" data-color="1" data-glyph="✿" style="color:#e77cab" aria-label="Flower">✿</button>
-      </div>
-      <div id="key-grid" role="group" aria-label="Keyboard" data-ja-label="キーボード"></div>
-      <div class="bottom-row"><span aria-hidden="true">✿</span><button type="button" class="space keycap" aria-label="Space" data-ja-label="スペースキー"><span class="key-art" data-art="flower" aria-hidden="true"></span><span class="key-art" data-art="strawberry" aria-hidden="true"></span><small id="space-word" aria-hidden="true">HAPPINESS</small><span class="key-art" data-art="bow" aria-hidden="true"></span><span class="key-art" data-art="heart" aria-hidden="true"></span></button><span aria-hidden="true">✦</span></div>
-    </div>
-    <div class="choices">
-      <button type="button" data-sound="creamy" aria-pressed="true" data-ja="クリーミー">Creamy</button>
-      <button type="button" data-sound="soft" aria-pressed="false" data-ja="やわらか">Soft</button>
-      <button type="button" data-sound="cute" aria-pressed="false" data-ja="かわいい">Cute</button>
-    </div>
-    <div class="key-notebook">
-      <div class="notebook-heading">
-        <label for="key-note" data-ja="れんらくちょう">Notebook</label>
-        <span id="momo-ribbon" class="momo-ribbon" hidden>
-          <span class="key-art" data-art="bow" aria-hidden="true"></span>
-          <span data-ja="リボンシール">Ribbon sticker</span>
-        </span>
-      </div>
-      <textarea id="key-note" rows="2" readonly placeholder="What will you type?" data-ja-placeholder="キーをおすと ここにのこるよ"></textarea>
-      <div class="choices">
-        <button type="button" id="note-back" data-ja="１文字けす">Backspace</button>
-        <button type="button" id="note-clear" data-ja="ぜんぶけす">Clear</button>
-      </div>
-    </div>
-  </section>
-  <section id="dog" class="toy" hidden>
-    <h2 data-ja="犬のまねっこ">Puppy Copycat</h2>
-    <p data-ja="犬が見せたポーズを、同じ順番で押そう。">Copy the puppy’s moves in the same order.</p>
-    <div class="puppy-stage"><img id="puppy" src="momo-cloud-dog.jpg" alt="MOMO’s cloud dog" data-ja-label="MOMOの雲の犬"><span id="puppy-move" aria-hidden="true"></span></div>
-    <button id="dog-start" class="action" data-ja="はじめる">Start</button>
-    <p id="dog-status" class="status" role="status"></p>
-    <div class="choices moves">
-      <button type="button" disabled data-move="0" data-ja="🦴 おすわり">🦴 Sit</button>
-      <button type="button" disabled data-move="1" data-ja="🐾 おて">🐾 Paw</button>
-      <button type="button" disabled data-move="2" data-ja="✦ ジャンプ">✦ Jump</button>
-    </div>
-    <a class="puppy-video" href="https://www.youtube.com/watch?v=kfjC_qBUi0I" target="_blank" rel="noopener noreferrer" data-ja="▶ 雲の犬をYouTubeで見る">▶ Watch the cloud dog on YouTube</a>
-  </section>
-  <section id="stickers" class="toy" hidden>
-    <h2 data-ja="MOMOのシール帳">MOMO Sticker Book</h2>
-    <p id="sticker-progress" role="status"></p>
-    <h3 data-ja="おもちゃのシール">Toy stickers</h3>
-    <ul class="sticker-sheet" id="toy-stickers"></ul>
-    <h3 data-ja="ゲームのシール">Game stickers</h3>
-    <ul class="sticker-sheet" id="game-stickers"></ul>
-  </section>
-</main>
-<span id="sticker-announcement" class="toy-sr-only" role="status"></span>
-</body>
+<body><a href="../">MOMO Games</a></body>
 </html>
