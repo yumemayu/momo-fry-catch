@@ -19,12 +19,14 @@
   </nav>
   <section id="bun" class="toy">
     <h2 data-ja="むぎゅっと肉まんライト">Squishy Bun Lights</h2>
-    <p data-ja="長押しでむぎゅっ。離すとぽよんと光るよ。">Hold to squish. Let go to light up!</p>
-    <div class="bun-tray">
+    <p data-ja="長押しでむぎゅっ。２つ光らせると色がまざるよ！">Hold to squish. Light up two buns to mix their colors!</p>
+    <div class="bun-tray" id="bun-tray">
+      <span class="bun-mixed-glow" aria-hidden="true"></span>
       <button class="bun strawberry" aria-label="Strawberry" data-ja-label="いちご" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
       <button class="bun soda" aria-label="Soda" data-ja-label="ソーダ" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
       <button class="bun milk" aria-label="Milk" data-ja-label="ミルク" aria-pressed="false"><span class="bun-cap" aria-hidden="true"><span class="bun-face"></span></span></button>
     </div>
+    <p class="bun-mix-label" id="bun-mix-label" role="status"></p>
     <button id="bun-mission" class="action" data-ja="30秒の色チャレンジ">30-second Color Challenge</button>
     <p id="bun-status" class="status" role="status"></p>
   </section>

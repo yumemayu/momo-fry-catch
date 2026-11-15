@@ -114,6 +114,27 @@ function bounceBun(bun) {
 }
 
 const buns = all('.bun');
+const tray = one('#bun-tray');
+const mixLabel = one('#bun-mix-label');
+const heldBuns = new Map();
+const mixtures = {
+  3: ['purple', 'Pink + blue = purple!', 'ピンク ＋ 水色 ＝ むらさき！'],
+  5: ['peach', 'Pink + yellow = peach!', 'ピンク ＋ 黄色 ＝ ピーチ！'],
+  6: ['mint', 'Blue + yellow = mint!', '水色 ＋ 黄色 ＝ ミント！'],
+  7: ['rainbow', 'All three = rainbow! ✨', '３色そろって にじいろ！ ✨'],
+};
+
+function showMix() {
+  const mask = colors.length ? 0 : buns.reduce((sum, bun, index) => {
+    const lit = bun.getAttribute('aria-pressed') === 'true' || [...heldBuns.values()].includes(index);
+    return sum | (lit ? 1 << index : 0);
+  }, 0);
+  const mix = mixtures[mask];
+  if (mix) tray.dataset.mix = mix[0];
+  else delete tray.dataset.mix;
+  mixLabel.textContent = mix ? copy(mix[1], mix[2]) : '';
+}
+
 const bunStatus = one('#bun-status');
 const bunStart = one('#bun-mission');
 let colors = [];
@@ -144,34 +165,57 @@ bunStart.addEventListener('click', () => {
   endsAt = Date.now() + 30000;
   bunStart.disabled = true;
   buns.forEach(bun => bun.setAttribute('aria-pressed', 'false'));
+  showMix();
   showColors();
   clock = setInterval(showColors, 1000);
 });
+function activateBun(bun, index) {
+  play(index, 280 + index * 77);
+  bounceBun(bun);
+  if (!colors.length) {
+    bun.setAttribute('aria-pressed', String(bun.getAttribute('aria-pressed') !== 'true'));
+    showMix();
+    return;
+  }
+  if (Date.now() >= endsAt) return endColors(false);
+  colorStep = index === colors[colorStep] ? colorStep + 1 : Number(index === colors[0]);
+  buns.forEach((item, itemIndex) => {
+    item.setAttribute('aria-pressed', String(colors.indexOf(itemIndex) < colorStep));
+  });
+  if (colorStep === colors.length) endColors(true);
+  else showColors();
+}
+
 buns.forEach((bun, index) => {
-  bun.addEventListener('pointerdown', () => {
+  bun.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
     bun.classList.remove('bouncing');
     bun.classList.add('squeezed');
+    if (event.pointerType === 'touch') {
+      heldBuns.set(event.pointerId, index);
+      bun.setPointerCapture(event.pointerId);
+      showMix();
+    }
   });
   bun.querySelector('.bun-cap').addEventListener('animationend', () => bun.classList.remove('bouncing'));
-  for (const event of ['pointerup', 'pointercancel', 'pointerleave']) {
-    bun.addEventListener(event, () => bun.classList.remove('squeezed'));
-  }
-  bun.addEventListener('click', () => {
-    play(index, 280 + index * 77);
-    bounceBun(bun);
-    if (!colors.length) {
-      bun.setAttribute('aria-pressed', String(bun.getAttribute('aria-pressed') !== 'true'));
-      return;
-    }
-    if (Date.now() >= endsAt) return endColors(false);
-    colorStep = index === colors[colorStep] ? colorStep + 1 : Number(index === colors[0]);
-    buns.forEach((item, itemIndex) => {
-      item.setAttribute('aria-pressed', String(colors.indexOf(itemIndex) < colorStep));
+  bun.addEventListener('pointerup', event => {
+    bun.classList.remove('squeezed');
+    if (event.pointerType !== 'touch' || !heldBuns.delete(event.pointerId)) return;
+    activateBun(bun, index);
+  });
+  for (const event of ['pointercancel', 'lostpointercapture', 'pointerleave']) {
+    bun.addEventListener(event, pointerEvent => {
+      if (event === 'pointerleave' && heldBuns.has(pointerEvent.pointerId)) return;
+      bun.classList.remove('squeezed');
+      if (heldBuns.delete(pointerEvent.pointerId)) showMix();
     });
-    if (colorStep === colors.length) endColors(true);
-    else showColors();
+  }
+  bun.addEventListener('click', event => {
+    if (event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents) return;
+    activateBun(bun, index);
   });
 });
+momoLanguage.subscribe(showMix);
 
 const grid = one('#key-grid');
 const keyCase = one('.key-case');
