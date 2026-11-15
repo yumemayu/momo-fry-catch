@@ -79,3 +79,24 @@ button[aria-pressed="true"]:not(.input) { color: var(--signal); border-color: va
   .wire.pulse { display: none; }
   .lamp.correct::before { animation: none; }
 }
+
+.records {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  margin-bottom: 8px;
+  font-size: .82rem;
+  color: var(--muted);
+}
+.records strong { color: var(--signal); }
+.records select {
+  min-height: 36px;
+  padding-inline: 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+body:has(.records:not([hidden])) .board { height: clamp(285px, calc(100dvh - 260px), 570px); }
