@@ -74,42 +74,6 @@
   to { transform: translateY(-3%); }
 }
 
-/* Speech bubble above the cat. */
-.cat-bubble {
-  position: absolute;
-  z-index: 5;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 190px;
-  padding: 4px 12px;
-  border: 3px solid #4a2c1a;
-  border-radius: 999px;
-  background: #fff;
-  color: #4a2c1a;
-  font-family: "Fredoka", var(--game-handwriting);
-  font-weight: 600;
-  font-size: clamp(.78rem, 3.4vw, 1rem);
-  line-height: 1.25;
-  white-space: nowrap;
-  pointer-events: none;
-  animation: bubble-bob 1.6s ease-in-out infinite alternate;
-}
-.cat-bubble::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -9px;
-  width: 12px;
-  height: 12px;
-  transform: translateX(-50%) rotate(45deg);
-  border-right: 3px solid #4a2c1a;
-  border-bottom: 3px solid #4a2c1a;
-  background: #fff;
-}
-@keyframes bubble-bob {
-  from { transform: translateX(-50%) translateY(0); }
-  to { transform: translateX(-50%) translateY(-3px); }
-}
 
 .trap-verdict {
   margin-top: 4px;
@@ -136,6 +100,5 @@
 @media (prefers-reduced-motion: reduce) {
   .cat-art { transition: none; }
   .cat-art .cat-frame { animation: none; }
-  .cat-bubble { animation: none; }
   .burst-star { display: none; }
 }

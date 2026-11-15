@@ -200,10 +200,7 @@
     catFrame.alt = '';
     flip.append(catFrame);
     catImg.append(flip);
-    bubbleEl = document.createElement('span');
-    bubbleEl.className = 'cat-bubble';
-    bubbleEl.setAttribute('role', 'status');
-    field.append(catImg, bubbleEl);
+    field.append(catImg);
   }
 
   function labelTile(tile) {
@@ -224,8 +221,6 @@
     const bottom = 90.5 - cat.r * 8.8;
     catImg.style.left = cx + '%';
     catImg.style.bottom = bottom + '%';
-    bubbleEl.style.left = (cx + 4.5) + '%';
-    bubbleEl.style.bottom = (bottom + 12) + '%';
   }
 
   function render() {
