@@ -12,49 +12,53 @@
 </head>
 <body data-game="capybara">
 <main class="capy-main">
+  <div class="capy-language" role="group" aria-label="Language">
+    <button type="button" data-language="ja" aria-pressed="true" lang="ja">日本語</button>
+    <button type="button" data-language="en" aria-pressed="false" lang="en">English</button>
+  </div>
   <header class="game-heading">
     <img class="hello-rainbow" src="../assets/momo-squirrels.png" alt="Momo.squirrels" width="780" height="592">
-    <h1>カピバラ<br>温泉マージ</h1>
+    <h1><span data-en="Capybara">カピバラ</span><br><span data-en="Onsen Merge">温泉マージ</span></h1>
   </header>
   <div class="stats capy-stats">
-    <span>スコア <output id="score">0</output></span>
-    <span>つぎ <img id="next-piece" src="pieces/1.webp" alt="ゆず" width="44" height="44"></span>
+    <span><span class="capy-stat-label" data-en="Score">スコア</span> <output id="score">0</output></span>
+    <span><span class="capy-stat-label" data-en="Next">つぎ</span> <img id="next-piece" src="pieces/1.webp" alt="ゆず" width="44" height="44"></span>
   </div>
   <section class="capy-guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">成長ずかん</h2>
+    <h2 id="guide-title" data-en="Growth Guide">成長ずかん</h2>
     <ol id="growth"></ol>
     <p id="growth-best">いちばん育った姿 —</p>
   </section>
   <div class="play-stack">
     <div class="play-stage">
       <canvas class="game-field" id="field" width="360" height="420" tabindex="0"
-        aria-label="温泉の盤面" aria-describedby="instructions">カピバラ温泉の盤面</canvas>
+        aria-label="温泉の盤面" data-en-label="Onsen play area" aria-describedby="instructions">カピバラ温泉の盤面</canvas>
       <div class="game-card" id="ready-card">
         <img src="pieces/4.webp" alt="" width="58" height="58">
-        <strong>はじめよう！</strong>
+        <strong data-en="Ready to play?">はじめよう！</strong>
         <div class="player-setup">
-          <label for="nickname">ニックネーム</label>
-          <input id="nickname" maxlength="20" placeholder="例：もち" autocomplete="off" aria-describedby="player-hint">
-          <small id="player-hint">なまえを入れると、この端末にスコアが残るよ。</small>
+          <label for="nickname" data-en="Nickname">ニックネーム</label>
+          <input id="nickname" maxlength="20" placeholder="例：もち" data-en-placeholder="e.g. Mochi" autocomplete="off" aria-describedby="player-hint">
+          <small id="player-hint" data-en="Enter a nickname to save your score on this device.">なまえを入れると、この端末にスコアが残るよ。</small>
         </div>
       </div>
     </div>
     <div class="game-card" id="score-card" role="status" aria-atomic="true" hidden>
-      <span>スコア</span><strong id="final-score"></strong>
+      <span data-en="Score">スコア</span><strong id="final-score"></strong>
       <p></p><span id="final-growth"></span>
     </div>
-    <button type="button" id="change-player" class="change-player" hidden>ニックネームをかえる</button>
+    <button type="button" id="change-player" class="change-player" data-en="Change nickname" hidden>ニックネームをかえる</button>
     <div class="play-row">
       <button class="play-primary" id="start" type="button">Play</button>
       <button class="stop-button" id="stop" type="button" hidden>■ Stop</button>
     </div>
-    <div class="controls move-pad" role="group" aria-label="アイテムのそうさ">
-      <button id="left" type="button" aria-label="左へ" disabled>←</button>
-      <button id="drop" type="button" disabled>おとす</button>
-      <button id="right" type="button" aria-label="右へ" disabled>→</button>
+    <div class="controls move-pad" role="group" aria-label="アイテムのそうさ" data-en-label="Piece controls">
+      <button id="left" type="button" aria-label="左へ" data-en-label="Move left" disabled>←</button>
+      <button id="drop" type="button" data-en="Drop" disabled>おとす</button>
+      <button id="right" type="button" aria-label="右へ" data-en-label="Move right" disabled>→</button>
     </div>
   </div>
-  <p id="instructions">左右にうごかして、同じアイテムをくっつけよう。</p>
+  <p id="instructions" data-en="Move a piece left or right, then drop it. Matching pieces merge!">左右にうごかして、同じアイテムをくっつけよう。</p>
   <p id="notice" class="capy-notice" role="status" aria-live="polite"></p>
   <div class="music"><button id="sound" type="button" aria-pressed="true">おと ON</button></div>
   <section class="score-board" aria-labelledby="board-title">
@@ -73,7 +77,7 @@
     <a href="../smiley-bun-catch/"><img class="game-art" src="../assets/game-bun.png" alt="" width="40" height="40"><span>Smiley Bun Catch</span></a>
     <a href="../glasses-cat/"><img class="game-art" src="../assets/game-cat.png" alt="" width="40" height="40"><span>Find the Glasses Cat</span></a>
     <a href="../piano/"><span class="game-art piano-nav-icon" aria-hidden="true">♪</span><span>MOMO Piano</span></a>
-    <a aria-current="page" href="./"><img class="game-art" src="pieces/4.webp" alt="" width="40" height="40"><span>カピバラ温泉マージ</span></a>
+    <a aria-current="page" href="./"><img class="game-art" src="pieces/4.webp" alt="" width="40" height="40"><span data-en="Capybara Onsen Merge">カピバラ温泉マージ</span></a>
   </nav>
 </main>
 <footer class="feedback"><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer">Send feedback</a><small>Copyright Momo.squirrels</small></footer>

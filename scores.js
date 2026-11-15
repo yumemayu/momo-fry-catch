@@ -13,6 +13,7 @@ const gameScores = (() => {
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
   let player;
+  let formatStage = (_, fallback) => fallback;
 
   try { nameInput.value = localStorage.getItem(nameKey) || ''; } catch {}
 
@@ -57,7 +58,7 @@ const gameScores = (() => {
       if (typeof row.stageName === 'string' && row.stageName) {
         const stage = document.createElement('small');
         stage.className = 'score-stage';
-        stage.textContent = ' · ' + row.stageName;
+        stage.textContent = ' · ' + formatStage(row.stage, row.stageName);
         name.append(stage);
       }
       const points = document.createElement('strong');
@@ -106,6 +107,10 @@ const gameScores = (() => {
     clear() { readyCard.hidden = scoreCard.hidden = true; },
     showLevel(selectedLevel) {
       level = selectedLevel;
+      render();
+    },
+    setStageFormatter(formatter) {
+      formatStage = formatter;
       render();
     },
     finish(score, completed, growth) {
