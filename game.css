@@ -398,11 +398,14 @@ body[data-game="buns"] {
 :is([data-game="fries"], [data-game="buns"]) #ready-card .player-setup { grid-column: 1 / -1; }
 .change-player { align-self: center; margin-top: 8px; }
 .score-board .personal-best {
-  margin: 4px 0;
-  padding: 4px 8px;
-  border-radius: 10px;
-  background: #fff1bb;
-  font-weight: bold;
+  margin: 6px 2px 0;
+  font-size: .8rem;
+  opacity: .8;
+}
+.score-board .online-note {
+  margin: 2px 2px 0;
+  font-size: .72rem;
+  opacity: .65;
 }
 .score-board ol { display: grid; gap: 3px; margin: 4px 0 0; padding: 0; }
 .score-board li {

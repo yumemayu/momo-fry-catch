@@ -13,9 +13,8 @@ const gameScores = (() => {
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
   const ONLINE_URL = 'https://script.google.com/macros/s/AKfycbwIZWAIOqgmjctFItur6QacLZqf2zL6paAyLxFeCoV1cAnD2O3yV70ZiKiprBi1xTdIVQ/exec';
-  let source = 'local';
   const onlineCache = new Map();
-  let onlineState = 'idle';
+  let onlineState = ONLINE_URL ? 'loading' : 'idle';
   let player;
   let formatStage = (_, fallback) => fallback;
   let nicknameState = '';
@@ -26,6 +25,11 @@ const gameScores = (() => {
   nicknameFeedback.className = 'nickname-saved';
   nicknameFeedback.setAttribute('role', 'status');
   nameInput.parentElement.append(saveNicknameButton, nicknameFeedback);
+  // The your-best line and the offline note sit quietly under the score list.
+  const onlineNote = document.createElement('p');
+  onlineNote.className = 'online-note';
+  onlineNote.hidden = true;
+  scoreList.after(best, onlineNote);
 
   try {
     nameInput.value = localStorage.getItem(nameKey) || '';
@@ -104,14 +108,14 @@ const gameScores = (() => {
       : rows.length ? momoLanguage.pick('Your best: —', 'ベスト：—') : momoLanguage.pick('No scores yet', 'まだスコアがありません');
   }
 
-  function render() {
-    if (levelLabel) levelLabel.textContent = Array.from(document.querySelectorAll('[data-level]')).find(button => button.dataset.level === level)?.lastElementChild.textContent || '';
-    if (source === 'online') { renderOnline(); return; }
+  function renderLocal(fallback) {
     const board = period === 'weekly' ? level + ':' + weekKey() : level;
     const rows = read(board);
     const nickname = nameInput.value.trim().toLowerCase();
     const record = rows.find(row => row.name.toLowerCase() === nickname);
     best.textContent = bestLine(rows, record);
+    onlineNote.hidden = !fallback;
+    if (fallback) onlineNote.textContent = momoLanguage.pick('Online did not load — showing this device', 'オンラインが読み込めなかったので、この端末の記録を表示しています');
     drawRows(rows, record);
   }
 
@@ -121,16 +125,22 @@ const gameScores = (() => {
     const rows = onlineCache.get(onlineKey()) || [];
     const nickname = nameInput.value.trim().toLowerCase();
     const record = rows.find(row => row.name.toLowerCase() === nickname);
+    onlineNote.hidden = true;
     best.textContent = onlineState === 'loading'
       ? momoLanguage.pick('Loading…', '読み込み中…')
-      : onlineState === 'error'
-        ? momoLanguage.pick('Could not load the online board.', 'オンラインランキングを読み込めませんでした')
-        : bestLine(rows, record);
-    drawRows(onlineState === 'idle' ? rows : [], record);
+      : bestLine(rows, record);
+    drawRows(onlineState === 'loading' ? [] : rows, record);
+  }
+
+  function render() {
+    if (levelLabel) levelLabel.textContent = Array.from(document.querySelectorAll('[data-level]')).find(button => button.dataset.level === level)?.lastElementChild.textContent || '';
+    if (!ONLINE_URL) { renderLocal(false); return; }
+    if (onlineState === 'error') { renderLocal(true); return; }
+    renderOnline();
   }
 
   async function fetchOnline() {
-    if (!ONLINE_URL || source !== 'online') return;
+    if (!ONLINE_URL) return;
     const key = onlineKey();
     if (onlineCache.has(key)) { render(); return; }
     onlineState = 'loading';
@@ -148,8 +158,9 @@ const gameScores = (() => {
   }
 
   function refreshBoard() {
-    if (source === 'online') fetchOnline();
-    else render();
+    if (!ONLINE_URL) { render(); return; }
+    if (onlineState === 'error') onlineState = 'loading';
+    fetchOnline();
   }
 
   nameInput.addEventListener('input', () => {
@@ -168,33 +179,6 @@ const gameScores = (() => {
     periodButtons.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
     refreshBoard();
   }));
-  const sourceButtons = {};
-  if (ONLINE_URL) {
-    const sourceGroup = document.createElement('div');
-    sourceGroup.className = 'score-period score-source';
-    sourceGroup.setAttribute('role', 'group');
-    sourceGroup.setAttribute('aria-label', 'Ranking source');
-    for (const key of ['local', 'online']) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.dataset.source = key;
-      button.setAttribute('aria-pressed', String(key === 'local'));
-      button.addEventListener('click', () => {
-        source = key;
-        renderSourceButtons();
-        refreshBoard();
-      });
-      sourceButtons[key] = button;
-      sourceGroup.append(button);
-    }
-    document.querySelector('.score-period')?.after(sourceGroup);
-  }
-  function renderSourceButtons() {
-    if (sourceButtons.local) sourceButtons.local.textContent = momoLanguage.pick('This device', 'この端末');
-    if (sourceButtons.online) sourceButtons.online.textContent = momoLanguage.pick('Everyone', 'みんな');
-    for (const key in sourceButtons) sourceButtons[key].setAttribute('aria-pressed', String(key === source));
-  }
-  renderSourceButtons();
   changePlayer.addEventListener('click', () => {
     readyCard.hidden = false;
     nameInput.focus();
@@ -202,7 +186,9 @@ const gameScores = (() => {
   const initialLevel = document.querySelector('[data-level][aria-pressed="true"]');
   if (initialLevel) level = initialLevel.dataset.level;
   window.addEventListener('storage', render);
-  document.addEventListener('visibilitychange', render);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refreshBoard();
+  });
   let displayedWeek = weekKey();
   setInterval(() => {
     const currentWeek = weekKey();
@@ -213,9 +199,9 @@ const gameScores = (() => {
   }, 1000);
   momoLanguage.subscribe(() => {
     renderNickname();
-    renderSourceButtons();
     render();
   });
+  if (ONLINE_URL) fetchOnline();
 
   return {
     start(level = 'standard') {
@@ -274,7 +260,7 @@ const gameScores = (() => {
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ game: document.body.dataset.game, level, name, score, completed: 1, stage: growth?.stage || 0, stageName: growth?.stageName || '' }),
             keepalive: true
-          }).then(() => { if (source === 'online') fetchOnline(); }).catch(() => {});
+          }).then(() => fetchOnline()).catch(() => {});
         }
       }
       scoreCard.querySelector('p').textContent = caption;
