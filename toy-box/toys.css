@@ -320,11 +320,42 @@ button:disabled { opacity: .55; cursor: default; }
   top: 46%; left: 42%; width: 14%; height: 22%;
   border: 1px solid #382333; border-radius: 50%; background: #8a5a78;
 }
-.bun-tray[data-night] .bun[aria-pressed="true"] .bun-cap { animation: night-breath 6s ease-in-out infinite; }
-.bun-tray[data-night] .bun.soda .bun-cap { animation-delay: -.7s; }
-.bun-tray[data-night] .bun.milk .bun-cap { animation-delay: -1.4s; }
+.bun-tray[data-night] .bun {
+  --breath-duration: 11s;
+  --breath-delay: 0s;
+}
+.bun-tray[data-night] .bun.soda { --breath-delay: -.65s; }
+.bun-tray[data-night] .bun.milk { --breath-delay: -1.3s; }
+.bun-tray[data-night] .bun::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -8% -13% 3%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--light), transparent 69%);
+  filter: blur(clamp(9px, 2.9vw, 22px));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.3s ease;
+}
+.bun-tray[data-night] .bun[aria-pressed="true"]::after {
+  opacity: .42;
+  animation: night-halo var(--breath-duration) ease-in-out var(--breath-delay) infinite;
+}
+.bun-tray[data-night] .bun[aria-pressed="true"] .bun-cap {
+  box-shadow: inset 0 0 24px #fff8c794, 0 0 15px var(--light);
+  animation: night-breath var(--breath-duration) ease-in-out var(--breath-delay) infinite;
+}
 .bun-tray[data-sleeping] .bun-cap { filter: brightness(.48); }
-@keyframes night-breath { 0%,100% { filter: brightness(.77) saturate(.9); } 50% { filter: brightness(1.11) saturate(1.03); } }
+@keyframes night-breath {
+  0%, 100% { filter: brightness(.80) saturate(.89); }
+  50% { filter: brightness(1.03) saturate(.98); }
+}
+@keyframes night-halo {
+  0%, 100% { opacity: .27; transform: scale(.88); }
+  50% { opacity: .72; transform: scale(1.19); }
+}
 @media (prefers-reduced-motion: reduce) {
+  .bun-tray[data-night] .bun[aria-pressed="true"]::after,
   .bun-tray[data-night] .bun[aria-pressed="true"] .bun-cap { animation: none; }
 }
