@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-en-title="Quoridor | Momo.squirrels">コリドール | Momo.squirrels</title>
-<meta name="description" content="コマを進めて、かべで ねこの道を ふさごう。先に むこう岸へ ついた方が勝ちの、ブラウザで遊べる無料ボードゲームです。">
+<meta name="description" content="コマを進めて、かべで あいての道を ふさごう。先に むこう岸へ ついた方が勝ちの、ブラウザで遊べる無料ボードゲームです。">
 <link rel="canonical" href="https://yumemayu.github.io/momo-fry-catch/quoridor/">
 <link rel="stylesheet" href="../game.css?v=tablet-board">
 <link rel="stylesheet" href="../game-picker.css">
@@ -23,7 +23,7 @@
   </header>
   <div class="stats quoridor-stats">
     <span><span data-en="Your walls">あなたの かべ</span> <output id="walls-you">10</output></span>
-    <span><span data-en="Cat walls">ねこの かべ</span> <output id="walls-cat">10</output></span>
+    <span><span data-en="Rival walls">あいての かべ</span> <output id="walls-cat">10</output></span>
     <span><span data-en="Moves">てかず</span> <output id="moves">0</output></span>
   </div>
   <fieldset class="difficulty">
@@ -59,7 +59,7 @@
       <button class="stop-button" id="stop" type="button" hidden>■ Stop</button>
     </div>
   </div>
-  <p id="instructions" data-en="Race your pawn to the far row before the cat reaches yours! Tap a glowing square to move. Tap a groove to peek at a wall, and tap it again to place it. Walls can slow the cat down — but a path must always stay open.">ねこより 先に、いちばん むこうの れつへ つこう！光るマスを タップで いどう。みぞを タップすると かべの 予告が出て、もう一度 タップで おけるよ。かべで ねこを 遅らせよう。ただし、通り道は 必ず 残してね。</p>
+  <p id="instructions" data-en="Race your pawn to the far row before your rival reaches yours! Tap a glowing square to move. Tap a groove to peek at a wall, and tap it again to place it. Walls can slow your rival down — but a path must always stay open.">あいてより 先に、いちばん むこうの れつへ つこう！光るマスを タップで いどう。みぞを タップすると かべの 予告が出て、もう一度 タップで おけるよ。かべで あいてを 遅らせよう。ただし、通り道は 必ず 残してね。</p>
   <div class="music"><button id="sound" type="button" aria-pressed="true">おと ON</button></div>
   <section class="score-board" aria-labelledby="board-title">
     <div class="score-board-heading">

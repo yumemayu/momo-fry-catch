@@ -20,21 +20,21 @@
   const grooveAfter = i => cellAt(i) + CELL;
 
   const PLAYER_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="15" cy="13" r="6.5" fill="#8a5a3a" stroke="#6d4527" stroke-width="2.4"/><circle cx="49" cy="13" r="6.5" fill="#8a5a3a" stroke="#6d4527" stroke-width="2.4"/><circle cx="15" cy="13" r="2.6" fill="#f272a7"/><circle cx="49" cy="13" r="2.6" fill="#f272a7"/><path d="M18 58c1-9 6-14 14-14s13 5 14 14z" fill="#f272a7" stroke="#a7195b" stroke-width="3"/><path d="M26 45.5h12l-6 5z" fill="#fff5fa"/><circle cx="32" cy="27" r="15" fill="#fff3e0" stroke="#c05a86" stroke-width="2.6"/><path d="M17.2 26a14.8 14.8 0 0 1 29.6 0c-.6-5.4-2.8-8.2-5.4-9.8C39.8 19 36.4 20 32 20s-7.8-1-9.4-3.8c-2.6 1.6-4.8 4.4-5.4 9.8z" fill="#8a5a3a"/><ellipse cx="18.6" cy="33" rx="2.6" ry="4.6" fill="#8a5a3a"/><ellipse cx="45.4" cy="33" rx="2.6" ry="4.6" fill="#8a5a3a"/><ellipse cx="26" cy="28" rx="2.7" ry="3.5" fill="#57344a"/><ellipse cx="38" cy="28" rx="2.7" ry="3.5" fill="#57344a"/><circle cx="27" cy="26.4" r="1.05" fill="#ffffff"/><circle cx="39" cy="26.4" r="1.05" fill="#ffffff"/><ellipse cx="21.4" cy="33" rx="3.1" ry="1.9" fill="#ffb3c9"/><ellipse cx="42.6" cy="33" rx="3.1" ry="1.9" fill="#ffb3c9"/><path d="M28.6 33.2q3.4 3.2 6.8 0-.8 3.6-3.4 3.6t-3.4-3.6z" fill="#e2547a"/></svg>';
-  const CAT_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M48 51c7.5.8 11-3.4 10-10" fill="none" stroke="#4a3550" stroke-width="5.5" stroke-linecap="round"/><path d="M19 20 21.5 5.5 31 14M45 20 42.5 5.5 33 14" fill="#4a3550" stroke="#2e2135" stroke-width="3" stroke-linejoin="round"/><path d="M22.6 15.8l1.2-5.6 3.8 3.9M41.4 15.8l-1.2-5.6-3.8 3.9" fill="#f9a8c0"/><path d="M18 58c1-9.5 6.5-14.5 14-14.5S45 48.5 46 58z" fill="#4a3550" stroke="#2e2135" stroke-width="3"/><ellipse cx="32" cy="51" rx="5.5" ry="4.4" fill="#6b5578"/><circle cx="32" cy="27" r="15.5" fill="#4a3550" stroke="#2e2135" stroke-width="3"/><ellipse cx="25.8" cy="26.5" rx="3.1" ry="3.9" fill="#ffb52e"/><ellipse cx="38.2" cy="26.5" rx="3.1" ry="3.9" fill="#ffb52e"/><ellipse cx="25.8" cy="27" rx="1.4" ry="2.7" fill="#2e2135"/><ellipse cx="38.2" cy="27" rx="1.4" ry="2.7" fill="#2e2135"/><circle cx="26.9" cy="24.6" r="1.05" fill="#ffffff"/><circle cx="39.3" cy="24.6" r="1.05" fill="#ffffff"/><path d="M30.4 32.6h3.2l-1.6 2.1z" fill="#f9a8c0"/><path d="M28.2 37.4q1.9 1.7 3.8 0q1.9 1.7 3.8 0" fill="none" stroke="#f9a8c0" stroke-width="1.9" stroke-linecap="round"/><path d="M12.5 30.5l8 1.6M13.8 36.6l7.4-1.4M51.5 30.5l-8 1.6M50.2 36.6l-7.4-1.4" stroke="#ffe9f4" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const CAT_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M33 12.2q.8-4.8 5.2-5.6" fill="none" stroke="#6d4527" stroke-width="2.4" stroke-linecap="round"/><path d="M18 58c1-9 6-14 14-14s13 5 14 14z" fill="#5db9e8" stroke="#3a6ea8" stroke-width="3"/><path d="M26 45.5h12l-6 5z" fill="#ffffff"/><circle cx="32" cy="27" r="15" fill="#fff3e0" stroke="#5b7fa6" stroke-width="2.6"/><path d="M17.2 25a14.8 14.8 0 0 1 29.6 0c-.7-5-2.7-8-5.6-9.9-1.9 2-5.2 3.1-9.2 3.1s-7.3-1.1-9.2-3.1c-2.9 1.9-4.9 4.9-5.6 9.9z" fill="#6d4527"/><ellipse cx="18.4" cy="30.5" rx="2.2" ry="3.4" fill="#6d4527"/><ellipse cx="45.6" cy="30.5" rx="2.2" ry="3.4" fill="#6d4527"/><ellipse cx="26" cy="28" rx="2.7" ry="3.5" fill="#57344a"/><ellipse cx="38" cy="28" rx="2.7" ry="3.5" fill="#57344a"/><circle cx="27" cy="26.4" r="1.05" fill="#ffffff"/><circle cx="39" cy="26.4" r="1.05" fill="#ffffff"/><ellipse cx="21.4" cy="33" rx="3.1" ry="1.9" fill="#ffb3c9"/><ellipse cx="42.6" cy="33" rx="3.1" ry="1.9" fill="#ffb3c9"/><path d="M28.6 33.2q3.4 3.2 6.8 0-.8 3.6-3.4 3.6t-3.4-3.6z" fill="#e2547a"/></svg>';
 
   const copy = {
     ja: {
       retry: 'もういちど', on: 'おと ON', off: 'おと OFF',
-      yourTurn: 'あなたの ばん！', catTurn: 'ねこが かんがえ中…',
+      yourTurn: 'あなたの ばん！', catTurn: 'あいてが かんがえ中…',
       preview: 'もう一度 タップで かべを おく！',
-      win: '勝った！ むこう岸に ついた！🎉', lose: 'ねこが 先に ついちゃった！🐾',
+      win: '勝った！ むこう岸に ついた！🎉', lose: 'あいてが 先に ついちゃった！',
       wall: 'かべ', cell: 'マス'
     },
     en: {
       retry: 'Play again', on: 'Sound on', off: 'Sound off',
-      yourTurn: 'Your turn!', catTurn: 'The cat is thinking…',
+      yourTurn: 'Your turn!', catTurn: 'Your rival is thinking…',
       preview: 'Tap the wall again to place it!',
-      win: 'You win! You reached the far side! 🎉', lose: 'The cat got there first! 🐾',
+      win: 'You win! You reached the far side! 🎉', lose: 'Your rival got there first!',
       wall: 'Wall', cell: 'Square'
     }
   };

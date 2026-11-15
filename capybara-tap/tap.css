@@ -106,7 +106,7 @@
   height: 88%;
   object-fit: contain;
   pointer-events: none;
-  transform: translate(-50%, 82%);
+  transform: translate(-50%, 118%);
   transition: transform .18s ease-out;
 }
 .spot.up .spot-inner img { transform: translate(-50%, 4%); }
@@ -121,7 +121,7 @@
   background: radial-gradient(ellipse at center, rgba(207, 242, 252, .95), rgba(140, 210, 240, .55) 68%, transparent);
   pointer-events: none;
 }
-.spot.hit .spot-inner img { transition: transform .1s ease-in; transform: translate(-50%, 82%) scale(.92); }
+.spot.hit .spot-inner img { transition: transform .1s ease-in; transform: translate(-50%, 118%) scale(.92); }
 
 /* Golden capybara sparkles. */
 .spot.golden .spot-inner::before,
