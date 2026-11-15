@@ -375,10 +375,6 @@ const keyFaces = [
   { type: 'bunny', fur: '#ffe3ee' }, { type: 'bunny', fur: '#ffffff' },
   { type: 'panda', fur: '#ffffff' }, { type: 'dog', fur: '#eec39a' },
 ];
-const keySymbols = [
-  { g: '⬆', c: '#5b8dd9' }, { g: '⬇', c: '#e77cab' }, { g: '⬅', c: '#f2a93b' },
-  { g: '➡', c: '#7bc47f' }, { g: '♪', c: '#9a7bd9' },
-];
 const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
@@ -431,7 +427,6 @@ function renderKeys(theme) {
   // Animal faces and arrow/symbol keys hide on random keys, mixed in
   // with the icon keys (like the keychain keyboards).
   let faceMap = new Map();
-  let symbolMap = new Map();
   if (theme === 'choco' || theme === 'puppy') {
     const shuffle = list => {
       const arr = [...list];
@@ -445,8 +440,6 @@ function renderKeys(theme) {
     const faces = shuffle(keyFaces);
     const faceCount = 7 + Math.floor(Math.random() * 3);
     faceMap = new Map(spots.slice(0, faceCount).map((spot, i) => [spot, faces[i % faces.length]]));
-    const glyphs = shuffle(keySymbols);
-    symbolMap = new Map(spots.slice(faceCount, faceCount + 5).map((spot, i) => [spot, glyphs[i % glyphs.length]]));
   }
   keyByLetter.clear();
   grid.replaceChildren(...keyboardRows.map((letters, rowIndex) => {
@@ -476,19 +469,10 @@ function renderKeys(theme) {
         const face = faceMap.get(keyIndex);
         art.dataset.face = face.type;
         art.style.setProperty('--fur', face.fur);
-        const earL = document.createElement('i');
-        earL.className = 'ear ear-l';
-        const earR = document.createElement('i');
-        earR.className = 'ear ear-r';
         const eyes = document.createElement('span');
         eyes.className = 'face-eyes';
         eyes.textContent = '•ᴗ•';
-        art.append(earL, earR, eyes);
-      } else if (symbolMap.has(keyIndex)) {
-        art.classList.add('symbol');
-        const sym = symbolMap.get(keyIndex);
-        art.textContent = sym.g;
-        art.style.color = sym.c;
+        art.append(eyes);
       } else {
         art.dataset.art = symbol;
       }
@@ -513,6 +497,7 @@ soundButtons.forEach(button => button.addEventListener('click', () => {
 renderKeys('choco');
 const spaceKey = one('.space');
 spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 26, ' '));
+all('.symbol-key').forEach((key, i) => key.addEventListener('click', () => pressKeycap(key, 30 + i, key.dataset.glyph)));
 document.addEventListener('keydown', event => {
   if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || one('#keys').hidden) return;
   if (event.key === 'Backspace') {
