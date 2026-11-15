@@ -12,6 +12,7 @@
   const retry = document.querySelector('#retry');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const total = 5;
+  const hitFaces = ['squint', 'surprised', 'dizzy'];
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const say = (en, ja) => momoLanguage.pick(en, ja);
   let hits = 0;
@@ -86,6 +87,7 @@
     clearTimeout(reactionTimer);
     opponent.classList.remove('hit');
     if (hit) {
+      opponent.dataset.face = hitFaces[(hits - 1) % hitFaces.length];
       // Restart the squash and glasses animations even on consecutive hits.
       void opponent.offsetWidth;
       opponent.classList.add('hit');

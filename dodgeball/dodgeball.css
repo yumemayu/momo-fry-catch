@@ -51,9 +51,11 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
 #guide { margin: 8px 4px 0; text-align: center; font-size: .9rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .hit img { animation: none; } }
-.opponent .startled, .impact { display: none; }
+.opponent .hit-face, .impact { display: none; }
 .opponent.hit img:first-child { visibility: hidden; }
-.opponent.hit .startled { display: block; position: absolute; inset: 0; }
+.opponent.hit[data-face="squint"] [data-face="squint"],
+.opponent.hit[data-face="surprised"] [data-face="surprised"],
+.opponent.hit[data-face="dizzy"] [data-face="dizzy"] { display: block; position: absolute; inset: 0; }
 .opponent.hit .impact { display: block; }
 .impact { position: absolute; inset: 0; pointer-events: none; }
 .glasses {
