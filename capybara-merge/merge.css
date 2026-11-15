@@ -36,22 +36,6 @@
   .capy-main > #instructions { order: 5; }
 }
 
-.capy-modes {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin: 8px 0;
-}
-.capy-modes button {
-  padding: 6px;
-  border: 1px solid #dbb6d7;
-  background: #fff8fc;
-  color: #57324f;
-}
-.capy-modes button[aria-pressed="true"] {
-  background: #ead5f6;
-  border-color: #96629c;
-}
 .capy-stats #quick-clock[hidden] { display: none; }
 #quick-time { font-variant-numeric: tabular-nums; }
 @media (max-width: 679px) {

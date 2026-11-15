@@ -88,22 +88,40 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
   background: #fff4fa40;
 }
 .glasses::after { inset: 0 0 0 52%; }
+.star-burst {
+  position: absolute;
+  inset: 0;
+  --lift: 1;
+  --fan: 1;
+}
+.hit[data-face="squint"] .star-burst { --lift: .7; --fan: 1.24; }
+.hit[data-face="surprised"] .star-burst { --lift: 1.32; --fan: .72; }
+.hit[data-face="dizzy"] .star-burst { rotate: 17deg; }
 .spark {
   position: absolute;
-  left: var(--x);
-  top: 41%;
-  color: #fff6ae;
-  text-shadow: 0 2px #a6657a;
-  font-size: clamp(16px, 4vw, 36px);
+  left: 48%;
+  top: 43%;
+  color: var(--color, #fff3a2);
+  text-shadow: 0 2px #89516d;
+  font-size: clamp(16px, 3vw, 30px);
   font-style: normal;
-  animation: sparkle .53s ease-out both;
+  line-height: 1;
+  animation: sparkle .64s cubic-bezier(.16,.66,.34,1) both;
 }
-.spark:nth-child(2) { --x: 18%; --dx: -38px; }
-.spark:nth-child(3) { --x: 79%; --dx: 38px; color: #ffd7ed; }
-.spark:nth-child(4) { --x: 64%; --dx: 18px; animation-delay: .08s; font-size: clamp(13px, 2vw, 22px); }
+.spark:nth-child(1) { --dx: -68px; --dy: -39px; --turn: -48deg; }
+.spark:nth-child(2) { --dx: -31px; --dy: -70px; --turn: 22deg; --color: #fbd0ec; }
+.spark:nth-child(3) { --dx: 19px; --dy: -78px; --turn: 68deg; }
+.spark:nth-child(4) { --dx: 64px; --dy: -49px; --turn: -38deg; --color: #fff9ec; }
+.spark:nth-child(5) { --dx: 79px; --dy: 8px; --turn: 45deg; --color: #d9c8ff; }
+.spark:nth-child(6) { --dx: -64px; --dy: 25px; --turn: -36deg; --color: #fbd0ec; }
 @keyframes sparkle {
-  from { transform: scale(.4); }
-  to { transform: translate(var(--dx), -44px) scale(1.1) rotate(35deg); opacity: 0; }
+  0% { transform: scale(.25); opacity: 0; }
+  22% { opacity: 1; }
+  72% { opacity: 1; }
+  100% {
+    transform: translate(calc(var(--dx) * var(--fan)), calc(var(--dy) * var(--lift))) rotate(var(--turn)) scale(.7);
+    opacity: 0;
+  }
 }
 @keyframes flying-glasses {
   0% { transform: none; }
@@ -113,4 +131,5 @@ h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); }
 @media (prefers-reduced-motion: reduce) {
   .opponent.hit .glasses, .spark { animation: none; }
   .opponent.hit .glasses { display: none; }
+  .spark { transform: translate(calc(var(--dx) * .5), calc(var(--dy) * .5)); }
 }

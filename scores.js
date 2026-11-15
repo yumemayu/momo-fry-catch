@@ -9,9 +9,6 @@ const gameScores = (() => {
   const periodButtons = document.querySelectorAll('[data-period]');
   let level = 'standard';
   let period = 'weekly';
-  const nameKey = 'momo:nickname';
-  const expiryKey = 'momo:nickname:expires';
-  const nicknameLifetime = 7 * 24 * 60 * 60 * 1000;
   const prefix = 'momo:scores:' + document.body.dataset.game + ':';
   const cache = new Map();
   const ONLINE_URL = 'https://script.google.com/macros/s/AKfycbwIZWAIOqgmjctFItur6QacLZqf2zL6paAyLxFeCoV1cAnD2O3yV70ZiKiprBi1xTdIVQ/exec';
@@ -35,26 +32,9 @@ const gameScores = (() => {
   onlineNote.hidden = true;
   scoreList.after(best, onlineNote);
 
-  function readNickname() {
-    try {
-      const name = (localStorage.getItem(nameKey) || '').trim();
-      if (!name) return '';
-      const expires = localStorage.getItem(expiryKey);
-      if (expires === null) {
-        // Give nicknames from older versions the same seven-day window.
-        localStorage.setItem(expiryKey, String(Date.now() + nicknameLifetime));
-        return name;
-      }
-      if (Number(expires) > Date.now()) return name;
-      localStorage.removeItem(nameKey);
-      localStorage.removeItem(expiryKey);
-    } catch {}
-    return '';
-  }
-
   function restoreNickname() {
     if (editingNickname || nameInput.readOnly) return;
-    const saved = readNickname();
+    const saved = momoNickname.read();
     const previous = nameInput.value;
     nameInput.value = saved;
     nicknameState = saved ? 'saved' : '';
@@ -82,16 +62,7 @@ const gameScores = (() => {
     const name = nameInput.value.trim();
     nameInput.value = name;
     try {
-      if (name) {
-        const previous = readNickname();
-        if (celebrate || name !== previous) {
-          localStorage.setItem(nameKey, name);
-          localStorage.setItem(expiryKey, String(Date.now() + nicknameLifetime));
-        }
-      } else {
-        localStorage.removeItem(nameKey);
-        localStorage.removeItem(expiryKey);
-      }
+      momoNickname.write(name, celebrate);
       nicknameState = name ? 'saved' : 'cleared';
     } catch { nicknameState = 'unavailable'; }
     editingNickname = nicknameState === 'unavailable';
@@ -241,7 +212,7 @@ const gameScores = (() => {
   const initialLevel = document.querySelector('[data-level][aria-pressed="true"]');
   if (initialLevel) level = initialLevel.dataset.level;
   window.addEventListener('storage', event => {
-    if (event.key === nameKey || event.key === expiryKey) restoreNickname();
+    if (momoNickname.matches(event.key)) restoreNickname();
     render();
   });
   window.addEventListener('pageshow', event => {

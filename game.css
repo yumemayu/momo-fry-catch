@@ -79,6 +79,7 @@ nav a[aria-current] {
   position: relative;
   display: grid;
   justify-items: center;
+  align-content: center;
   gap: 2px;
   min-height: 67px;
   padding: 5px 3px;
@@ -102,7 +103,11 @@ nav a[aria-current] {
   line-height: 1;
   color: #f272a7;
 }
+.level-buttons .level-art { width: 34px; height: 34px; object-fit: contain; }
 .level-icon {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
   font-size: 1.5rem;
   line-height: 1.2;
 }
@@ -244,7 +249,7 @@ nav[aria-label="Choose a game"] a {
   main > nav { order: 11; }
   .difficulty { margin: 6px 0 8px; }
   .difficulty legend { margin-bottom: 4px; font-size: .9rem; }
-  .level-buttons { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+  .level-buttons { grid-template-columns: repeat(auto-fit, minmax(min(17%, 58px), 1fr)); gap: 5px; }
   .level-buttons button { min-height: 48px; padding: 4px 1px; border-radius: 12px; font-size: .64rem; line-height: 1.1; letter-spacing: 0; }
   .level-icon { font-size: 1.05rem; line-height: 1.1; }
   .play-guide, .bun-rules, .cat-example { margin-top: 10px; }

@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title data-en-title="MOMO Dodgeball">MOMO ドッジボール</title>
 <link rel="stylesheet" href="../language.css">
-<link rel="stylesheet" href="dodgeball.css?v=hit-motion">
+<link rel="stylesheet" href="dodgeball.css?v=star-burst">
 <script defer src="../language.js"></script>
+<script defer src="../nickname.js?v=shared"></script>
+<link rel="stylesheet" href="../nickname.css">
 <script defer src="dodgeball.js?v=hit-faces"></script>
 </head>
 <body>
@@ -24,7 +26,13 @@
       <img class="hit-face" data-face="squint" src="cat-squint.webp?v=avatar" alt="" draggable="false">
       <img class="hit-face" data-face="surprised" src="cat-surprised.webp?v=avatar" alt="" draggable="false">
       <img class="hit-face" data-face="dizzy" src="cat-dizzy.webp?v=avatar" alt="" draggable="false">
-      <div class="impact"><i class="glasses"></i><i class="spark">✦</i><i class="spark">✧</i><i class="spark">✦</i></div>
+      <div class="impact">
+        <i class="glasses"></i>
+        <div class="star-burst">
+          <i class="spark">★</i><i class="spark">✦</i><i class="spark">★</i>
+          <i class="spark">✧</i><i class="spark">★</i><i class="spark">✦</i>
+        </div>
+      </div>
       <span class="reaction" id="reaction" hidden></span>
     </div>
     <div class="aim" hidden aria-hidden="true"></div>
@@ -36,6 +44,15 @@
   </section>
   <p id="guide" data-ja="ボールを上にスワイプ。キーボードでは ← → で狙って Enter。">Swipe the ball up. With a keyboard, aim with ← → and press Enter.</p>
   <p id="status" class="sr-only" role="status"></p>
+<details class="momo-nickname-panel" data-nickname-panel>
+  <summary>Set nickname</summary>
+  <form>
+    <label for="shared-nickname" data-ja="ニックネーム">Nickname</label>
+    <input id="shared-nickname" maxlength="20" autocomplete="off">
+    <button type="submit" data-ja="保存">Save</button>
+  </form>
+  <small role="status"></small>
+</details>
 </main>
 </body>
 </html>
