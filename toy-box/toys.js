@@ -368,13 +368,33 @@ const decorations = [
 ];
 const furs = ['#d89068', '#b7a0ab', '#cb9c83', '#53475c'];
 const themeSpace = { choco: 'HAPPINESS', puppy: 'VERY LUCKY', pastel: 'MOMO', cat: 'MOMO' };
-// Whole-key animal faces: the key itself is the round face.
-const keyFaces = [
-  { type: 'cat', fur: '#f7d9b0' }, { type: 'cat', fur: '#ffd9e2' }, { type: 'cat', fur: '#e6dcff' },
-  { type: 'bear', fur: '#d9a066' }, { type: 'bear', fur: '#c68b59' },
-  { type: 'bunny', fur: '#ffe3ee' }, { type: 'bunny', fur: '#ffffff' },
-  { type: 'panda', fur: '#ffffff' }, { type: 'dog', fur: '#eec39a' },
+// Whole-key cat faces with coat patterns, like the cat keycaps:
+// tabby stripes, calico patches, tuxedo and bi-colour coats.
+const catFaces = [
+  { id: 'otab', fur: '#f2a65a', dark: '#d97f2e', pattern: 'stripes' },
+  { id: 'btab', fur: '#b08968', dark: '#87603e', pattern: 'stripes' },
+  { id: 'cali', fur: '#fff6ea', patch1: '#e8975a', patch2: '#6b4a2f', pattern: 'calico' },
+  { id: 'tux', fur: '#4a4443', pattern: 'tuxedo', eyes: 'amber', whisker: '#ffffff99' },
+  { id: 'owhi', fur: '#f7b267', pattern: 'bicolor' },
+  { id: 'gwhi', fur: '#bdb5b0', pattern: 'bicolor' },
+  { id: 'crem', fur: '#ffe8c9', pattern: 'plain' },
+  { id: 'pwhi', fur: '#ffd9e2', pattern: 'bicolor' },
 ];
+function faceSVG(f) {
+  const whisker = f.whisker || '#c9b8a8';
+  let deco = '';
+  if (f.pattern === 'stripes') deco = `<path d="M38 27v9M50 25v10M62 27v9" stroke="${f.dark}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+  if (f.pattern === 'calico') deco = `<g clip-path="url(#hc-${f.id})"><circle cx="26" cy="29" r="15" fill="${f.patch1}"/><circle cx="79" cy="56" r="13" fill="${f.patch2}"/><circle cx="71" cy="23" r="9" fill="${f.patch1}"/></g>`;
+  const muzzle = f.pattern === 'tuxedo'
+    ? `<path d="M43 34h14l-3 32h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="74" rx="27" ry="16" fill="#fff8ee"/>`
+    : f.pattern === 'bicolor'
+      ? `<path d="M44 36h12l-2 30h-8Z" fill="#fff8ee"/><ellipse cx="50" cy="72" rx="24" ry="15" fill="#fff8ee"/>`
+      : `<ellipse cx="50" cy="72" rx="23" ry="15" fill="#fff8ee" opacity=".9"/>`;
+  const eyes = f.eyes === 'amber'
+    ? `<ellipse cx="35" cy="55" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="65" cy="55" rx="5" ry="6.5" fill="#f6a821"/><ellipse cx="35" cy="55" rx="2.2" ry="4.4" fill="#26221f"/><ellipse cx="65" cy="55" rx="2.2" ry="4.4" fill="#26221f"/><circle cx="33.4" cy="52" r="1.5" fill="#fff"/><circle cx="63.4" cy="52" r="1.5" fill="#fff"/>`
+    : `<ellipse cx="35" cy="55" rx="4.6" ry="6.2" fill="#3a2e28"/><ellipse cx="65" cy="55" rx="4.6" ry="6.2" fill="#3a2e28"/><circle cx="33.6" cy="52.2" r="1.6" fill="#fff"/><circle cx="63.6" cy="52.2" r="1.6" fill="#fff"/>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><clipPath id="hc-${f.id}"><rect x="10" y="18" width="80" height="74" rx="30"/></clipPath></defs><path d="M17 28 L29 5 L47 21 Z" fill="${f.fur}"/><path d="M83 28 L71 5 L53 21 Z" fill="${f.fur}"/><path d="M22 24 L29 12 L40 20 Z" fill="#f6a8c1"/><path d="M78 24 L71 12 L60 20 Z" fill="#f6a8c1"/><rect x="10" y="18" width="80" height="74" rx="30" fill="${f.fur}"/>${deco}${muzzle}<ellipse cx="22" cy="67" rx="6" ry="3" fill="#ffb7c9" opacity=".75"/><ellipse cx="78" cy="67" rx="6" ry="3" fill="#ffb7c9" opacity=".75"/>${eyes}<path d="M46.5 65.5 h7 l-3.5 4 Z" fill="#f28bb4"/><path d="M50 70 q-3.5 4.5 -8 2.5 M50 70 q3.5 4.5 8 2.5" stroke="#3a2e28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M23 62 L7 57 M23 69 L7 70 M77 62 L93 57 M77 69 L93 70" stroke="${whisker}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+}
 const keyByLetter = new Map();
 const notebook = one('#key-note');
 const noteStorage = 'momo:toy-box:note';
@@ -437,7 +457,7 @@ function renderKeys(theme) {
       return arr;
     };
     const spots = shuffle([...Array(26).keys()]);
-    const faces = shuffle(keyFaces);
+    const faces = shuffle(catFaces);
     const faceCount = 7 + Math.floor(Math.random() * 3);
     faceMap = new Map(spots.slice(0, faceCount).map((spot, i) => [spot, faces[i % faces.length]]));
   }
@@ -466,13 +486,7 @@ function renderKeys(theme) {
       } else if (faceMap.has(keyIndex)) {
         key.classList.add('face-key');
         art.className = 'face-art';
-        const face = faceMap.get(keyIndex);
-        art.dataset.face = face.type;
-        art.style.setProperty('--fur', face.fur);
-        const eyes = document.createElement('span');
-        eyes.className = 'face-eyes';
-        eyes.textContent = '•ᴗ•';
-        art.append(eyes);
+        art.innerHTML = faceSVG(faceMap.get(keyIndex));
       } else {
         art.dataset.art = symbol;
       }
