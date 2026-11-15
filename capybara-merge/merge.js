@@ -23,6 +23,7 @@
   const height = 420;
   const wall = 15;
   const floor = 393;
+  const waterline = floor - 43;
   const limit = 88;
   const timestep = 1000 / 60;
   const saveKey = 'momo:capybara:best-stage';
@@ -116,6 +117,7 @@
   const pieces = new Map();
   const pairs = [];
   const effects = [];
+  const ripples = [];
 
   function queuePiece() {
     const draw = Math.random();
@@ -128,7 +130,7 @@
     nextImage.alt = stages[next][language];
   }
 
-  function playChime(stage, special) {
+  function playChime(stage, special, splash = false) {
     if (muted) return;
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) return;
@@ -136,21 +138,24 @@
       audio ??= new Audio();
       if (audio.state !== 'running') audio.resume().catch(() => {});
       if (stage === undefined) return;
-      const pitch = 329.63 * 2 ** (stage / 12);
+      const pitch = splash ? 420 : 329.63 * 2 ** (stage / 12);
+      const duration = splash ? .12 : .28;
       const notes = special ? [0, 4, 7, 12] : [0];
       notes.forEach((offset, index) => {
         const oscillator = audio.createOscillator();
         const gain = audio.createGain();
         const at = audio.currentTime + index * .11;
+        oscillator.type = special ? 'triangle' : 'sine';
         oscillator.frequency.setValueAtTime(pitch * 2 ** (offset / 12), at);
+        if (splash) oscillator.frequency.exponentialRampToValueAtTime(180, at + duration);
         gain.gain.setValueAtTime(.0001, at);
-        gain.gain.exponentialRampToValueAtTime(.12, at + .025);
-        gain.gain.exponentialRampToValueAtTime(.0001, at + .31);
+        gain.gain.exponentialRampToValueAtTime(splash ? .045 : .11, at + .022);
+        gain.gain.exponentialRampToValueAtTime(.0001, at + duration);
         oscillator.connect(gain);
         gain.connect(audio.destination);
         oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
         oscillator.start(at);
-        oscillator.stop(at + .32);
+        oscillator.stop(at + duration + .01);
       });
     } catch {}
   }
@@ -191,7 +196,7 @@
     const body = physics.Bodies.circle(clampAim(x, radius), y, radius, {
       friction: .21, frictionAir: .016, restitution: .12, density: .0012, slop: .03
     }, Math.max(24, Math.round(radius / 1.8)));
-    const piece = {body, stage, born: age};
+    const piece = {body, stage, born: age, inWater: y + radius >= waterline};
     pieces.set(body.id, piece);
     physics.Composite.add(engine.world, body);
     markStage(stage);
@@ -221,11 +226,13 @@
       remove(first);
       remove(second);
       const merged = insert(stage, x, y);
+      merged.grew = true;
       physics.Body.setVelocity(merged.body, {x: vx, y: vy});
-      score += (stage + 1) * (stage + 2) / 2;
+      const points = (stage + 1) * (stage + 2) / 2;
+      score += points;
       scoreOutput.value = score;
       const special = stage === stages.length - 1;
-      effects.push({x: merged.body.position.x, y, stage, at: age, special});
+      effects.push({x: merged.body.position.x, y, stage, at: age, special, points});
       playChime(stage, special);
       if (special) setNotice('special');
     }
@@ -235,6 +242,14 @@
   function stepWorld() {
     age += timestep;
     physics.Engine.update(engine, timestep);
+    for (const piece of pieces.values()) {
+      const {body, stage} = piece;
+      if (!piece.inWater && body.velocity.y > 0 && body.position.y + stages[stage].radius >= waterline) {
+        piece.inWater = true;
+        ripples.push({x: body.position.x, at: age});
+        playChime(stage, false, true);
+      }
+    }
     mergePairs();
     const backedUp = [...pieces.values()].some(({body, stage, born}) =>
       age - born > 550 && body.position.y - stages[stage].radius < limit && Math.abs(body.velocity.y) < 1.5);
@@ -257,7 +272,7 @@
     if (playing || !physics) return;
     buildWorld();
     pieces.clear();
-    effects.length = pairs.length = 0;
+    effects.length = ripples.length = pairs.length = 0;
     score = biggest = age = backlog = overTime = cooldown = 0;
     lastTime = pointer = null;
     settling = false;
@@ -304,11 +319,12 @@
     updateNext();
   }
 
-  function drawPiece(stage, x, y, angle) {
+  function drawPiece(stage, x, y, angle, scale = 1) {
     const {image, radius} = stages[stage];
     ink.save();
     ink.translate(x, y);
     ink.rotate(angle);
+    if (scale !== 1) ink.scale(scale, scale);
     if (image.complete && image.naturalWidth) {
       ink.drawImage(image, -radius, -radius, radius * 2, radius * 2);
     } else {
@@ -328,14 +344,27 @@
     if (field.width !== pixelWidth) field.width = pixelWidth;
     if (field.height !== pixelHeight) field.height = pixelHeight;
     ink.setTransform(pixelWidth / width, 0, 0, pixelHeight / height, 0, 0);
-    ink.fillStyle = '#fff2e7';
+    const bath = ink.createLinearGradient(0, 0, 0, height);
+    bath.addColorStop(0, '#fff8ef');
+    bath.addColorStop(.78, '#fcebd9');
+    bath.addColorStop(1, '#eed0b7');
+    ink.fillStyle = bath;
     ink.fillRect(0, 0, width, height);
-    ink.fillStyle = '#f3d4b7';
+    ink.fillStyle = '#ebc5a2';
     ink.fillRect(0, 0, wall, height);
     ink.fillRect(width - wall, 0, wall, height);
     ink.fillRect(0, floor, width, height - floor);
-    ink.fillStyle = '#d9edeb';
-    ink.fillRect(wall, floor - 43, width - wall * 2, 43);
+    ink.fillStyle = '#f7dcc0';
+    ink.fillRect(wall - 3, 0, 3, floor);
+    ink.fillRect(width - wall, 0, 3, floor);
+    const water = ink.createLinearGradient(0, waterline, 0, floor);
+    water.addColorStop(0, '#e7f4ec');
+    water.addColorStop(1, '#bddfdb');
+    ink.fillStyle = water;
+    ink.fillRect(wall, waterline, width - wall * 2, floor - waterline);
+    ink.fillStyle = '#fff9ed';
+    ink.fillRect(wall, waterline, width - wall * 2, 2);
+    drawRipples();
     ink.strokeStyle = '#fff9f1';
     ink.lineWidth = 2;
     for (const x of [40, 107, 179, 247]) {
@@ -365,10 +394,30 @@
       drawPiece(current, aim, limit - 36, 0);
       ink.globalAlpha = 1;
     }
-    for (const {body, stage} of pieces.values()) {
-      drawPiece(stage, body.position.x, body.position.y, body.angle);
+    for (const {body, stage, born, grew} of pieces.values()) {
+      const progress = Math.min(1, (age - born) / 230);
+      const scale = grew && !reducedMotion.matches ? 1 + .17 * Math.sin(progress * Math.PI) : 1;
+      drawPiece(stage, body.position.x, body.position.y, body.angle, scale);
     }
     drawEffects();
+  }
+
+  function drawRipples() {
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const ripple = ripples[i];
+      const progress = (age - ripple.at) / 440;
+      if (progress >= 1 || reducedMotion.matches) {
+        ripples.splice(i, 1);
+        continue;
+      }
+      ink.globalAlpha = .75 * (1 - progress);
+      ink.strokeStyle = '#fffef8';
+      ink.lineWidth = 2;
+      ink.beginPath();
+      ink.ellipse(ripple.x, waterline + 7, 7 + progress * 25, 2 + progress * 5, 0, 0, Math.PI * 2);
+      ink.stroke();
+      ink.globalAlpha = 1;
+    }
   }
 
   function drawEffects() {
@@ -385,6 +434,21 @@
         continue;
       }
       ink.globalAlpha = 1 - elapsed;
+      ink.fillStyle = effect.special ? '#b37724' : '#8c5372';
+      ink.font = '700 17px system-ui';
+      ink.textAlign = 'center';
+      const labelY = Math.max(22, effect.y - stages[effect.stage].radius - 12 - elapsed * 15);
+      ink.fillText('+' + effect.points, effect.x, labelY);
+      ink.strokeStyle = effect.special ? '#f5ce78' : '#fff7e8';
+      ink.lineWidth = 2.5;
+      for (const offset of [-10, 10]) {
+        const x = effect.x + offset;
+        const y = labelY + 16;
+        ink.beginPath();
+        ink.moveTo(x, y + 10);
+        ink.bezierCurveTo(x - 7, y + 6, x + 7, y + 4, x, y);
+        ink.stroke();
+      }
       const count = effect.special ? 16 : 6;
       for (let p = 0; p < count; p++) {
         const angle = p / count * Math.PI * 2;
@@ -459,7 +523,7 @@
     mode = button.dataset.level;
     playedRound = false;
     pieces.clear();
-    effects.length = 0;
+    effects.length = ripples.length = 0;
     score = biggest = overTime = 0;
     scoreOutput.value = 0;
     quickTime.value = roundMs / 1000;
