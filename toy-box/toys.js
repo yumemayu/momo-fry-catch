@@ -13,6 +13,14 @@ tabs.forEach(button => button.addEventListener('click', () => {
 let audio;
 const keySamples = new Map();
 let sound = 'soft';
+const majorScale = [0, 2, 4, 5, 7, 9, 11];
+function cuteNoteRate(index) {
+  const rowStart = index < 10 ? 0 : index < 19 ? 10 : 19;
+  const octave = rowStart === 0 ? 0 : rowStart === 10 ? -12 : -24;
+  const step = index === 26 ? 0 : index - rowStart;
+  const semitones = octave + 12 * Math.floor(step / 7) + majorScale[step % 7];
+  return 2 ** (semitones / 12);
+}
 function play(index, pitch = 0) {
   if (sound === 'mute') return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -24,15 +32,16 @@ function play(index, pitch = 0) {
     if (!keySamples.has(sound)) {
       const rate = audio.sampleRate;
       const cute = sound === 'cute';
-      const sample = audio.createBuffer(1, Math.ceil(rate * (cute ? .19 : .105)), rate);
+      const sample = audio.createBuffer(1, Math.ceil(rate * (cute ? .34 : .105)), rate);
       const data = sample.getChannelData(0);
       for (let frame = 0; frame < data.length; frame++) {
         const t = frame / rate;
         if (cute) {
-          const envelope = (1 - Math.exp(-t * 490)) * Math.exp(-t * 45);
-          const pop = Math.sin(2 * Math.PI * (560 * t + 420 * t * t));
-          const shimmer = Math.sin(2 * Math.PI * 825 * t) * Math.exp(-t * 52);
-          data[frame] = envelope * (pop * .68 + shimmer * .20);
+          const phase = 2 * Math.PI * 523.251 * t;
+          const envelope = (1 - Math.exp(-t * 245)) * Math.exp(-t * 25);
+          const body = Math.sin(phase);
+          const overtone = Math.sin(2 * phase) * Math.exp(-t * 50);
+          data[frame] = envelope * (body * .76 + overtone * .14);
           continue;
         }
         const rise = 1 - Math.exp(-t * 730);
@@ -49,7 +58,7 @@ function play(index, pitch = 0) {
     const source = audio.createBufferSource();
     const level = audio.createGain();
     source.buffer = keySamples.get(sound);
-    source.playbackRate.value = .92 + (index % 7) * .037;
+    source.playbackRate.value = sound === 'cute' ? cuteNoteRate(index) : .92 + (index % 7) * .037;
     level.gain.value = sound === 'cute' ? .105 : .15;
     source.connect(level).connect(audio.destination);
     source.start(now);
@@ -223,7 +232,8 @@ function renderKeys(theme) {
       legend.className = 'key-legend';
       legend.textContent = letter;
       key.append(legend);
-      const symbol = decorations[keyByLetter.size];
+      const keyIndex = keyByLetter.size;
+      const symbol = decorations[keyIndex];
       const art = document.createElement('span');
       art.className = theme === 'cat' ? 'cat-face' : 'key-art';
       art.setAttribute('aria-hidden', 'true');
@@ -234,7 +244,7 @@ function renderKeys(theme) {
         art.dataset.art = symbol;
       }
       key.append(art);
-      key.addEventListener('click', () => pressKeycap(key, index + rowIndex * 3, letter));
+      key.addEventListener('click', () => pressKeycap(key, keyIndex, letter));
       keyByLetter.set(letter, key);
       row.append(key);
     });
@@ -253,7 +263,7 @@ soundButtons.forEach(button => button.addEventListener('click', () => {
 }));
 renderKeys('pastel');
 const spaceKey = one('.space');
-spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 0, ' '));
+spaceKey.addEventListener('click', () => pressKeycap(spaceKey, 26, ' '));
 document.addEventListener('keydown', event => {
   if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || one('#keys').hidden) return;
   if (event.key === 'Backspace') {
