@@ -7,7 +7,6 @@ function select(buttons, selected) {
 const stickerCatalog = [
   ['bun-light', '🏮', 'Bun Lights', '肉まんライト', 'Mix two colors', '２色をまぜる'],
   ['ribbon', '🎀', 'MOMO ribbon', 'MOMOのリボン', 'Type the secret word', 'ひみつの言葉を入力'],
-  ['puppy', '🐾', 'Cloud dog', '雲の犬', 'Copy the first sequence', '最初のまねっこをクリア'],
   ['fries', '🍟', 'Fry Catch', 'フライキャッチ'],
   ['buns', '🥟', 'Smiley Bun Catch', 'にこにこ肉まんキャッチ'],
   ['cats', '🐱', 'Find the Glasses Cat', 'メガネ猫さがし'],
@@ -38,8 +37,8 @@ function renderStickers() {
     count + ' / ' + stickerCatalog.length + ' collected',
     stickerCatalog.length + '枚のうち ' + count + '枚 ゲット',
   );
-  one('#toy-stickers').replaceChildren(...stickerCatalog.slice(0, 3).map(stickerEntry));
-  one('#game-stickers').replaceChildren(...stickerCatalog.slice(3).map(stickerEntry));
+  one('#toy-stickers').replaceChildren(...stickerCatalog.slice(0, 2).map(stickerEntry));
+  one('#game-stickers').replaceChildren(...stickerCatalog.slice(2).map(stickerEntry));
 }
 momoStickers.subscribe(id => {
   if (one('#stickers')) renderStickers();
@@ -548,64 +547,4 @@ if (one('#keys')) {
     key.click();
     setTimeout(() => key.classList.remove('pressed'), 110);
   });
-}
-
-if (one('#dog')) {
-  const puppyMove = one('#puppy-move');
-  const dogStatus = one('#dog-status');
-  const dogStart = one('#dog-start');
-  const moves = all('[data-move]');
-  const signs = ['🦴', '🐾', '✦'];
-  let sequence = [];
-  let guess = 0;
-  let showing = false;
-  const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
-  function pose(move) {
-    puppyMove.textContent = signs[move] || (move === 'win' ? '✧ ♡ ✧' : '');
-  }
-  function controlMoves(enabled) {
-    moves.forEach(button => { button.disabled = !enabled; });
-  }
-  async function showPuppy() {
-    showing = true;
-    controlMoves(false);
-    guess = 0;
-    dogStatus.textContent = copy('Watch the puppy…', '犬のポーズを見てね…');
-    for (const move of sequence) {
-      pose(move);
-      play(move, 460 + move * 90);
-      await pause(620);
-      pose('');
-      await pause(180);
-    }
-    showing = false;
-    controlMoves(true);
-    dogStatus.textContent = copy('Your turn!', 'こんどはきみの番！');
-  }
-  function finishPuppy(won) {
-    pose(won ? 'win' : '');
-    dogStatus.textContent = won ? copy('You copied all five moves! ✨', '５つのポーズをまねできたよ！ ✨') : copy('Good try! Play again?', 'おしい！ もういちど？');
-    controlMoves(false);
-    dogStart.disabled = false;
-  }
-  dogStart.addEventListener('click', () => {
-    dogStart.disabled = true;
-    sequence = [Math.floor(Math.random() * 3), Math.floor(Math.random() * 3)];
-    showPuppy();
-  });
-  moves.forEach(button => button.addEventListener('click', () => {
-    if (showing || !dogStart.disabled) return;
-    const move = Number(button.dataset.move);
-    if (move !== sequence[guess]) return finishPuppy(false);
-    pose(move);
-    play(move, 460 + move * 90);
-    if (++guess < sequence.length) return;
-    momoStickers.award('puppy');
-    if (sequence.length === 5) return finishPuppy(true);
-    sequence.push(Math.floor(Math.random() * 3));
-    pose('');
-    controlMoves(false);
-    dogStatus.textContent = copy('Nice! Next round…', 'できた！ つぎのラウンド…');
-    setTimeout(showPuppy, 500);
-  }));
 }
