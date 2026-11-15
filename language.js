@@ -29,8 +29,12 @@ const momoLanguage = (() => {
   });
   document.body.prepend(bar);
 
+  const japaneseTitle = document.title;
+  const englishTitle = document.querySelector('title[data-en-title]')?.dataset.enTitle;
+
   function render() {
     document.documentElement.lang = language;
+    if (englishTitle) document.title = language === 'ja' ? japaneseTitle : englishTitle;
     bar.setAttribute('aria-label', language === 'ja' ? '言語' : 'Language');
     buttons.forEach(({button, code}) => button.setAttribute('aria-pressed', String(code === language)));
     labels.forEach(({element, property, [language]: value}) => {
