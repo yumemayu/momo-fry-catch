@@ -187,10 +187,22 @@ function activateBun(bun, index) {
 }
 
 buns.forEach((bun, index) => {
-  bun.addEventListener('pointerdown', event => {
-    if (event.button !== 0) return;
+  let expressionTimer;
+  function squeeze() {
+    clearTimeout(expressionTimer);
     bun.classList.remove('bouncing');
     bun.classList.add('squeezed');
+    bun.dataset.face = 'squeeze';
+    expressionTimer = setTimeout(() => { bun.dataset.face = 'surprised'; }, 550);
+  }
+  function relax() {
+    clearTimeout(expressionTimer);
+    bun.classList.remove('squeezed');
+    delete bun.dataset.face;
+  }
+  bun.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    squeeze();
     if (event.pointerType === 'touch') {
       heldBuns.set(event.pointerId, index);
       bun.setPointerCapture(event.pointerId);
@@ -199,17 +211,24 @@ buns.forEach((bun, index) => {
   });
   bun.querySelector('.bun-cap').addEventListener('animationend', () => bun.classList.remove('bouncing'));
   bun.addEventListener('pointerup', event => {
-    bun.classList.remove('squeezed');
+    relax();
     if (event.pointerType !== 'touch' || !heldBuns.delete(event.pointerId)) return;
     activateBun(bun, index);
   });
   for (const event of ['pointercancel', 'lostpointercapture', 'pointerleave']) {
     bun.addEventListener(event, pointerEvent => {
       if (event === 'pointerleave' && heldBuns.has(pointerEvent.pointerId)) return;
-      bun.classList.remove('squeezed');
+      relax();
       if (heldBuns.delete(pointerEvent.pointerId)) showMix();
     });
   }
+  bun.addEventListener('keydown', event => {
+    if (event.code === 'Space' && !event.repeat) squeeze();
+  });
+  bun.addEventListener('keyup', event => {
+    if (event.code === 'Space') relax();
+  });
+  bun.addEventListener('blur', relax);
   bun.addEventListener('click', event => {
     if (event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents) return;
     activateBun(bun, index);
