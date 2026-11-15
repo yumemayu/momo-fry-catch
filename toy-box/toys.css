@@ -54,14 +54,7 @@ button:disabled { opacity: .55; cursor: default; }
 }
 .bun-cap::after {
   content: ""; position: absolute; inset: 0;
-  background:
-    radial-gradient(circle at 22% 40%, #fffbd6 1%, transparent 2.8%),
-    radial-gradient(circle at 31% 26%, #fff6 1%, transparent 3%),
-    radial-gradient(circle at 68% 28%, #afedff 1%, transparent 3%),
-    radial-gradient(circle at 76% 51%, #fff7bf 1.5%, transparent 3%),
-    radial-gradient(circle at 54% 38%, #fff9 1.2%, transparent 2.8%),
-    linear-gradient(127deg, transparent 29%, #fff5 38%, transparent 46%);
-  mix-blend-mode: screen;
+  background: radial-gradient(ellipse at 30% 18%, #fff6 0%, #fff2 24%, transparent 45%);
 }
 .bun-face {
   position: absolute; z-index: 1; top: 59%; left: 32%; width: 36%; height: 24%;
@@ -94,8 +87,8 @@ button:disabled { opacity: .55; cursor: default; }
   100% { transform: none; }
 }
 .bun-spark {
-  position: absolute; z-index: 2; top: 46%; left: 50%; pointer-events: none;
-  color: #fff4cf; text-shadow: 0 0 8px var(--light);
+  position: absolute; z-index: 2; top: 26%; left: 50%; pointer-events: none;
+  color: #fff4cf; text-shadow: 0 0 4px var(--light);
   font-size: clamp(12px, 4vw, 23px);
   animation: bun-spark .65s ease-out both;
 }

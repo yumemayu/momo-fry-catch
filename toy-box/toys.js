@@ -12,7 +12,7 @@ tabs.forEach(button => button.addEventListener('click', () => {
 
 let audio;
 const keySamples = new Map();
-let sound = 'click';
+let sound = 'creamy';
 function play(index, pitch = 0) {
   if (sound === 'mute') return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -23,17 +23,20 @@ function play(index, pitch = 0) {
   if (!pitch) {
     if (!keySamples.has(sound)) {
       const rate = audio.sampleRate;
-      const sample = audio.createBuffer(1, Math.ceil(rate * .075), rate);
+      const sample = audio.createBuffer(1, Math.ceil(rate * .105), rate);
       const data = sample.getChannelData(0);
-      const soft = sound === 'soft';
+      const quiet = sound === 'soft';
+      const fundamental = quiet ? 185 : 245;
       for (let frame = 0; frame < data.length; frame++) {
         const t = frame / rate;
-        const release = Math.max(0, t - .032);
-        const strike = Math.exp(-t * (soft ? 155 : 255));
-        const reset = t >= .032 ? .4 * Math.exp(-release * 420) : 0;
-        const tone = Math.sin(2 * Math.PI * (soft ? 170 : 420) * t);
-        const noise = Math.random() * 2 - 1;
-        data[frame] = (strike + reset) * (noise * (soft ? .16 : .58) + tone * .42);
+        const rise = 1 - Math.exp(-t * 730);
+        const strike = rise * Math.exp(-t * 100);
+        const releaseTime = Math.max(0, t - .043);
+        const release = .19 * (1 - Math.exp(-releaseTime * 520)) * Math.exp(-releaseTime * 170);
+        const body = Math.sin(2 * Math.PI * fundamental * t);
+        const shell = Math.sin(2 * Math.PI * (quiet ? 330 : 470) * t);
+        const returnTone = Math.sin(2 * Math.PI * 305 * releaseTime);
+        data[frame] = strike * (body * .68 + shell * .23) + release * returnTone;
       }
       keySamples.set(sound, sample);
     }
@@ -41,7 +44,7 @@ function play(index, pitch = 0) {
     const level = audio.createGain();
     source.buffer = keySamples.get(sound);
     source.playbackRate.value = .92 + (index % 7) * .037;
-    level.gain.value = .18;
+    level.gain.value = sound === 'soft' ? .09 : .15;
     source.connect(level).connect(audio.destination);
     source.start(now);
     return;
