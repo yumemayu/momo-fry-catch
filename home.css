@@ -93,5 +93,116 @@ nav.popular-picker a { position: relative; }
 nav.newgames-picker { margin-top: 8px; }
 
 main header { position: relative; }
-.coin-chip { position: absolute; top: 10px; right: 92px; background: #fff8d6; border: 2.5px solid #f6b73e; color: #7a4d12; font-weight: 900; font-size: 1rem; border-radius: 999px; padding: 6px 14px; box-shadow: 0 2px 6px #b0896833; cursor: pointer; font-family: inherit; }
-.coin-hint { position: absolute; top: 52px; right: 92px; background: #ffffff; border: 2px solid #f6b73e; color: #7a4d12; font-weight: 700; font-size: .82rem; border-radius: 12px; padding: 6px 10px; box-shadow: 0 4px 12px #b0896833; z-index: 5; }
+.coin-chip { position: static; margin-left: auto; flex: none; background: #fff8d6; border: 2.5px solid #f6b73e; color: #7a4d12; font-weight: 900; font-size: 1rem; border-radius: 999px; padding: 6px 14px; box-shadow: 0 2px 6px #b0896833; cursor: pointer; font-family: inherit; }
+.coin-hint { position: absolute; top: calc(100% + 6px); right: 8px; background: #ffffff; border: 2px solid #f6b73e; color: #7a4d12; font-weight: 700; font-size: .82rem; border-radius: 12px; padding: 6px 10px; box-shadow: 0 4px 12px #b0896833; z-index: 5; }
+
+.home-play{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0 0 14px;padding:10px 14px;background:#fff9fd;border:1px solid #e8cee0;border-radius:14px}
+.home-play[hidden]{display:none}
+.home-mission,.home-surprise{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.home-mission{flex:1 1 320px}
+.home-mission h2{font-size:1rem;margin:0}
+.home-mission p{font-size:.875rem;margin:0}
+#mission-action,#surprise-game,#surprise-result{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:4px 11px;border:1px solid #ceb1d6;border-radius:999px;background:#f2e1f7;color:#57345f;font:inherit;font-size:.875rem;font-weight:750;text-decoration:none;cursor:pointer}
+#mission-action[hidden],#surprise-result[hidden]{display:none}
+.home-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.home-play { margin: 4px 0 10px; }
+@media (max-width: 600px) {
+    .home-play { gap: 4px; padding: 7px 9px; }
+  .home-mission { flex-basis: 100%; gap: 3px 7px; }
+  .home-mission h2 { font-size: .88rem; }
+  .home-mission p, #mission-action, #surprise-game { font-size: .78rem; }
+}
+
+/* Keep the two quick ways into a game visible above the toy shelf. */
+.home-play {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.home-mission, .home-surprise {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #e9b4cb;
+  border-radius: 15px;
+  background: #ffedf4;
+  box-shadow: 0 2px 0 #efc9da;
+}
+.home-mission h2 { color: #71314e; }
+#mission-action {
+  min-height: 40px;
+  background: #ffd3e5;
+  border-color: #df9cb8;
+  color: #652841;
+}
+.home-surprise {
+  justify-content: center;
+  border-color: #d8c0eb;
+  background: #f5ebff;
+  box-shadow: 0 2px 0 #e4d2f2;
+}
+#surprise-game {
+  gap: 6px;
+  min-height: 40px;
+  background: #e6d4fb;
+  border-color: #c6a8df;
+  color: #4e2868;
+  white-space: nowrap;
+}
+#surprise-result { background: #fff9ff; }
+#mission-action:focus-visible, #surprise-game:focus-visible, #surprise-result:focus-visible {
+  outline: 2px solid #754676;
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .home-play { grid-template-columns: minmax(0, 1fr) minmax(0, .72fr); }
+  .home-mission, .home-surprise { padding: 7px; gap: 4px; }
+  .home-mission p { width: 100%; }
+  .home-surprise { align-content: center; }
+  #surprise-game { white-space: normal; padding-inline: 7px; }
+  #surprise-result { max-width: 100%; overflow-wrap: anywhere; }
+}
+
+.home-game-row {
+  --row-accent: #fff0bb;
+  margin: 10px 0;
+  background: color-mix(in srgb, var(--row-accent) 35%, #fff);
+  border: 1px solid color-mix(in srgb, var(--row-accent) 75%, #b89aab);
+  border-radius: 14px;
+  padding: 6px 9px 3px;
+}
+.home-game-row.popular { --row-accent: #e5d5fc; }
+.home-game-row.recent { --row-accent: #d3efea; }
+.home-game-row h2 { margin: 0; font-size: .96rem; }
+.home-game-row nav.game-picker {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 96px), 1fr));
+  gap: 7px;
+  margin: 0;
+  padding: 12px 7px 8px;
+}
+.home-game-row nav.game-picker > a {
+  min-width: 0;
+  min-height: 64px;
+  padding: 5px 8px;
+  font-size: .77rem;
+  line-height: 1.15;
+}
+.home-game-row .game-art, .home-game-row .picker-illustration {
+  width: 23px;
+  height: 23px;
+  margin: 0;
+}
+.home-game-row .pop-count { font-size: .64rem; }
+.home-game-row .pop-medal { font-size: .8rem; left: 4px; top: 2px; }
+
+.home-game-row .new-badge { right: 0; }
+
+/* Coin chip lives in the header flow so it can never overlap the mission panel */
+@media (max-width: 620px) {
+  header { flex-wrap: wrap; }
+  .coin-chip { margin-left: auto; }
+}

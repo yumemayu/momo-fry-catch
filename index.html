@@ -7,11 +7,13 @@
 <meta name="description" content="Play Momo Playz games, from Fry Catch and Momo Piano to circuit puzzles.">
 <link rel="stylesheet" href="game-picker.css">
 <link rel="stylesheet" href="language.css">
-<link rel="stylesheet" href="home.css?v=coin-1">
+<link rel="stylesheet" href="home.css?v=full-card-layout-2">
 <script defer src="language.js"></script>
 <script defer src="stickers.js?v=daily-stickers"></script>
 <script defer src="install-hint.js"></script>
-<script defer src="home.js?v=daily-mission"></script>
+<script defer src="home.js?v=game-rows"></script>
+<link rel="stylesheet" href="toy-shelf.css?v=compact-home">
+<script defer src="toy-shelf.js?v=wood"></script>
 <script defer src="popular.js?v=pop-3"></script>
 <script defer src="coins.js?v=coin-1"></script>
   <link rel="manifest" href="manifest.webmanifest">
@@ -31,31 +33,54 @@
 </header>
 <section class="home-play" id="home-play" hidden>
   <div class="home-mission">
-    <h2 data-ja="今日のミッション">Today’s mission</h2>
+    <h2><span aria-hidden="true">🎯</span> <span data-ja="今日のミッション">Today’s mission</span></h2>
     <p id="mission-task"></p>
     <a id="mission-action"></a>
   </div>
   <div class="home-surprise">
-    <button type="button" id="surprise-game" data-ja="✦ おまかせ">✦ Surprise me</button>
+    <button type="button" id="surprise-game"><span aria-hidden="true">🎁</span> <span data-ja="おまかせ">Surprise me</span></button>
     <a id="surprise-result" hidden></a>
     <span id="surprise-announcement" class="home-sr-only" role="status"></span>
   </div>
 </section>
-<section class="recent" id="recent" hidden>
-  <h2 class="recent-title"><span aria-hidden="true">🕒</span> <span data-ja="さいきん遊んだ">Recently played</span></h2>
-  <nav class="game-picker recent-picker" id="recent-picker" aria-label="Recently played games"></nav>
+<section class="toy-shelf" aria-labelledby="toy-shelf-title">
+  <h2 id="toy-shelf-title" data-ja="Momoのおもちゃ棚">Momo’s Toy Shelf</h2>
+  <p data-ja="おもちゃをタップしてみよう">Tap a toy to see it move</p>
+  <div class="toy-shelf-row">
+    <article class="toy-shelf-item toy-pudding">
+      <button class="toy-preview" type="button" aria-label="Animate Pudding" data-ja-label="プリンを動かす"><img class="toy-art" src="assets/toy-shelf-pudding.webp" alt="" draggable="false"></button>
+    </article>
+    <article class="toy-shelf-item toy-bun">
+      <button class="toy-preview" type="button" aria-label="Animate Steamed bun" data-ja-label="肉まんを動かす"><img class="toy-art" src="assets/toy-shelf-bun.webp" alt="" draggable="false"></button>
+    </article>
+    <article class="toy-shelf-item toy-capybara">
+      <button class="toy-preview" type="button" aria-label="Animate Capybara" data-ja-label="カピバラを動かす"><img class="toy-art" src="assets/toy-shelf-capybara.webp" alt="" draggable="false"></button>
+    </article>
+  </div>
+  <img class="toy-board" src="assets/toy-shelf-strawberry.webp" alt="" width="1000" height="162">
+  <div class="toy-game-links">
+    
+    
+    <a class="toy-play toy-play-capybara" href="./capybara-merge/" aria-label="Find me in Capybara Onsen Merge" data-ja-label="カピバラ温泉マージでみつけてね" data-ja="みつけてね">Find me</a>
+  </div>
 </section>
-<section class="popular" id="popular" hidden>
-  <h2 class="popular-title"><span aria-hidden="true">🏆</span> <span data-ja="人気ランキング">Popularity ranking</span></h2>
-  <nav class="game-picker popular-picker" id="popular-picker" aria-label="Popular games"></nav>
-</section>
-<section class="newgames" id="newgames" hidden>
-  <h2 class="newgames-title"><span aria-hidden="true">🆕</span> <span data-ja="新着ゲーム">New games</span></h2>
+<section class="newgames home-game-row" id="newgames" aria-labelledby="newgames-title" hidden>
+  <h2 id="newgames-title" class="newgames-title"><span aria-hidden="true">🆕</span> <span data-ja="新着ゲーム">New games</span></h2>
   <nav class="game-picker newgames-picker" id="newgames-picker" aria-label="New games"></nav>
 </section>
-<nav class="game-picker" aria-label="Choose a game">
+<section class="popular home-game-row" id="popular" aria-labelledby="popular-title" hidden>
+  <h2 id="popular-title" class="popular-title"><span aria-hidden="true">🏆</span> <span data-ja="人気ランキング">Popularity ranking</span></h2>
+  <nav class="game-picker popular-picker" id="popular-picker" aria-label="Popular games"></nav>
+</section>
+<section class="recent home-game-row" id="recent" aria-labelledby="recent-title" hidden>
+  <h2 id="recent-title" class="recent-title"><span aria-hidden="true">🕒</span> <span data-ja="さいきん遊んだ">Recently played</span></h2>
+  <nav class="game-picker recent-picker" id="recent-picker" aria-label="Recently played games"></nav>
+</section>
+<h2 class="all-games-title" id="all-games-title" data-ja="すべてのゲーム">All Games</h2>
+<nav class="game-picker" id="all-games-picker" aria-labelledby="all-games-title">
 <a href="fry-catch/"><img class="game-art" src="assets/game-fries.png" alt="" width="40" height="40"><span data-ja="フライキャッチ">Fry Catch</span></a>
 <a href="./smiley-bun-catch/"><img class="game-art" src="assets/game-bun.png" alt="" width="40" height="40"><span data-ja="にこにこ肉まんキャッチ">Smiley Bun Catch</span></a>
+
 
 <a href="./glasses-cat/"><img class="game-art" src="assets/game-cat.png" alt="" width="40" height="40"><span data-ja="メガネ猫さがし">Find the Glasses Cat</span></a>
 <a class="picker-piano" href="./piano/"><span class="picker-illustration" aria-hidden="true">♪</span><span data-ja="Momoピアノ">Momo Piano</span></a>
@@ -81,6 +106,11 @@
 
 
 </nav>
+
+
+
+
+
 </main>
 <footer class="feedback"><a href="sticker-book/" data-sticker-link>✦ Sticker Book</a><a href="https://clubs.place/f/fS6twrevaLxr9ZI38eKpOUpW" target="_blank" rel="noopener noreferrer" data-ja="感想をおくる">Send feedback</a>
 <small>Copyright Momo.squirrels</small>
