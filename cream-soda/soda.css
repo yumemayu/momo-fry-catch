@@ -107,4 +107,4 @@ main { background: #fff6e9; border-color: #e2bba7; color: #593933; }
   border-radius: 50%;
   background: #ffecd1;
 }
-#celebration span { font-size: clamp(2.5rem, 12vw, 4.5rem); }
+#celebration img { width: 82%; height: 82%; object-fit: contain; }
