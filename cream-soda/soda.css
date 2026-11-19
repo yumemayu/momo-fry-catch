@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  padding: 64px 12px 24px;
+  background: repeating-conic-gradient(#ffedf4 0% 25%, #fff7fa 0% 50%) 0 0 / 32px 32px;
+  color: #633b56;
+  font: 700 1rem system-ui, sans-serif;
+  text-align: center;
+}
+main {
+  max-width: 580px;
+  margin: auto;
+  padding: 20px clamp(10px, 3vw, 24px);
+  border: 2px solid #f1c4d5;
+  border-radius: 28px;
+  background: #fff9ee;
+}
+h1 { font-size: clamp(1.45rem, 5vw, 2.15rem); margin: 0; }
+main > p { line-height: 1.5; }
+button {
+  min-height: 44px; min-width: 44px; padding: 6px 12px; border: 2px solid #e9a8c1;
+  border-radius: 18px; background: #fff; color: inherit; font: inherit; cursor: pointer;
+  touch-action: manipulation;
+}
+button[aria-pressed="true"] { background: #ffcee3; }
+button:disabled { opacity: .5; cursor: default; }
+#levels, .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.glasses {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 80px));
+  justify-content: center; gap: 32px 9px; padding-top: 40px;
+}
+@media (min-width: 520px) { .glasses { grid-template-columns: repeat(5, minmax(0, 80px)); } }
+.glass {
+  position: relative; display: flex; flex-direction: column-reverse;
+  width: 100%; height: 108px; padding: 0; border-radius: 7px 7px 22px 22px;
+  border: 3px solid #986b8c; background: #fff; transition: transform .18s;
+}
+.glass[aria-pressed="true"] { transform: translateY(-8px); background: #fff; outline: 3px solid #ef88b4; }
+.layer { display: block; height: 25%; border-top: 2px solid #ffffff88; }
+.layer:first-child { border-radius: 0 0 18px 18px; }
+.pink { background: #f38cb1; } .green { background: #9be09a; } .blue { background: #8ed9f5; }
+.topping { position: absolute; left: 50%; bottom: 88%; translate: -50% 0; font-size: 2rem; animation: pop .25s ease-out; }
+@keyframes pop { from { transform: translateY(-10px) scale(.7); opacity: 0; } }
+#message { min-height: 3em; }
+@media (prefers-reduced-motion: reduce) {
+  .glass { transition: none; } .topping { animation: none; }
+}
+
+.topping { white-space: nowrap; font-size: 1.65rem; }

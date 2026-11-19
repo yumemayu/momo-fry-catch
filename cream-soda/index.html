@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cream Soda Shop · Momo Playz</title>
+  <link rel="stylesheet" href="../language.css">
+  <link rel="stylesheet" href="soda.css">
+  <script defer src="../language.js"></script>
+  <script defer src="../pwa.js"></script>
+  <script defer src="../soda-gems.js"></script>
+  <script defer src="soda.js"></script>
+</head>
+<body>
+<main>
+  <h1 data-ja="クリームソーダ屋さん">Cream Soda Shop</h1>
+  <p data-ja="同じ色をひとつのグラスにそろえよう。グラスをふたつ、順番にタップしてね。">Tap two glasses to pour. Fill each glass with one color.</p>
+  <nav id="levels" aria-label="Stages" data-ja-label="ステージ">
+    <button type="button">1</button><button type="button">2</button><button type="button">3</button>
+  </nav>
+  <div id="glasses" class="glasses"></div>
+  <p id="message" role="status"></p>
+  <div class="actions">
+    <button id="undo" type="button" data-ja="ひとつ戻す">Undo</button>
+    <button id="reset" type="button" data-ja="やりなおす">Restart</button>
+    <button id="next" type="button" data-ja="つぎのステージ" hidden>Next stage</button>
+  </div>
+</main>
+</body>
+</html>

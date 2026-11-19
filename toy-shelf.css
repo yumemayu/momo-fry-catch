@@ -73,3 +73,19 @@
 .toy-play-bun { background: #d2ebcf; }
 .toy-play-capybara { background: #e6d3f7; }
 .toy-play:focus-visible { outline: 3px solid #754676; outline-offset: 3px; }
+
+#soda-shop { margin: 6px 0; }
+#soda-shop summary { cursor: pointer; padding: 8px; }
+#soda-shop button {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  margin: 2px 0;
+  border: 1px solid #e9a8c1;
+  border-radius: 14px;
+  background: #fff5fa;
+  color: #633b56;
+  font: inherit;
+  cursor: pointer;
+}
+#soda-shop button:disabled { opacity: .65; cursor: default; }
