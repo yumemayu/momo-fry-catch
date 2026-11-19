@@ -33,6 +33,7 @@ if (typeof module !== 'undefined') module.exports = { levels, pour, solved };
 if (typeof document !== 'undefined') {
   const pick = (en, ja) => momoLanguage.pick(en, ja);
   const tray = document.querySelector('#glasses');
+  const celebration = document.querySelector('#celebration');
   const message = document.querySelector('#message');
   const undo = document.querySelector('#undo');
   const next = document.querySelector('#next');
@@ -45,6 +46,9 @@ if (typeof document !== 'undefined') {
   let status = ['', ''];
 
   function render(focusIndex) {
+    const complete = solved(board);
+    tray.hidden = complete;
+    celebration.hidden = !complete;
     const previous = [...tray.children];
     board.forEach((glass, index) => {
       const button = previous[index] || document.createElement('button');
@@ -56,12 +60,15 @@ if (typeof document !== 'undefined') {
       }
       if (button.dataset.contents !== glass) {
         button.dataset.contents = glass;
-        button.replaceChildren(...[...glass].map(color => {
+        const liquid = document.createElement('span');
+        liquid.className = 'liquid';
+        liquid.replaceChildren(...[...glass].map(color => {
           const layer = document.createElement('span');
           layer.className = 'layer ' + colors[color][0];
           layer.setAttribute('aria-hidden', 'true');
           return layer;
         }));
+        button.replaceChildren(liquid);
         if (filled(glass)) {
           const topping = document.createElement('span');
           topping.className = 'topping';
@@ -73,10 +80,10 @@ if (typeof document !== 'undefined') {
       const names = [...glass].reverse().map(color => pick(colors[color][1], colors[color][2])).join(' / ');
       button.setAttribute('aria-label', pick(`Glass ${index + 1}: ${names || 'empty'}`, `グラス ${index + 1}、${names || 'からっぽ'}`));
       button.setAttribute('aria-pressed', String(selected === index));
-      button.disabled = solved(board);
+      button.disabled = complete;
     });
     undo.disabled = !history.length;
-    next.hidden = !solved(board) || stage + 1 === levels.length;
+    next.hidden = !complete || stage + 1 === levels.length;
     levelButtons.forEach((button, index) => button.setAttribute('aria-pressed', String(stage === index)));
     message.textContent = pick(...status);
     if (focusIndex !== undefined && !solved(board)) tray.children[focusIndex].focus();
