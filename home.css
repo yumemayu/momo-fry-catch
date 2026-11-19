@@ -8,6 +8,18 @@ nav.game-picker { grid-template-columns: repeat(auto-fit, minmax(min(100%, 135px
 nav.game-picker > a { min-height: 105px; }
 .feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .feedback a { color: #754676; }
+.install-help {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border: 1px solid #e3b9cb;
+  border-radius: 999px;
+  background: #fff7fb;
+  color: #754676;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.install-pop-icon { color: #754676; }
 .install-pop {
   position: fixed;
   inset: 0;
@@ -63,7 +75,7 @@ nav.game-picker > a { min-height: 105px; }
   cursor: pointer;
 }
 @media (display-mode: standalone) {
-  .install-pop { display: none; }
+  .install-help, .install-pop { display: none; }
 }
 nav.game-picker > a { position: relative; }
 .new-badge {
