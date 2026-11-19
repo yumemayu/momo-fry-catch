@@ -11,7 +11,7 @@
   --pink: #f272a7;
   background: linear-gradient(135deg, #ffe9f3 0%, #e6f7ff 55%, #e9fbe9 100%) fixed;
   color: var(--text);
-  font: 16px/1.45 "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Hiragino Sans", system-ui, sans-serif;
+  font: 16px/1.45 Nunito, "Hiragino Maru Gothic ProN", sans-serif;
 }
 * { box-sizing: border-box; }
 body { margin: 0; }

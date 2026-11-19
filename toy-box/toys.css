@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-:root { color: #50394e; background: #fcf0f5; font: 500 16px/1.5 "Hiragino Maru Gothic ProN", system-ui, sans-serif; }
+:root { color: #50394e; background: #fcf0f5; font: 500 16px/1.5 Nunito, "Hiragino Maru Gothic ProN", sans-serif; }
 body { margin: 0; }
 main { max-width: 740px; margin: auto; padding: 50px 16px 24px; }
 header a { color: #744a74; }
@@ -187,9 +187,14 @@ button:disabled { opacity: .55; cursor: default; }
 .keycap[data-color="4"] { --top: #fff0ab; }
 .keycap[data-color="5"] { --top: #ffe0cd; }
 .keycap[data-color="6"] { --top: #d3eaff; }
-.key-legend { position: absolute; right: 8%; bottom: 7%; font-size: clamp(6px, 1.45vw, 9px); color: #704f69; }
+.key-legend {
+  position: absolute; right: auto; left: 50%; top: 2%; bottom: auto; transform: translateX(-50%);
+  z-index: 2; padding: .1em .42em; border-radius: 999px; background: #fffdf8;
+  box-shadow: 0 1px 3px #503a2e45; color: #5b4356;
+  font-size: clamp(8px, 2vw, 13px); font-weight: 800; line-height: 1.35;
+}
 .key-art {
-  position: relative; align-self: center; justify-self: center; margin-bottom: 8%;
+  position: relative; align-self: center; justify-self: center; margin-top: 26%;
   width: clamp(11px, 4.4vw, 28px); aspect-ratio: 1;
   filter: drop-shadow(0 1px 0 #fff9);
 }
@@ -228,8 +233,8 @@ button:disabled { opacity: .55; cursor: default; }
 }
 /* Whole-key cat faces: an illustrated face fills the key top. */
 .keycap.face-key { border-radius: 32%; }
-.keycap.face-key .key-legend { display: none; }
-.face-art { position: absolute; inset: 0; display: block; border-radius: inherit; overflow: hidden; }
+.keycap.face-key .key-legend { display: block; }
+.face-art { position: absolute; inset: 5% 0 0; display: block; border-radius: inherit; overflow: hidden; }
 .face-art svg { display: block; width: 100%; height: 100%; }
 /* The same dome light and bottom shade as the other keys, laid over
    the printed face so it sits in the key's 3D shape. */
@@ -257,7 +262,6 @@ button:disabled { opacity: .55; cursor: default; }
 .key-case[data-theme="choco"] .keycap:is([data-color="2"], [data-color="5"]) { --top: #cdeeda; color: #4c5a50; }
 .key-case[data-theme="choco"] .keycap[data-color="3"] { --top: #fff3df; color: #6b4a2f; }
 .key-case[data-theme="choco"] .keycap[data-color="6"] { --top: #ffd9e2; color: #6b4a2f; }
-.key-case[data-theme="choco"] .key-legend { color: inherit; opacity: .75; }
 .key-case[data-theme="choco"] .space { --top: #a8dfc6; color: #3f5a4a; }
 .key-case[data-theme="choco"] .bottom-row > span { color: #ffe9c9; }
 /* Puppy: yellow case, lavender keys. */
@@ -612,3 +616,50 @@ main:has(#bun:not([hidden])) { max-width: 1120px; }
 @media (prefers-reduced-motion: reduce) {
   .key-guest { display: none; }
 }
+
+[data-sticker="fry-cup"] .sticker-disc::before {
+  content: "";
+  display: block;
+  width: 35px;
+  height: 34px;
+  border: 2px solid #942a48;
+  border-top: 6px solid #942a48;
+  border-radius: 6px 6px 11px 11px;
+  background: repeating-conic-gradient(#ffe5a2 0% 25%, #db4260 0% 50%) center bottom / 10px 10px no-repeat,
+    linear-gradient(#f26070, #c93251);
+  background-size: 27px 10px, 100% 100%;
+  transform: perspective(40px) rotateX(-8deg);
+}
+[data-sticker="fry-cup"][data-earned="false"] .sticker-disc::before { filter: grayscale(1) brightness(.55); }
+#mission-milestone { grid-template-columns: minmax(130px, 220px); margin-bottom: 12px; }
+
+/* Clicky Keys wide mode: the keyboard and notebook fill the screen. */
+.keys-bar { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+#keys-wide { min-height: 46px; padding: 8px 16px; border: 3px solid #fff; border-radius: 999px; background: linear-gradient(135deg, #f272a7, #ff9d5c); color: #fff; font: inherit; font-weight: 700; box-shadow: 0 4px 0 #c94f83; cursor: pointer; }
+#keys-wide:active { transform: translateY(3px); box-shadow: 0 1px 0 #c94f83; }
+body.keys-wide { overflow: hidden; }
+#keys.keys-wide { position: fixed; inset: 0; z-index: 80; overflow: auto; border-radius: 0; display: flex; flex-direction: column; }
+#keys.keys-wide > p { display: none; }
+#keys.keys-wide .key-case { max-width: none; width: 100%; margin: 8px auto 12px; }
+#keys.keys-wide .key-notebook { max-width: none; width: 100%; flex: 1; display: flex; flex-direction: column; margin-top: 8px; }
+#keys.keys-wide .key-notebook textarea { flex: 1; min-height: 110px; }
+#keys.keys-wide .keycap { font-size: clamp(18px, 4.4vw, 38px); }
+#keys.keys-wide .space { min-height: clamp(40px, 8.5vw, 64px); font-size: clamp(14px, 2.6vw, 24px); }
+@media (orientation: landscape) and (min-width: 700px) {
+  #keys.keys-wide { display: grid; grid-template-columns: 1fr 240px; grid-template-rows: auto auto 1fr auto; column-gap: 18px; grid-template-areas: "bar bar" "pal note" "case note" "sound note"; }
+  #keys.keys-wide .keys-bar { grid-area: bar; margin-bottom: 0; }
+  #keys.keys-wide > div:nth-of-type(2) { grid-area: pal; }
+  #keys.keys-wide .key-case { grid-area: case; margin: 0; align-self: center; }
+  #keys.keys-wide > div:nth-of-type(4) { grid-area: sound; }
+  #keys.keys-wide .key-notebook { grid-area: note; margin-top: 0; height: 100%; }
+}
+
+.key-hint { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #ebc7db; color: #a04d78; font-size: .85rem; cursor: pointer; text-align: left; }
+.key-secret-count { flex: 0 0 auto; font-weight: 700; color: #c2547f; }
+
+/* Cat Keys theme: a full illustrated cat face on every key. */
+.key-case[data-theme="cat"] .cat-face {
+  width: 78%; height: auto; aspect-ratio: 1; margin: 7% auto 0; padding: 0;
+  background: none; clip-path: none;
+}
+.key-case[data-theme="cat"] .cat-face svg { display: block; width: 100%; height: 100%; }
