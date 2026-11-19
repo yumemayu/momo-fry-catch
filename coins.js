@@ -4,30 +4,28 @@
    small goal line ("N to go until the next 50"). Coins are earned in
    games (scores.js) and kept on this device. */
 (() => {
-  let coins = 0;
-  try { coins = parseInt(localStorage.getItem('momo:coins') || '0', 10) || 0; } catch { coins = 0; }
+  let coins = sodaGems.balance();
   let seen = null;
   try {
     const raw = localStorage.getItem('momo:coins-seen');
     seen = raw === null ? null : (parseInt(raw, 10) || 0);
   } catch { seen = null; }
   const pick = (en, ja) => (typeof momoLanguage !== 'undefined' && momoLanguage.pick) ? momoLanguage.pick(en, ja) : en;
-  const next = (Math.floor(coins / 50) + 1) * 50;
   const wrap = document.createElement('div');
   wrap.className = 'coin-dock';
   const chip = document.createElement('button');
   chip.type = 'button';
   chip.className = 'coin-chip';
-  chip.setAttribute('aria-label', 'Game coins');
-  chip.innerHTML = `🪙 <span>${coins}</span>`;
+  chip.setAttribute('aria-label', 'Gems');
+  chip.innerHTML = `💎 <span>${coins}</span>`;
   const goal = document.createElement('div');
   goal.className = 'coin-goal';
-  const goalText = () => pick(`${next - coins} to go until ${next} coins`, `つぎの ${next} コインまで あと ${next - coins}`);
+  const goalText = () => pick('Mini sodas: 20 gems', 'ミニソーダは20ジェム');
   goal.textContent = goalText();
   const hint = document.createElement('div');
   hint.className = 'coin-hint';
   hint.hidden = true;
-  const hintText = () => pick('Finish a game: +10 coins!', 'ゲームを最後まで遊ぶと +10コイン！');
+  const hintText = () => pick('Trade gems for a mini soda on the toy shelf!', 'おもちゃ棚でジェムをミニソーダと交換できるよ！');
   hint.textContent = hintText();
   chip.addEventListener('click', () => { hint.hidden = !hint.hidden; });
   wrap.append(chip, goal, hint);
@@ -40,6 +38,14 @@
     chip.classList.add('coin-pop');
   }
   try { localStorage.setItem('momo:coins-seen', String(coins)); } catch { /* storage unavailable */ }
+  const refresh = () => {
+    coins = sodaGems.balance();
+    chip.querySelector('span').textContent = coins;
+    try { localStorage.setItem('momo:coins-seen', String(coins)); } catch {}
+  };
+  window.addEventListener('momo-gems-change', refresh);
+  window.addEventListener('storage', refresh);
+  window.addEventListener('pageshow', event => { if (event.persisted) refresh(); });
   if (typeof momoLanguage !== 'undefined' && momoLanguage.subscribe) {
     momoLanguage.subscribe(() => { goal.textContent = goalText(); hint.textContent = hintText(); });
   }

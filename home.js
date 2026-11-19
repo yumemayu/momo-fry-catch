@@ -127,7 +127,7 @@
     'fry-catch': 'action', 'smiley-bun-catch': 'action', 'glasses-cat': 'action',
     'dodgeball': 'action', 'capybara-tap': 'action', 'pudding-table-jump': 'action',
     'capybara-merge': 'relax', 'capybara-memory': 'relax', 'bun-owner': 'relax',
-    'switch-shine': 'relax',
+    'switch-shine': 'relax', 'cream-soda': 'relax',
     'piano': 'music', 'clicky-keys': 'music', 'bun-lights': 'music'
   };
   picker.querySelectorAll('a[href]').forEach(a => {

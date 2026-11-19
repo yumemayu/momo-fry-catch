@@ -351,10 +351,10 @@ const gameScores = (() => {
       const before = get();
       const after = before + gain;
       set(after);
-      let msg = pick(`🪙 +${gain} Coins!`, `🪙 コイン +${gain}！`);
+      let msg = pick(`💎 +${gain} Gems!`, `🪙 ジェム +${gain}！`);
       if (Math.floor(after / 50) > Math.floor(before / 50)) {
         const milestone = Math.floor(after / 50) * 50;
-        msg += pick(` You reached ${milestone} coins! 🎉`, ` ${milestone}コイン達成！🎉`);
+        msg += pick(` You reached ${milestone} gems earned! 🎉`, ` 累計${milestone}ジェム達成！🎉`);
       }
       setTimeout(() => showToast(msg), 350);
     }
