@@ -3,12 +3,25 @@
 const levels = [
   ['ppgb', 'ggbp', 'bbpg', '', ''],
   ['pgbp', 'bpgb', 'gbpg', '', ''],
-  ['pbgp', 'gppb', 'bgbg', '', '']
+  ['pbgp', 'gppb', 'bgbg', '', ''],
+  ['gbyg', 'pbbp', 'gyyp', 'gybp', '', ''],
+  ['pbyg', 'gpgb', 'ypgb', 'ybpy', '', ''],
+  ['gpyg', 'pgby', 'bybp', 'gypb', '', ''],
+  ['bgog', 'pbgo', 'bygp', 'oypy', 'bypo', '', ''],
+  ['goyg', 'ogyo', 'pbyp', 'bpby', 'ogpb', '', ''],
+  ['opgp', 'bgyb', 'pgyb', 'ybyo', 'ogpo', '', ''],
+  ['ygyb', 'gpob', 'opyo', 'vgvg', 'bpvy', 'obvp', '', ''],
+  ['vpvo', 'yogp', 'gbpy', 'ybpo', 'vbgb', 'yovg', '', ''],
+  ['borp', 'ygbp', 'oyvy', 'ogrg', 'ropg', 'bvbv', 'yrpv', '', '']
 ];
 const colors = {
   p: ['pink', 'strawberry', 'いちご'],
   g: ['green', 'melon', 'メロン'],
-  b: ['blue', 'blue soda', 'ブルーソーダ']
+  b: ['blue', 'blue soda', 'ブルーソーダ'],
+  y: ['yellow', 'lemon', 'レモン'],
+  o: ['orange', 'orange', 'オレンジ'],
+  v: ['purple', 'grape', 'ぶどう'],
+  r: ['red', 'cherry', 'さくらんぼ']
 };
 
 function pour(board, from, to) {
@@ -37,12 +50,21 @@ if (typeof document !== 'undefined') {
   const message = document.querySelector('#message');
   const undo = document.querySelector('#undo');
   const next = document.querySelector('#next');
-  const levelButtons = [...document.querySelectorAll('#levels button')];
+  const levelPicker = document.querySelector('#levels');
+  levelPicker.replaceChildren(...levels.map((_, index) => {
+    const option = document.createElement('option');
+    option.value = String(index);
+    option.textContent = `${index + 1} / ${levels.length}`;
+    return option;
+  }));
 
   let stage = 0;
   let board = levels[stage];
   let selected = -1;
   let history = [];
+  let pours = 0;
+  const stageId = () => `stage-${stage + 1}`;
+  gameScores.showLevel(stageId());
   let status = ['', ''];
 
   function render(focusIndex) {
@@ -50,6 +72,7 @@ if (typeof document !== 'undefined') {
     tray.hidden = complete;
     celebration.hidden = !complete;
     const previous = [...tray.children];
+    previous.slice(board.length).forEach(button => button.remove());
     board.forEach((glass, index) => {
       const button = previous[index] || document.createElement('button');
       if (!previous[index]) {
@@ -82,9 +105,9 @@ if (typeof document !== 'undefined') {
       button.setAttribute('aria-pressed', String(selected === index));
       button.disabled = complete;
     });
-    undo.disabled = !history.length;
+    undo.disabled = complete || !history.length;
     next.hidden = !complete || stage + 1 === levels.length;
-    levelButtons.forEach((button, index) => button.setAttribute('aria-pressed', String(stage === index)));
+    levelPicker.value = String(stage);
     message.textContent = pick(...status);
     if (focusIndex !== undefined && !solved(board)) tray.children[focusIndex].focus();
   }
@@ -98,10 +121,13 @@ if (typeof document !== 'undefined') {
       const moved = pour(board, selected, index);
       if (moved) {
         history.push(board);
+        pours++;
         board = moved;
         selected = -1;
         if (solved(board)) {
           const reward = sodaGems.clear(stage);
+          gameScores.start(stageId());
+          gameScores.finish(Math.max(1, 1000 - pours), true);
           status = reward ? ['Cream sodas are ready! 💎 +10', 'クリームソーダ、できあがり！ 💎 +10'] :
             ['Cream sodas are ready!', 'クリームソーダ、できあがり！'];
         }
@@ -117,13 +143,16 @@ if (typeof document !== 'undefined') {
     stage = index;
     board = levels[stage];
     history = [];
+    pours = 0;
+    document.querySelector('#score-card').hidden = true;
+    gameScores.showLevel(stageId());
     selected = -1;
     status = ['', ''];
     render();
   }
 
   undo.addEventListener('click', () => {
-    if (!history.length) return;
+    if (!history.length || solved(board)) return;
     board = history.pop();
     selected = -1;
     status = ['', ''];
@@ -131,6 +160,6 @@ if (typeof document !== 'undefined') {
   });
   document.querySelector('#reset').addEventListener('click', () => start(stage));
   next.addEventListener('click', () => start(stage + 1));
-  levelButtons.forEach((button, index) => button.addEventListener('click', () => start(index)));
+  levelPicker.addEventListener('change', () => start(Number(levelPicker.value)));
   momoLanguage.subscribe(() => render());
 }
