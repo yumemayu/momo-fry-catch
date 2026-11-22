@@ -12,6 +12,7 @@
   const TTL = 24 * 60 * 60 * 1000;
   const GAMES = {
     'cream-soda': ['cream-soda', Array.from({length: 12}, (_, index) => `stage-${index + 1}`)],
+    'tic-tac-toe': ['tic-tac-toe', ['easy', 'normal-4x4', 'hard-5x5']],
     'fry-catch': ['fries', ['super-easy', 'easy', 'medium', 'hard', 'impossible']],
     'smiley-bun-catch': ['buns', ['super-easy', 'easy', 'medium', 'hard', 'impossible']],
     'glasses-cat': ['cats', ['easy', 'normal', 'hard']],
