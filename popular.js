@@ -11,6 +11,7 @@
   const CACHE_KEY = 'momo:popular:v4';
   const TTL = 24 * 60 * 60 * 1000;
   const GAMES = {
+    'penguin-slide': ['penguin-slide', ['easy', 'medium', 'hard', 'impossible']],
     'cream-soda': ['cream-soda', Array.from({length: 12}, (_, index) => `stage-${index + 1}`)],
     'tic-tac-toe': ['tic-tac-toe', ['easy', 'normal-4x4', 'hard-5x5']],
     'fry-catch': ['fries', ['super-easy', 'easy', 'medium', 'hard', 'impossible']],
@@ -50,12 +51,11 @@
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const badged = [];
-    mainPicker.querySelectorAll('a').forEach((a, idx) => {
+    mainPicker.querySelectorAll('a').forEach(a => {
       const badge = a.querySelector('.new-badge[data-new-until]');
-      if (badge && badge.dataset.newUntil >= todayStr) badged.push({ a, idx, until: badge.dataset.newUntil });
+      if (badge && badge.dataset.newUntil >= todayStr) badged.push(a);
     });
-    badged.sort((x, y) => y.until.localeCompare(x.until) || y.idx - x.idx);
-    badged.slice(0, 5).forEach(({ a }) => {
+    badged.slice(0, 5).forEach((a) => {
       const clone = a.cloneNode(true);
       clone.removeAttribute('aria-current');
       picker.append(clone);
